@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.events.priv.dto.NewEventDto;
 import ru.practicum.events.priv.dto.UpdateEventRequest;
 
+import javax.validation.Valid;
+
 @RestController("/users")
 public class EventPrivateController {
 
@@ -27,7 +29,7 @@ public class EventPrivateController {
      * Если редактируется отменённое событие, то оно автоматически переходит в состояние ожидания модерации
      * Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента */
     public void changeEventByUser(@PathVariable Integer userId,
-                                  @RequestBody UpdateEventRequest updateEventRequest) {
+                                  @Valid @RequestBody UpdateEventRequest updateEventRequest) {
 
     }
 
@@ -35,7 +37,7 @@ public class EventPrivateController {
     // Добавление нового события. Возвращает EventFullDto.
     /* !!! Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента*/
     public void createEvent(@RequestParam Integer userId,
-                            @RequestBody NewEventDto newEventDto) {
+                            @Valid @RequestBody NewEventDto newEventDto) {
 
     }
 

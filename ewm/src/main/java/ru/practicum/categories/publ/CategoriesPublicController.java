@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoriesPublicController {
 
     @GetMapping
+    // Получение категорий. Возвращает список CategoryDto.
     public void getCategories(@RequestParam(defaultValue = "0") Integer from,
                               @RequestParam(defaultValue = "10") Integer size) {
     }
 
     @GetMapping("/{catId}")
+    // Получение информации о категории по ее id. Возвращает CategoryDto.
     public void getCategoryById(@PathVariable Integer catId) {
 
     }

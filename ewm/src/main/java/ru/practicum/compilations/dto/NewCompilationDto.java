@@ -14,5 +14,4 @@ public class NewCompilationDto {
     Boolean pinned = false;                 // Закреплена ли подборка на главной странице сайта
     @NotBlank
     String title;                   // Заголовок подборки
-
 }

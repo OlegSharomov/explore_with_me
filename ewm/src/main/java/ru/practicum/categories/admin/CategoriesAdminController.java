@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.categories.dto.CategoryDto;
+import ru.practicum.categories.dto.NewCategoryDto;
+
+import javax.validation.Valid;
 
 @RestController("/admin/categories")
 public class CategoriesAdminController {
@@ -14,21 +17,21 @@ public class CategoriesAdminController {
     @PatchMapping
     // Изменение категории. Возвращает CategoryDto.
     /* Обратите внимание: имя категории должно быть уникальным*/
-    public void changeCategory(@RequestBody CategoryDto categoryDto) {
+    public void changeCategory(@Valid @RequestBody CategoryDto categoryDto) {
 
     }
 
     @PostMapping
     // Добавление новой категории. Возвращает CategoryDto.
     /* Обратите внимание: имя категории должно быть уникальным*/
-    public void createCategory(@RequestBody CategoryDto categoryDto){
+    public void createCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
 
     }
 
     @DeleteMapping("/{catId}")
     // Удаление категории. Возвращает только статус выполнения или ошибку.
     /* Обратите внимание: с категорией не должно быть связано ни одного события.*/
-    public void removeCategory(@PathVariable Integer catId){
+    public void removeCategory(@PathVariable Integer catId) {
 
     }
 
