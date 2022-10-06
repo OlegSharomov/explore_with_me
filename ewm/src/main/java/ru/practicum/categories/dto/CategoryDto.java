@@ -1,4 +1,4 @@
-package ru.practicum.categories.publ;
+package ru.practicum.categories.dto;
 
 public class CategoryDto {
     Integer id;     // Идентификатор категории

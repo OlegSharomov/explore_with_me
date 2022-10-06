@@ -64,9 +64,9 @@ public class EventPrivateController {
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
     // Подтверждение чужой заявки на участие в событии текущего пользователя. Возвращает ParticipationRequestDto.
     /* Если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
-    * Нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие
-    * Если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки
-    * необходимо отклонить */
+     * Нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие
+     * Если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки
+     * необходимо отклонить */
     public void acceptParticipationRequest(@PathVariable Integer userId,
                                            @PathVariable Integer eventId,
                                            @PathVariable Integer reqId) {
@@ -77,7 +77,7 @@ public class EventPrivateController {
     // Отклонение чужой заявки на участие в событии текущего пользователя. Возвращает ParticipationRequestDto.
     public void rejectParticipationRequest(@PathVariable Integer userId,
                                            @PathVariable Integer eventId,
-                                           @PathVariable Integer reqId){
+                                           @PathVariable Integer reqId) {
 
     }
 
