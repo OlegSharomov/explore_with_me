@@ -20,7 +20,7 @@ import javax.validation.constraints.Positive;
 @RestController
 @RequestMapping("/admin/categories")
 @RequiredArgsConstructor
-public class CategoriesAdminController {
+public class CategoryAdminController {
     private final CategoryAdminService adminService;
 
     @PatchMapping

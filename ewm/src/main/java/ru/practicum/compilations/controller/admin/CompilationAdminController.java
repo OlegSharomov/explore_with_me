@@ -1,5 +1,7 @@
-package ru.practicum.compilations.admin;
+package ru.practicum.compilations.controller.admin;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,50 +9,54 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.compilations.dto.CompilationDto;
 import ru.practicum.compilations.dto.NewCompilationDto;
+import ru.practicum.compilations.service.admin.CompilationAdminService;
 
 import javax.validation.Valid;
-
+@Slf4j
 @RestController
 @RequestMapping("/admin/compilations")
+@RequiredArgsConstructor
 public class CompilationAdminController {
-
+    private final CompilationAdminService compilationAdminService;
     @PostMapping
     // Добавление новой подборки. Возвращает CompilationDto.
-    public void createNewCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
-
+    public CompilationDto createNewCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
+        // TODO log
+        return compilationAdminService.createNewCompilation(newCompilationDto);
     }
 
     @DeleteMapping("/{compId}")
     // Удаление подборки. Возвращает только статус ответа или ошибку.
     public void removeCompilation(@PathVariable Integer compId) {
-
+        compilationAdminService.removeCompilation(compId);
     }
 
     @DeleteMapping("/{compId}/events/{eventId}")
     // Удалить событие из подборки. Возвращает только статус ответа или ошибку.
     public void removeEventFromCompilation(@PathVariable Integer compId,
                                            @PathVariable Integer eventId) {
-
+        compilationAdminService.removeEventFromCompilation(compId, eventId);
     }
 
     @PatchMapping("/{compId}/events/{eventId}")
     // Добавить событие в подборку. Возвращает только статус ответа или ошибку.
-    public void addEventInCompilation(@PathVariable Integer compId,
-                                      @PathVariable Integer eventId) {
-
-    }
+        public void addEventInCompilation(@PathVariable Integer compId,
+                                          @PathVariable Integer eventId) {
+            compilationAdminService.addEventInCompilation(compId, eventId);
+        }
 
     @DeleteMapping("/{compId}/pin")
     // Открепить подборку на главной странице. Возвращает только статус ответа или ошибку.
     public void unpinCompilation(@PathVariable Integer compId) {
-
+        compilationAdminService.unpinCompilation(compId);
     }
 
     @PatchMapping("/{compId}/pin")
     // Закрепить подборку на главной странице. Возвращает только статус ответа или ошибку.
     public void pinCompilation(@PathVariable Integer compId) {
-
+        compilationAdminService.pinCompilation(compId);
     }
 
 }

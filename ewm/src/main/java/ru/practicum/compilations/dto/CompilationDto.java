@@ -1,7 +1,7 @@
 package ru.practicum.compilations.dto;
 
 import org.hibernate.validator.constraints.UniqueElements;
-import ru.practicum.events.publ.dto.EventShortDto;
+import ru.practicum.events.dto.publ.EventShortDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

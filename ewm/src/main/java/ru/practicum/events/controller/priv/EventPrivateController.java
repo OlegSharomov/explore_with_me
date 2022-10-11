@@ -1,5 +1,7 @@
-package ru.practicum.events.priv;
+package ru.practicum.events.controller.priv;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,20 +10,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.events.priv.dto.NewEventDto;
-import ru.practicum.events.priv.dto.UpdateEventRequest;
+import ru.practicum.events.dto.priv.NewEventDto;
+import ru.practicum.events.dto.priv.UpdateEventRequest;
+import ru.practicum.events.dto.publ.EventFullDto;
+import ru.practicum.events.service.priv.EventPrivateService;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class EventPrivateController {
+    private EventPrivateService eventPrivateService;
 
     @GetMapping("/{userId}/events")
     // Получение событий, добавленных текущим пользователем. Возвращает список EventShortDto.
     public void getEventsByUserId(@PathVariable Integer userId,
                                   @RequestParam(defaultValue = "0") Integer from,
                                   @RequestParam(defaultValue = "10") Integer size) {
+        log.info("Received a request: GET /users/{}/events with parameters: from = {}, size = {}", userId, from, size);
+
 
     }
 
@@ -32,21 +41,24 @@ public class EventPrivateController {
      * Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента */
     public void changeEventByUser(@PathVariable Integer userId,
                                   @Valid @RequestBody UpdateEventRequest updateEventRequest) {
+        log.info("Received a request: PATCH /users/{}/events with body: {}", userId, updateEventRequest);
 
     }
 
     @PostMapping("/{userId}/events")
     // Добавление нового события. Возвращает EventFullDto.
     /* !!! Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента*/
-    public void createEvent(@RequestParam Integer userId,
-                            @Valid @RequestBody NewEventDto newEventDto) {
-
+    public EventFullDto createEvent(@RequestParam Integer userId,
+                                    @Valid @RequestBody NewEventDto newEventDto) {
+        log.info("Received a request: POST /users/{}/events with body: {}", userId, newEventDto);
+        return eventPrivateService.createEvent(userId, newEventDto);
     }
 
     @GetMapping("/{userId}/events/{eventId}")
     // Получение полной информации о событии, добавленном текущим пользователем. Возвращает EventFullDto
     public void getEventById(@PathVariable Integer userId,
                              @PathVariable Integer eventId) {
+        log.info("Received a request: GET /users/{}/events/{} ", userId, eventId);
 
     }
 
@@ -55,13 +67,15 @@ public class EventPrivateController {
     /* Обратите внимание: Отменить можно только событие в состоянии ожидания модерации.*/
     public void cancellationEvent(@PathVariable Integer userId,
                                   @PathVariable Integer eventId) {
+        log.info("Received a request: PATCH /users/{}/events/{} ", userId, eventId);
 
     }
 
     @GetMapping("/{userId}/events/{eventId}/requests")
-    // Получении информации о запросах на участие в событии текущего пользователя. Возвращает ParticipationRequestDto.
+    // Получена информации о запросах на участие в событии текущего пользователя. Возвращает ParticipationRequestDto.
     public void getParticipationRequest(@PathVariable Integer userId,
                                         @PathVariable Integer eventId) {
+        log.info("Received a request: GET /users/{}/events/{}/requests ", userId, eventId);
 
     }
 
@@ -74,6 +88,7 @@ public class EventPrivateController {
     public void acceptParticipationRequest(@PathVariable Integer userId,
                                            @PathVariable Integer eventId,
                                            @PathVariable Integer reqId) {
+        log.info("Received a request: PATCH /users/{}/events/{}/requests/{}/confirm", userId, eventId, reqId);
 
     }
 
@@ -82,6 +97,7 @@ public class EventPrivateController {
     public void rejectParticipationRequest(@PathVariable Integer userId,
                                            @PathVariable Integer eventId,
                                            @PathVariable Integer reqId) {
+        log.info("Received a request: PATCH /users/{}/events/{}/requests/{}/reject", userId, eventId, reqId);
 
     }
 

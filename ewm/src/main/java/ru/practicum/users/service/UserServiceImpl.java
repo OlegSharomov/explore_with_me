@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.exception.NotFoundException;
 import ru.practicum.users.dto.NewUserRequest;
 import ru.practicum.users.dto.UserDto;
 import ru.practicum.users.dto.UserMapper;
@@ -20,10 +21,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    @Override
     @Transactional
     public List<UserDto> getUsers(Integer[] ids, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("id"));
@@ -36,20 +38,29 @@ public class UserService {
         return users.stream().map(userMapper::toUserDto).collect(Collectors.toList());
     }
 
+    @Override
     @Transactional(readOnly = false)
     public UserDto createUser(NewUserRequest newUserRequest) {
         User user = userMapper.toUser(newUserRequest);
-        userRepository.save(user);
-        return userMapper.toUserDto(user);
+        User readyUser = userRepository.save(user);
+        return userMapper.toUserDto(readyUser);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public void removeUser(Integer userId) {
         userRepository.deleteById(userId);
     }
 
+    @Override
     @Transactional
     public boolean isUserExist(Integer userId) {
         return userRepository.existsById(userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getEntityUserById(Integer userId){
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException());
     }
 }

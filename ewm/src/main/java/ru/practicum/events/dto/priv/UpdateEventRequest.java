@@ -1,4 +1,4 @@
-package ru.practicum.events.priv.dto;
+package ru.practicum.events.dto.priv;
 
 import org.hibernate.validator.constraints.Length;
 

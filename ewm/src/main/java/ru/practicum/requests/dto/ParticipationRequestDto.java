@@ -1,5 +1,7 @@
 package ru.practicum.requests.dto;
 
+import ru.practicum.requests.RequestStatus;
+
 import java.time.LocalDateTime;
 
 public class ParticipationRequestDto {          // Заявка на участие в событии
@@ -7,5 +9,5 @@ public class ParticipationRequestDto {          // Заявка на участ�
     Integer event;                  // Идентификатор события
     Integer id;                     // Идентификатор заявки
     Integer requester;              // Идентификатор пользователя, отправившего заявку
-    String status;                  // Статус заявки. !!! Возможно использовать Enum!!! TODO Проверить возможность использования Enum
+    RequestStatus status;           // Статус заявки.  PENDING, CONFIRMED, REJECTED
 }

@@ -1,4 +1,4 @@
-package ru.practicum.events.publ.dto;
+package ru.practicum.events.dto.publ;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.users.dto.UserShortDto;
 

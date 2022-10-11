@@ -1,13 +1,15 @@
-package ru.practicum.events.priv.dto;
+package ru.practicum.events.dto.priv;
 
 import lombok.Builder;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.events.Location;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
-
+@Data
+@Builder
 public class NewEventDto {
     @Length(min = 20, max = 2000)
     @NotNull

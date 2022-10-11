@@ -1,6 +1,7 @@
-package ru.practicum.events.publ.dto;
+package ru.practicum.events.dto.publ;
 
 import lombok.Builder;
+import lombok.Data;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.events.EventState;
 import ru.practicum.events.Location;
@@ -8,7 +9,8 @@ import ru.practicum.users.dto.UserShortDto;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
+@Data
+@Builder
 public class EventFullDto {
     @NotNull String annotation;         // Краткое описание
     @NotNull CategoryDto category;      // Категория {"id": 1, "name": "Концерты"}

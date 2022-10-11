@@ -1,2 +1,7 @@
-package ru.practicum.requests;public enum RequestStatus {
+package ru.practicum.requests;
+
+public enum RequestStatus {
+    PENDING,
+    CONFIRMED,
+    REJECTED
 }

@@ -1,4 +1,4 @@
-package ru.practicum.events.admin.dto;
+package ru.practicum.events.dto.admin;
 
 import ru.practicum.events.Location;
 

@@ -1,11 +1,15 @@
-package ru.practicum.events.publ;
+package ru.practicum.events.controller.publ;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+
+@Slf4j
 @RestController
 @RequestMapping("/events")
 public class EventPublicController {
@@ -25,12 +29,13 @@ public class EventPublicController {
                           @RequestParam(defaultValue = "false") Boolean onlyAvailable,  // только события у которых не исчерпан лимит запросов на участие
                           @RequestParam(required = false) String sort,          /* Вариант сортировки: по дате события или по количеству просмотров
                                                                                 Available values : EVENT_DATE, VIEWS */
-                                                                                // TODO Проверить возможность использования ENUM
+                          // TODO Проверить возможность использования ENUM
                           @RequestParam(defaultValue = "0") Integer from,       // количество событий, которые нужно пропустить для формирования текущего набора
                           @RequestParam(defaultValue = "10") Integer size) {    // количество событий в наборе
-
+        log.info("Received a request: GET /events with parameters: text = {}, categories = {}, paid = {}, " +
+                        "rangeStart = {}, rangeEnd = {}, onlyAvailable = {}, sort = {}", text,
+                Arrays.toString(categories), paid, rangeStart, rangeEnd, onlyAvailable, sort);
     }
-
 
 
     @GetMapping("/{id}")
@@ -39,6 +44,7 @@ public class EventPublicController {
      * Информация о событии должна включать в себя количество просмотров и количество подтвержденных запросов
      * Информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики */
     public void getEventById(@PathVariable Long id) {
+        log.info("Received a request: GET /events{}", id);
 
     }
 }
