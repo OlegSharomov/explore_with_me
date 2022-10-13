@@ -1,12 +1,6 @@
-package ru.practicum;
+package ru.practicum.client;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Value;
-
-@Value
-@Builder
-public class ViewStats {
+public class ViewStat {
     String app;         // Название сервиса
     String uri;         // URI сервиса
     Integer hits;       // Количество просмотров
