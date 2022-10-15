@@ -3,7 +3,7 @@ package ru.practicum.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ru.practicum.model.Statistic;
+import ru.practicum.entity.Statistic;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface StatisticRepository extends JpaRepository<Statistic, Integer> {
     Optional<Statistic> findByUri(String uri);
+
+    Optional<Integer> countByUri(String uri);
 
     @Query(value =
             "SELECT count(distinct (additional_fields->>'ip'))  " +
@@ -27,7 +29,5 @@ public interface StatisticRepository extends JpaRepository<Statistic, Integer> {
                     "WHERE uri = ?1 " +
                     "AND additional_fields->>'app' = ?2 " +
                     "AND (cast(created_at as date)) BETWEEN ?3 AND ?4", nativeQuery = true)
-    Integer getStatisticWithoutUniqueIp( String uri, String app, LocalDateTime start, LocalDateTime end);
-
-
+    Integer getStatisticWithoutUniqueIp(String uri, String app, LocalDateTime start, LocalDateTime end);
 }

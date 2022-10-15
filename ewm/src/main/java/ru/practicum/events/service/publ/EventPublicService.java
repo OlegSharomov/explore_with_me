@@ -32,7 +32,8 @@ public class EventPublicService {
                                                                                 Available values : EVENT_DATE, VIEWS */
                                          Integer from,       // количество событий, которые нужно пропустить для формирования текущего набора
                                          Integer size,
-                                         HttpServletRequest request) {
+                                         HttpServletRequest request
+    ) {
         saveStatisticCall(null, request);
 
 
@@ -41,7 +42,7 @@ public class EventPublicService {
 
     public EventFullDto getEventById(@PathVariable Integer id, HttpServletRequest request) {
         saveStatisticCall(id, request);
-        Integer views = statisticClient.getViewsById(id);
+        Integer views = statisticClient.getViewsByUri(request.getRequestURI());
 
 
         return null;
@@ -51,7 +52,7 @@ public class EventPublicService {
 
     private void saveStatisticCall(Integer id, HttpServletRequest request) {
         Map<String, String> endpointHitMap = new HashMap<>();
-        endpointHitMap.put("app", String.valueOf(id));
+        endpointHitMap.put("app", "ewm-main-service");
         endpointHitMap.put("uri", request.getRequestURI());
         endpointHitMap.put("ip", request.getRemoteAddr());
         endpointHitMap.put("timestamp", String.valueOf(LocalDateTime.now()));

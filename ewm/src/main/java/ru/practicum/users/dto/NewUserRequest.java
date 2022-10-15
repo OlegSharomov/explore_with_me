@@ -1,15 +1,16 @@
 package ru.practicum.users.dto;
 
-import lombok.Value;
+import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-@Value
+
+@Data
 public class NewUserRequest {
     @NotNull
     @Email
-    String email;       // Почтовый адрес
+    private String email;       // Почтовый адрес
     @NotBlank
-    String name;        // Имя
+    private String name;        // Имя
 }

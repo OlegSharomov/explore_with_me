@@ -1,10 +1,11 @@
-package ru.practicum.compilations.model;
+package ru.practicum.compilations.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.events.model.Event;
+import ru.practicum.events.entity.Event;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.List;
 
 @Entity
@@ -33,9 +35,11 @@ public class Compilation {
     private String title;
     @Column(name = "pinned")
     private Boolean pinned;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JsonIgnore
     @JoinTable(
             name = "events_compilations",
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"compilation_id", "event_id"})},
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> events;

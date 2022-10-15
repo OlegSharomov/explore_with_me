@@ -14,22 +14,25 @@ import ru.practicum.compilations.dto.NewCompilationDto;
 import ru.practicum.compilations.service.admin.CompilationAdminService;
 
 import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequestMapping("/admin/compilations")
 @RequiredArgsConstructor
 public class CompilationAdminController {
     private final CompilationAdminService compilationAdminService;
+
     @PostMapping
     // Добавление новой подборки. Возвращает CompilationDto.
     public CompilationDto createNewCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
-        // TODO log
+        log.info("Received a request POST /admin/compilations with body: {}", newCompilationDto);
         return compilationAdminService.createNewCompilation(newCompilationDto);
     }
 
     @DeleteMapping("/{compId}")
     // Удаление подборки. Возвращает только статус ответа или ошибку.
     public void removeCompilation(@PathVariable Integer compId) {
+        log.info("Received a request DELETE /admin/compilations/{}", compId);
         compilationAdminService.removeCompilation(compId);
     }
 
@@ -37,26 +40,29 @@ public class CompilationAdminController {
     // Удалить событие из подборки. Возвращает только статус ответа или ошибку.
     public void removeEventFromCompilation(@PathVariable Integer compId,
                                            @PathVariable Integer eventId) {
+        log.info("Received a request DELETE /admin/compilations/{}/events/{}", compId, eventId);
         compilationAdminService.removeEventFromCompilation(compId, eventId);
     }
 
     @PatchMapping("/{compId}/events/{eventId}")
     // Добавить событие в подборку. Возвращает только статус ответа или ошибку.
-        public void addEventInCompilation(@PathVariable Integer compId,
-                                          @PathVariable Integer eventId) {
-            compilationAdminService.addEventInCompilation(compId, eventId);
-        }
+    public void addEventInCompilation(@PathVariable Integer compId,
+                                      @PathVariable Integer eventId) {
+        log.info("Received a request PATCH /admin/compilations/{}/events/{}", compId, eventId);
+        compilationAdminService.addEventInCompilation(compId, eventId);
+    }
 
     @DeleteMapping("/{compId}/pin")
     // Открепить подборку на главной странице. Возвращает только статус ответа или ошибку.
     public void unpinCompilation(@PathVariable Integer compId) {
+        log.info("Received a request DELETE /admin/compilations/{}/pin", compId);
         compilationAdminService.unpinCompilation(compId);
     }
 
     @PatchMapping("/{compId}/pin")
     // Закрепить подборку на главной странице. Возвращает только статус ответа или ошибку.
     public void pinCompilation(@PathVariable Integer compId) {
+        log.info("Received a request PATCH /admin/compilations/{}/pin", compId);
         compilationAdminService.pinCompilation(compId);
     }
-
 }

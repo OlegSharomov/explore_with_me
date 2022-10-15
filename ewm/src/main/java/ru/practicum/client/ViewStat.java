@@ -1,7 +1,10 @@
 package ru.practicum.client;
 
+import lombok.Data;
+
+@Data
 public class ViewStat {
-    String app;         // Название сервиса
-    String uri;         // URI сервиса
-    Integer hits;       // Количество просмотров
+    private String app;         // Название сервиса
+    private String uri;         // URI сервиса
+    private Integer hits;       // Количество просмотров
 }

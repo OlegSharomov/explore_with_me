@@ -1,7 +1,7 @@
 package ru.practicum.users.dto;
 
 import org.mapstruct.Mapper;
-import ru.practicum.users.model.User;
+import ru.practicum.users.entity.User;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

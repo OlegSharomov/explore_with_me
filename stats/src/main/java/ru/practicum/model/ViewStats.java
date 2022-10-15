@@ -1,7 +1,6 @@
-package ru.practicum;
+package ru.practicum.model;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Value;
 
 @Value

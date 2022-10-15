@@ -3,7 +3,7 @@ package ru.practicum.categories.service.admin;
 import org.springframework.stereotype.Service;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.categories.dto.NewCategoryDto;
-import ru.practicum.categories.model.Category;
+import ru.practicum.categories.entity.Category;
 
 @Service
 public interface CategoryAdminService {

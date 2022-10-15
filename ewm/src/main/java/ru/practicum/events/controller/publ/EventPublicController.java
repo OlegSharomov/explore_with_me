@@ -58,7 +58,7 @@ public class EventPublicController {
      * Информация о событии должна включать в себя количество просмотров и количество подтвержденных запросов
      * Информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики */
     public EventFullDto getEventById(@PathVariable Integer id, HttpServletRequest request) {
-        log.info("Received a request: GET /events{}", id);
+        log.info("Received a request: GET /events/{}", id);
         return eventPublicService.getEventById(id, request);
     }
 }

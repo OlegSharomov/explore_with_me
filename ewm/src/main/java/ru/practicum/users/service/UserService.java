@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.users.dto.NewUserRequest;
 import ru.practicum.users.dto.UserDto;
-import ru.practicum.users.model.User;
+import ru.practicum.users.entity.User;
 
 import java.util.List;
 @Service

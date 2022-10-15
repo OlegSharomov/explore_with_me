@@ -3,16 +3,18 @@ package ru.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.EndpointHit;
-import ru.practicum.ViewStats;
+import ru.practicum.entity.AdditionalFields;
+import ru.practicum.entity.Statistic;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.model.AdditionalFields;
-import ru.practicum.model.Statistic;
+import ru.practicum.model.EndpointHit;
+import ru.practicum.model.ViewStats;
 import ru.practicum.repository.StatisticRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -41,6 +43,9 @@ public class StatisticService {
                                     LocalDateTime end,    // Дата и время конца диапазона за который нужно выгрузить статистику (в формате "yyyy-MM-dd HH:mm:ss")
                                     String[] uris,        // Список uri для которых нужно выгрузить статистику
                                     Boolean unique) {     // Нужно ли учитывать только уникальные посещения (только с уникальным ip)
+        if (uris.length == 0) {
+            return Collections.emptyList();
+        }
         List<ViewStats> readyStatistic = new ArrayList<>();
         if (unique) {
             for (String uri : uris) {
@@ -68,5 +73,14 @@ public class StatisticService {
             }
         }
         return readyStatistic;
+    }
+
+    public Integer getViews(String uri) {
+        Optional<Integer> views = statisticRepository.countByUri(uri);
+        if (views.isEmpty()) {
+            return 0;
+        } else {
+            return views.get();
+        }
     }
 }

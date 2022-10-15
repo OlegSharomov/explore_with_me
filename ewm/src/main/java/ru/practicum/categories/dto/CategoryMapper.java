@@ -4,7 +4,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import ru.practicum.categories.model.Category;
+import ru.practicum.categories.entity.Category;
 
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {

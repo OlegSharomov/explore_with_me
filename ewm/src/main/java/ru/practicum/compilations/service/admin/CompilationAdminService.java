@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.compilations.dto.CompilationDto;
 import ru.practicum.compilations.dto.CompilationMapper;
 import ru.practicum.compilations.dto.NewCompilationDto;
-import ru.practicum.compilations.model.Compilation;
+import ru.practicum.compilations.entity.Compilation;
 import ru.practicum.compilations.repository.CompilationRepository;
 
 import java.util.Collections;

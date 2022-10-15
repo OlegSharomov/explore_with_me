@@ -7,7 +7,9 @@ import javax.validation.constraints.NotNull;
 
 @Value
 public class UserShortDto {
-    @NotNull Integer id;
-    @NotBlank String name;
+    @NotNull
+    Integer id;
+    @NotBlank
+    String name;
 
 }

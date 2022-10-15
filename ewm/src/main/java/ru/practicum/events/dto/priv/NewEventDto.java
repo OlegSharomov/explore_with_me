@@ -1,37 +1,39 @@
 package ru.practicum.events.dto.priv;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import ru.practicum.events.Location;
+import ru.practicum.events.model.Location;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
+
 @Data
-@Builder
 public class NewEventDto {
-    @Length(min = 20, max = 2000)
     @NotNull
-    String annotation;              // Краткое описание события
+    @Length(min = 20, max = 2000)
+    private String annotation;              // Краткое описание события
     @NotNull
     @Positive
-    Integer category;               // id категории к которой относится событие
+    private Integer category;               // id категории к которой относится событие
     @NotNull
     @Length(min = 20, max = 7000)
-    String description;             // Полное описание события
+    private String description;             // Полное описание события
     @NotNull
-    LocalDateTime eventDate;        // Дата и время на которые намечено событие. Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
-    @NotNull Location location;     // Широта и долгота места проведения события
-    @Builder.Default
-    Boolean paid = false;           // Нужно ли оплачивать участие в событии. Значение по умолчанию = false
-    @Builder.Default
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime eventDate;        // Дата и время на которые намечено событие. Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
+    @NotNull
+    private Location location;              // Широта и долгота места проведения события
+    //    @Builder.Default
+    private Boolean paid = false;           // Нужно ли оплачивать участие в событии. Значение по умолчанию = false
+    //    @Builder.Default
     @Positive
-    Integer participantLimit = 0;   // Ограничение на количество участников. Значение 0 - означает отсутствие ограничения
-    @Builder.Default
-    Boolean requestModeration = true; /* Нужна ли пре-модерация заявок на участие. Если true,
+    private Integer participantLimit = 0;   // Ограничение на количество участников. Значение 0 - означает отсутствие ограничения
+    //    @Builder.Default
+    private Boolean requestModeration = true; /* Нужна ли пре-модерация заявок на участие. Если true,
      то все заявки будут ожидать подтверждения инициатором события. Если false - то будут подтверждаться автоматически. */
     @NotNull
     @Length(min = 3, max = 120)
-    String title;                   // Заголовок события
+    private String title;                   // Заголовок события
 }

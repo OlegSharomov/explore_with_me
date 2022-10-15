@@ -1,9 +1,11 @@
 package ru.practicum.categories.dto;
 
-import lombok.Value;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-@Value
+
+@Data
 public class NewCategoryDto {
-    @NotBlank String name;       // Название категории
+    @NotBlank
+    private String name;       // Название категории
 }

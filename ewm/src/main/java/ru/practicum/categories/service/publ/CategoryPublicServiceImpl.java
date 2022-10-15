@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.categories.dto.CategoryMapper;
-import ru.practicum.categories.model.Category;
+import ru.practicum.categories.entity.Category;
 import ru.practicum.categories.repository.CategoryRepository;
 import ru.practicum.exception.NotFoundException;
 

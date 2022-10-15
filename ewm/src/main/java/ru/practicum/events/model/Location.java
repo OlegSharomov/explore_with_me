@@ -1,4 +1,4 @@
-package ru.practicum.events;
+package ru.practicum.events.model;
 
 import lombok.Data;
 
@@ -7,6 +7,6 @@ import javax.persistence.Embeddable;
 @Data
 @Embeddable
 public class Location {             // Широта и долгота места проведения события
-    Float lat;          // Широта
-    Float lon;          // Долгота
+    private Float lat;          // Широта
+    private Float lon;          // Долгота
 }

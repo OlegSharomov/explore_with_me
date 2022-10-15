@@ -1,4 +1,4 @@
-package ru.practicum.events;
+package ru.practicum.events.model;
 
 public enum EventState {
     PENDING,            // находящийся на рассмотрении
