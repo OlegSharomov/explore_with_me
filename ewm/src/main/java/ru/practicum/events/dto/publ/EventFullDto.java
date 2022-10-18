@@ -28,7 +28,7 @@ public class EventFullDto {
     @NotNull
     private UserShortDto initiator;         // Пользователь (краткая информация) {"id": 3, "name": "Фёдоров Матвей"}
     @NotNull
-    private Location location;              // Широта и долгота места проведения события {"lat": 55.754167, "lon": 37.62}
+        private Location location;              // Широта и долгота места проведения события {"lat": 55.754167, "lon": 37.62}
     @NotNull
     private Boolean paid;                   // Нужно ли оплачивать участие
     //    @Builder.Default

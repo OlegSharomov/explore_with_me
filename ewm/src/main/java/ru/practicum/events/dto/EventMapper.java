@@ -1,10 +1,14 @@
 package ru.practicum.events.dto;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.categories.entity.Category;
 import ru.practicum.compilations.entity.Compilation;
+import ru.practicum.events.dto.admin.AdminUpdateEventRequest;
 import ru.practicum.events.dto.priv.NewEventDto;
 import ru.practicum.events.dto.publ.EventFullDto;
 import ru.practicum.events.dto.publ.EventShortDto;
@@ -28,4 +32,19 @@ public interface EventMapper {
                                 UserShortDto initiator, Integer views);
 
     EventShortDto toEventShortDto(Event event, Integer confirmedRequests, Integer views);
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "category", source = "category")
+    Event toEventFromAdminUpdateEventRequest(Integer id, AdminUpdateEventRequest adminUpdateEventRequest, Category category,
+                                             EventState state, LocalDateTime createdOn);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "category", source = "category")
+    void updateEventFromAdminUpdateEventRequest(AdminUpdateEventRequest adminUpdateEventRequest,
+                                                @MappingTarget Event event, Category category);
+
+//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+//    @Mapping(source = "dto.id", target = "id")
+//    @Mapping(source = "dto.description", target = "description")
+//    @Mapping(source = "itemRequest", target = "request")
+//    void updateItemFromDto(ItemDto dto, @MappingTarget Item item, ItemRequest itemRequest);
 }

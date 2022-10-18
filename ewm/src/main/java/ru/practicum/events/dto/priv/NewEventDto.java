@@ -25,12 +25,9 @@ public class NewEventDto {
     private LocalDateTime eventDate;        // Дата и время на которые намечено событие. Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
     @NotNull
     private Location location;              // Широта и долгота места проведения события
-    //    @Builder.Default
     private Boolean paid = false;           // Нужно ли оплачивать участие в событии. Значение по умолчанию = false
-    //    @Builder.Default
     @Positive
     private Integer participantLimit = 0;   // Ограничение на количество участников. Значение 0 - означает отсутствие ограничения
-    //    @Builder.Default
     private Boolean requestModeration = true; /* Нужна ли пре-модерация заявок на участие. Если true,
      то все заявки будут ожидать подтверждения инициатором события. Если false - то будут подтверждаться автоматически. */
     @NotNull

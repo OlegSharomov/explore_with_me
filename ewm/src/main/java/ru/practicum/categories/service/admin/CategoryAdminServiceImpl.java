@@ -21,7 +21,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Transactional(readOnly = false)
     public CategoryDto changeCategory(CategoryDto categoryDto) {
         Category category = categoryRepository.findById(categoryDto.getId())
-                .orElseThrow(() -> new NotFoundException());
+                .orElseThrow(() -> new NotFoundException("Category not found"));
         categoryMapper.updateCategory(categoryDto, category);
         categoryRepository.save(category);
         return categoryMapper.toCategoryDto(category);
@@ -51,6 +51,6 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Override
     @Transactional(readOnly = true)
     public Category getEntityCategoryById(Integer catId){
-        return categoryRepository.findById(catId).orElseThrow(() -> new NotFoundException());
+        return categoryRepository.findById(catId).orElseThrow(() -> new NotFoundException("Category not found"));
     }
 }

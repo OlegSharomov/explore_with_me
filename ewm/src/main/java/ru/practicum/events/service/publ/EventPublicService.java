@@ -42,7 +42,7 @@ public class EventPublicService {
 
     public EventFullDto getEventById(@PathVariable Integer id, HttpServletRequest request) {
         saveStatisticCall(id, request);
-        Integer views = statisticClient.getViewsByUri(request.getRequestURI());
+        Integer views = statisticClient.getViewsByUri(id);
 
 
         return null;

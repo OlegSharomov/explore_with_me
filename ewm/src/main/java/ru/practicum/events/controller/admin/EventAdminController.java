@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.events.dto.admin.AdminUpdateEventRequest;
 import ru.practicum.events.dto.publ.EventFullDto;
+import ru.practicum.events.model.EventState;
 import ru.practicum.events.service.admin.EventAdminService;
 
 import java.time.LocalDateTime;
@@ -28,10 +29,10 @@ public class EventAdminController {
     @GetMapping
     // Поиск событий. Возвращает list of EventFullDto.
     /* Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия */
-                                            // список id пользователей, чьи события нужно найти
+    // список id пользователей, чьи события нужно найти
     public List<EventFullDto> getAllEvents(@RequestParam(required = false) Integer[] users,
                                            // список состояний в которых находятся искомые события
-                                           @RequestParam(required = false) Integer[] states,
+                                           @RequestParam(required = false) EventState[] states,
                                            // список id категорий в которых будет вестись поиск
                                            @RequestParam(required = false) Integer[] categories,
                                            // дата и время не раньше которых должно произойти событие
@@ -51,20 +52,19 @@ public class EventAdminController {
     @PutMapping("/{eventId}")
     // Редактирование событий. Возвращает EventFullDto.
     /* Редактирование данных любого события администратором. Валидация данных не требуется. */
-    public void changeEvent(@PathVariable Integer eventId,
-                            @RequestBody AdminUpdateEventRequest adminUpdateEventRequest) {
+    public EventFullDto changeEvent(@PathVariable Integer eventId,
+                                    @RequestBody AdminUpdateEventRequest adminUpdateEventRequest) {
         log.info("Received a request: PUT /admin/events/{} with body: {}", eventId, adminUpdateEventRequest);
-
+        return eventAdminService.changeEvent(eventId, adminUpdateEventRequest);
     }
 
     @PatchMapping("/{eventId}/publish")
     // Публикация события. Возвращает EventFullDto.
     /* Дата начала события должна быть не ранее чем за час от даты публикации.
      * Событие должно быть в состоянии ожидания публикации*/
-    public void publishingEvent(@PathVariable Integer eventId) {
+    public EventFullDto publishingEvent(@PathVariable Integer eventId) {
         log.info("Received a request: PATCH /admin/events/{}/publish ", eventId);
-
-
+        return eventAdminService.publishingEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")

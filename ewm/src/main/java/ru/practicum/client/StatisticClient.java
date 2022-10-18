@@ -77,13 +77,13 @@ public class StatisticClient {
         return fields.stream().map(String::valueOf).collect(Collectors.joining(",", "", ""));
     }
 
-    public Integer getViewsByUri(String eventUri) {
+    public Integer getViewsByUri(Integer eventId) {
 //        System.out.println("Приняли запрос на количество просмотров с uri: " + eventUri);
         Integer result;
         URI uri = URI.create("http://localhost:9090/events");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
-                .method("GET", HttpRequest.BodyPublishers.ofString(eventUri))
+                .method("GET", HttpRequest.BodyPublishers.ofString("/events/" + eventId))
                 .timeout(Duration.of(10, SECONDS))
                 .headers("Content-Type", "text/plain;charset=UTF-8")
                 .header("Accept", "application/json")

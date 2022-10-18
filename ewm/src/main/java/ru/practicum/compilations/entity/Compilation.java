@@ -32,11 +32,11 @@ public class Compilation {
     @Column(name = "id")
     private Integer id;
     @Column(name = "title")
-    private String title;
+    private String title;       // Заголовок подборки
     @Column(name = "pinned")
-    private Boolean pinned;
+    private Boolean pinned;     // Закреплена ли подборка на главной странице сайта
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JsonIgnore
+//    @JsonIgnore
     @JoinTable(
             name = "events_compilations",
             uniqueConstraints = {@UniqueConstraint(columnNames = {"compilation_id", "event_id"})},

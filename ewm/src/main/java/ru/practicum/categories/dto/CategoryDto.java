@@ -1,14 +1,14 @@
 package ru.practicum.categories.dto;
 
-import lombok.Value;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Value
+@Data
 public class CategoryDto {
     @NotNull
-    Integer id;     // Идентификатор категории
+    private Integer id;     // Идентификатор категории
     @NotBlank
-    String name;    // Название категории
+    private String name;    // Название категории
 }
