@@ -70,10 +70,9 @@ public class EventAdminController {
     @PatchMapping("/{eventId}/reject")
     // Отклонение события. Возвращает EventFullDto.
     /* Обратите внимание: событие не должно быть опубликовано.*/
-    public void rejectEvent(@PathVariable Integer eventId) {
+    public EventFullDto rejectEvent(@PathVariable Integer eventId) {
         log.info("Received a request: PATCH /admin/events/{}/reject ", eventId);
-
-
+        return eventAdminService.rejectEvent(eventId);
     }
 
 }

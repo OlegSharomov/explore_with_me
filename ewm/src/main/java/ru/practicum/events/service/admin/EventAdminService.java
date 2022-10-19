@@ -68,23 +68,17 @@ public class EventAdminService {
             Event event = optionalEvent.get();
             Category category = categoryRepository.findById(adminUpdateEventRequest.getCategory())
                     .orElseThrow(() -> new NotFoundException("Category not found"));
-            eventMapper.updateEventFromAdminUpdateEventRequest(adminUpdateEventRequest, event, category);
+            eventMapper.updateEventFromAdminUpdateEventRequest(adminUpdateEventRequest, event, category, eventId);
             Event readyEvent = eventRepository.save(event);
             return UtilCollectorsDto.getEventFullDto(readyEvent, categoryMapper, userMapper, statisticClient, eventMapper);
         } else {
             LocalDateTime createdOn = LocalDateTime.now();
             Category category = categoryRepository.findById(adminUpdateEventRequest.getCategory())
                     .orElseThrow(() -> new NotFoundException("Category not found"));
-//            Event event = eventMapper.toEventFromNewEventDto(newEventDto, category, initiator, EventState.PENDING, createdOn,
-//                    null, null);
             Event event = eventMapper.toEventFromAdminUpdateEventRequest(eventId, adminUpdateEventRequest, category,
                     EventState.PENDING, createdOn);
-//            Event readyEvent = eventRepository.save(event);
-//            return UtilCollectorsDto.getEventFullDto(readyEvent, categoryMapper, userMapper, statisticClient, eventMapper);
-
-                        eventRepository.save(event);
-            return UtilCollectorsDto.getEventFullDto(event, categoryMapper, userMapper, statisticClient, eventMapper);
-
+            Event readyEvent = eventRepository.save(event);
+            return UtilCollectorsDto.getEventFullDto(readyEvent, categoryMapper, userMapper, statisticClient, eventMapper);
         }
     }
 
@@ -103,6 +97,18 @@ public class EventAdminService {
         }
         eventEntity.setState(EventState.PUBLISHED);
         Event readyEvent = eventRepository.save(eventEntity);
+        return UtilCollectorsDto.getEventFullDto(readyEvent, categoryMapper, userMapper, statisticClient, eventMapper);
+    }
+
+    // Отклонение события. Возвращает EventFullDto.
+    /* Обратите внимание: событие не должно быть опубликовано.*/
+    public EventFullDto rejectEvent(Integer eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
+        if (event.getState().equals(EventState.PUBLISHED)) {
+            throw new ValidationException("The event has already been published");
+        }
+        event.setState(EventState.CANCELED);
+        Event readyEvent = eventRepository.save(event);
         return UtilCollectorsDto.getEventFullDto(readyEvent, categoryMapper, userMapper, statisticClient, eventMapper);
     }
 }

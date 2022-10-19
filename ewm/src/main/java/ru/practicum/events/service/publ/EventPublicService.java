@@ -1,6 +1,9 @@
 package ru.practicum.events.service.publ;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +38,16 @@ public class EventPublicService {
                                          HttpServletRequest request
     ) {
         saveStatisticCall(null, request);
+        Pageable pageable;
+        if (sort.equals("EVENT_DATE")) {
+            pageable = PageRequest.of(from / size, size, Sort.by("eventDate"));
+        } else if (sort.equals("VIEWS")) {
+            pageable = PageRequest.of(from / size, size, Sort.by("views"));
+        } else {
+            pageable = PageRequest.of(from / size, size);
+        }
+
+
 
 
         return null;
@@ -47,7 +60,6 @@ public class EventPublicService {
 
         return null;
     }
-
 
 
     private void saveStatisticCall(Integer id, HttpServletRequest request) {

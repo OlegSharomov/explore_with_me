@@ -38,9 +38,11 @@ public interface EventMapper {
                                              EventState state, LocalDateTime createdOn);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+//    @Mapping(target = "id", source = "eventId")
     @Mapping(target = "category", source = "category")
     void updateEventFromAdminUpdateEventRequest(AdminUpdateEventRequest adminUpdateEventRequest,
-                                                @MappingTarget Event event, Category category);
+                                                @MappingTarget Event event, Category category, Integer eventId);
 
 //    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 //    @Mapping(source = "dto.id", target = "id")

@@ -19,4 +19,6 @@ public interface EventRepository extends JpaRepository<Event, Integer>, JpaSpeci
             (List<Integer> users, List<EventState> states, List<Integer> categories,
              LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 
+    
+
 }
