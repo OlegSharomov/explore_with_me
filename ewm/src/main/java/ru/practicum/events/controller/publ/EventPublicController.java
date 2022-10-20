@@ -12,6 +12,7 @@ import ru.practicum.events.dto.publ.EventShortDto;
 import ru.practicum.events.service.publ.EventPublicService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,8 +36,8 @@ public class EventPublicController {
     public List<EventShortDto> getEvents(@RequestParam(required = false) String text,          // текст для поиска в содержимом аннотации и подробном описании события
                                          @RequestParam(required = false) int[] categories,     // список идентификаторов категорий в которых будет вестись поиск
                                          @RequestParam(required = false) Boolean paid,         // поиск только платных/бесплатных событий
-                                         @RequestParam(required = false) String rangeStart,    // дата и время не раньше которых должно произойти событие
-                                         @RequestParam(required = false) String rangeEnd,      // дата и время не позже которых должно произойти событие
+                                         @RequestParam(required = false) LocalDateTime rangeStart,    // дата и время не раньше которых должно произойти событие
+                                         @RequestParam(required = false) LocalDateTime rangeEnd,      // дата и время не позже которых должно произойти событие
                                          @RequestParam(defaultValue = "false") Boolean onlyAvailable,  // только события у которых не исчерпан лимит запросов на участие
                                          @RequestParam(required = false) String sort,          /* Вариант сортировки: по дате события или по количеству просмотров
                                                                                 Available values : EVENT_DATE, VIEWS */

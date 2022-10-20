@@ -32,7 +32,7 @@ public class Statistic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "uri")
-    private String uri;
+    private String uri;         // TODO Реализовать индексацию поля
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Type(type = "jsonb")

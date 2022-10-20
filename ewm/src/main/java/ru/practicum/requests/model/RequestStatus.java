@@ -1,7 +1,8 @@
 package ru.practicum.requests.model;
 
 public enum RequestStatus {
-    PENDING,
-    CONFIRMED,
-    REJECTED
+    PENDING,                    // рассматриваемый
+    CONFIRMED,                  // подтвержденный
+    //    REJECTED                    // отклоненный
+    CANCELED                    // отклоненный
 }
