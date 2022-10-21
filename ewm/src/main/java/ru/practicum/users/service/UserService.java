@@ -7,6 +7,7 @@ import ru.practicum.users.dto.UserDto;
 import ru.practicum.users.entity.User;
 
 import java.util.List;
+
 @Service
 public interface UserService {
     @Transactional
@@ -17,9 +18,6 @@ public interface UserService {
 
     @Transactional(readOnly = false)
     void removeUser(Integer userId);
-
-    @Transactional
-    boolean isUserExist(Integer userId);
 
     @Transactional(readOnly = true)
     User getEntityUserById(Integer userId);

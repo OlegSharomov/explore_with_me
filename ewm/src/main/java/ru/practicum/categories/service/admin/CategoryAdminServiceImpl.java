@@ -8,20 +8,23 @@ import ru.practicum.categories.dto.CategoryMapper;
 import ru.practicum.categories.dto.NewCategoryDto;
 import ru.practicum.categories.entity.Category;
 import ru.practicum.categories.repository.CategoryRepository;
-import ru.practicum.exception.NotFoundException;
+import ru.practicum.events.repository.EventRepository;
+import ru.practicum.exception.CustomNotFoundException;
+import ru.practicum.exception.ValidationException;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CategoryAdminServiceImpl implements CategoryAdminService {
     private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
     private final CategoryMapper categoryMapper;
 
     @Override
     @Transactional(readOnly = false)
     public CategoryDto changeCategory(CategoryDto categoryDto) {
         Category category = categoryRepository.findById(categoryDto.getId())
-                .orElseThrow(() -> new NotFoundException("Category not found"));
+                .orElseThrow(() -> new CustomNotFoundException("Category not found"));
         categoryMapper.updateCategory(categoryDto, category);
         categoryRepository.save(category);
         return categoryMapper.toCategoryDto(category);
@@ -38,7 +41,10 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Override
     @Transactional(readOnly = false)
     public void removeCategory(Integer catId) {
-        // TODO Обратите внимание: с категорией не должно быть связано ни одного события
+        Integer relatedEvents = eventRepository.countByCategoryId(catId);
+        if (relatedEvents != 0) {
+            throw new ValidationException("You cannot delete a category that events are associated with");
+        }
         categoryRepository.deleteById(catId);
     }
 
@@ -50,7 +56,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
 
     @Override
     @Transactional(readOnly = true)
-    public Category getEntityCategoryById(Integer catId){
-        return categoryRepository.findById(catId).orElseThrow(() -> new NotFoundException("Category not found"));
+    public Category getEntityCategoryById(Integer catId) {
+        return categoryRepository.findById(catId).orElseThrow(() -> new CustomNotFoundException("Category not found"));
     }
 }

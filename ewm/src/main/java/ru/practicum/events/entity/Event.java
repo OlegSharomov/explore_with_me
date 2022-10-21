@@ -68,7 +68,7 @@ public class Event {
     @Size(min = 3)
     private String title;                                       // Заголовок
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "initiator_id", referencedColumnName = "id", nullable = true)
+    @JoinColumn(name = "initiator_id", referencedColumnName = "id")
     private User initiator;                          // Пользователь (краткая информация) {"id": 3, "name": "Фёдоров Матвей"};
     @Column(name = "state", length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
@@ -79,4 +79,6 @@ public class Event {
     private LocalDateTime publishedOn;              // Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss")
     @ManyToMany(mappedBy = "events")
     List<Compilation> compilations;                 // Подборки, в которых состоит
+    @Column(name = "available_for_request")
+    private Boolean availableForRequest;
 }

@@ -19,8 +19,9 @@ import ru.practicum.events.entity.Event;
 import ru.practicum.events.model.EventState;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.events.specification.EventFindSpecification;
-import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.CustomNotFoundException;
 import ru.practicum.exception.ValidationException;
+import ru.practicum.requests.repository.RequestRepository;
 import ru.practicum.users.dto.UserMapper;
 import ru.practicum.util.UtilCollectorsDto;
 
@@ -38,11 +39,19 @@ import java.util.stream.Collectors;
 public class EventPublicService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
+    private final RequestRepository requestRepository;
     private final StatisticClient statisticClient;
     private final EventMapper eventMapper;
     private final CategoryMapper categoryMapper;
     private final UserMapper userMapper;
 
+    // Получение событий с возможностью фильтрации. Возвращает список EventShortDto
+    /* Это публичный эндпоинт, соответственно в выдаче должны быть только опубликованные события
+     * Текстовый поиск (по аннотации и подробному описанию) должен быть без учета регистра букв
+     * Если в запросе не указан диапазон дат [rangeStart-rangeEnd], то нужно выгружать события, которые произойдут
+     *      позже текущей даты и времени
+     * Информация о каждом событии должна включать в себя количество просмотров и количество уже одобренных заявок на участие
+     * Информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики */
     @Transactional
     public List<EventShortDto> getEvents(String text,          // текст для поиска в содержимом аннотации и подробном описании события
                                          int[] categories,     // список идентификаторов категорий в которых будет вестись поиск
@@ -67,11 +76,16 @@ public class EventPublicService {
         }
         List<Integer> listOfCategoriesId = Arrays.stream(categories).boxed().collect(Collectors.toList());
         List<Category> listOfCategories = categoryRepository.findAllByIdIn(listOfCategoriesId);
-
-        Page<Event> events = eventRepository.findAll(EventFindSpecification.specificationForPublicSearch(text,
-                listOfCategories, paid, rangeStart, rangeEnd, onlyAvailable), pageable);
+        Page<Event> events;
+        if (rangeStart == null || rangeEnd == null) {
+            events = eventRepository.findAll(EventFindSpecification.specificationForPublicSearchWithoutDate(text,
+                    listOfCategories, paid, onlyAvailable, EventState.PUBLISHED), pageable);
+        } else {
+            events = eventRepository.findAll(EventFindSpecification.specificationForPublicSearchWithDate(text,
+                    listOfCategories, paid, rangeStart, rangeEnd, onlyAvailable, EventState.PUBLISHED), pageable);
+        }
         return events.stream()
-                .map(e -> UtilCollectorsDto.getEventShortDto(e, eventMapper, statisticClient))
+                .map(e -> UtilCollectorsDto.getEventShortDto(e, eventMapper, statisticClient, requestRepository))
                 .collect(Collectors.toList());
     }
 
@@ -82,12 +96,12 @@ public class EventPublicService {
     @Transactional
     public EventFullDto getEventById(@PathVariable Integer id, HttpServletRequest request) {
         statisticClientCallAndSaveRequest(request);
-        Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundException("Event not found"));
+        Event event = eventRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("Event not found"));
         if (Boolean.FALSE.equals(event.getState().equals(EventState.PUBLISHED))) {
             throw new ValidationException("The requested event has not been published");
         }
         return UtilCollectorsDto.getEventFullDto(event, categoryMapper, userMapper,
-                statisticClient, eventMapper);
+                statisticClient, eventMapper, requestRepository);
     }
 
 
@@ -99,5 +113,4 @@ public class EventPublicService {
         endpointHitMap.put("timestamp", String.valueOf(LocalDateTime.now()));
         statisticClient.saveCall(endpointHitMap);
     }
-
 }

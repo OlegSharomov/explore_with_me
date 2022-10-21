@@ -2,6 +2,7 @@ package ru.practicum.users.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/users")
 @RequiredArgsConstructor
-@Valid
+@Validated
 public class UserController {
     private final UserService userService;
 
@@ -37,15 +38,15 @@ public class UserController {
                                   @RequestParam(defaultValue = "0") Integer from,
                                   @Positive(message = "'size' must be positive")
                                   @RequestParam(defaultValue = "10") Integer size) {
-        log.info("Received a request: GET /admin/users with parameters: ids = "
-                + Arrays.toString(ids) + " from = " + from + " size = " + size);
+        log.info("Received a request: GET /admin/users with parameters: ids = {} from = {} " +
+                "size = {}", Arrays.toString(ids), from, size);
         return userService.getUsers(ids, from, size);
     }
 
     @PostMapping
     // Добавление нового пользователя. Возвращает UserDto.
     public UserDto createUser(@Valid @RequestBody NewUserRequest newUserRequest) {
-        log.info("Received a request: POST /admin/users with body = " + newUserRequest);
+        log.info("Received a request: POST /admin/users with body = {}", newUserRequest);
         return userService.createUser(newUserRequest);
     }
 

@@ -10,6 +10,7 @@ import ru.practicum.categories.entity.Category;
 import ru.practicum.compilations.entity.Compilation;
 import ru.practicum.events.dto.admin.AdminUpdateEventRequest;
 import ru.practicum.events.dto.priv.NewEventDto;
+import ru.practicum.events.dto.priv.UpdateEventRequest;
 import ru.practicum.events.dto.publ.EventFullDto;
 import ru.practicum.events.dto.publ.EventShortDto;
 import ru.practicum.events.entity.Event;
@@ -24,14 +25,17 @@ import java.util.List;
 public interface EventMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", source = "category")
+    @Mapping(target = "availableForRequest", source = "availableForRequest")
     Event toEventFromNewEventDto(NewEventDto newEventDto, Category category, User initiator, EventState state,
-                                 LocalDateTime createdOn, LocalDateTime publishedOn, List<Compilation> compilations);
+                                 LocalDateTime createdOn, LocalDateTime publishedOn, List<Compilation> compilations,
+                                 Boolean availableForRequest);
 
     @Mapping(target = "id", source = "event.id")
     EventFullDto toEventFullDto(Event event, CategoryDto category, Integer confirmedRequests,
                                 UserShortDto initiator, Integer views);
 
     EventShortDto toEventShortDto(Event event, Integer confirmedRequests, Integer views);
+
     @Mapping(target = "id", source = "id")
     @Mapping(target = "category", source = "category")
     Event toEventFromAdminUpdateEventRequest(Integer id, AdminUpdateEventRequest adminUpdateEventRequest, Category category,
@@ -39,14 +43,13 @@ public interface EventMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-//    @Mapping(target = "id", source = "eventId")
     @Mapping(target = "category", source = "category")
     void updateEventFromAdminUpdateEventRequest(AdminUpdateEventRequest adminUpdateEventRequest,
-                                                @MappingTarget Event event, Category category, Integer eventId);
+                                                @MappingTarget Event event, Category category);
 
-//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-//    @Mapping(source = "dto.id", target = "id")
-//    @Mapping(source = "dto.description", target = "description")
-//    @Mapping(source = "itemRequest", target = "request")
-//    void updateItemFromDto(ItemDto dto, @MappingTarget Item item, ItemRequest itemRequest);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "category", source = "category")
+    void updateEventFromUpdateEventRequest(UpdateEventRequest updateEventRequest,
+                                           @MappingTarget Event event, Category category);
 }

@@ -11,7 +11,6 @@ import java.util.List;
 public class NewCompilationDto {
     @UniqueElements
     private List<Integer> events;           // Список идентификаторов событий входящих в подборку
-    //    @Builder.Default
     private Boolean pinned = false;         // Закреплена ли подборка на главной странице сайта
     @NotBlank
     private String title;                   // Заголовок подборки

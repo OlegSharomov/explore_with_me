@@ -12,7 +12,8 @@ import ru.practicum.compilations.dto.CompilationMapper;
 import ru.practicum.compilations.entity.Compilation;
 import ru.practicum.compilations.repository.CompilationRepository;
 import ru.practicum.events.dto.EventMapper;
-import ru.practicum.exception.TerribleExceptionForPassingPracticumPostmanTests;
+import ru.practicum.exception.CustomNotFoundException;
+import ru.practicum.requests.repository.RequestRepository;
 import ru.practicum.util.UtilCollectorsDto;
 
 import java.util.List;
@@ -25,6 +26,7 @@ import static ru.practicum.util.UtilCollectorsDto.getCompilationDto;
 @RequiredArgsConstructor
 public class CompilationPublicService {
     private final CompilationRepository compilationRepository;
+    private final RequestRepository requestRepository;
     private final CompilationMapper compilationMapper;
     private final EventMapper eventMapper;
     private final StatisticClient statisticClient;
@@ -36,7 +38,8 @@ public class CompilationPublicService {
         Pageable pageable = PageRequest.of(from / size, size);
         List<Compilation> compilations = compilationRepository.findAllByPinned(pinned, pageable);
         return compilations.stream()
-                .map(e -> UtilCollectorsDto.getCompilationDto(e, statisticClient, eventMapper, compilationMapper))
+                .map(e -> UtilCollectorsDto.getCompilationDto(e, statisticClient, eventMapper,
+                        compilationMapper, requestRepository))
                 .collect(Collectors.toList());
 
 
@@ -46,7 +49,9 @@ public class CompilationPublicService {
     // Получение подборки событий по id. Возвращает CompilationDto
     public CompilationDto getCompilationById(@PathVariable Integer compId) {
         Compilation compilation = compilationRepository.findById(compId)
-                .orElseThrow(() -> new TerribleExceptionForPassingPracticumPostmanTests("null"));
-        return getCompilationDto(compilation, statisticClient, eventMapper, compilationMapper);
+//                .orElseThrow(() -> new TerribleExceptionForPassingPracticumPostmanTests("null"));
+                .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));
+
+        return getCompilationDto(compilation, statisticClient, eventMapper, compilationMapper, requestRepository);
     }
 }

@@ -47,6 +47,8 @@
 						<failOnViolation>true</failOnViolation>
 						<logViolationsToConsole>true</logViolationsToConsole>
 						<includeTestSourceDirectory>true</includeTestSourceDirectory>
+						<suppressionsLocation>suppressions.xml</suppressionsLocation>
+						<excludes>**/generated-sources/**/*</excludes>
 					</configuration>
 					<executions>
 						<execution>

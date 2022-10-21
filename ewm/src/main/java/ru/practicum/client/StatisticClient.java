@@ -78,7 +78,6 @@ public class StatisticClient {
     }
 
     public Integer getViewsByUri(Integer eventId) {
-//        System.out.println("Приняли запрос на количество просмотров с uri: " + eventUri);
         Integer result;
         URI uri = URI.create("http://localhost:9090/events");
         HttpRequest request = HttpRequest.newBuilder()
@@ -88,14 +87,11 @@ public class StatisticClient {
                 .headers("Content-Type", "text/plain;charset=UTF-8")
                 .header("Accept", "application/json")
                 .build();
-//        System.out.println("Создали запрос на адрес: " + uri);
-//        System.out.println("Метод Get, с телом запроса: " + HttpRequest.BodyPublishers.ofString(eventUri) +" или " + eventUri);
         HttpResponse<String> response;
         try {
             response = HttpClient.newBuilder()
                     .build()
                     .send(request, HttpResponse.BodyHandlers.ofString());
-//            System.out.println("Получили ответ: " + response.body());
             result = objectMapper.readValue(response.body(), Integer.class);
         } catch (IOException | InterruptedException e) {
             throw new StatisticClientException("An error occurred when sending a request from a client");

@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.events.entity.Event;
 import ru.practicum.events.model.EventState;
 import ru.practicum.events.repository.EventRepository;
-import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.CustomNotFoundException;
 import ru.practicum.exception.ValidationException;
 import ru.practicum.requests.dto.ParticipationRequestDto;
 import ru.practicum.requests.dto.RequestMapper;
@@ -51,15 +51,17 @@ public class RequestService {
         if (requestRepository.findByRequesterIdAndEventId(userId, eventId).isPresent()) {
             throw new ValidationException("Request already exists");
         }
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new CustomNotFoundException("Event not found"));
+        if (event.getAvailableForRequest().equals(false)) {
+            throw new ValidationException("The request limit has been reached for this event");
+        }
         if (event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("The initiator of the event cannot make a request for it");
         }
         if (Boolean.FALSE.equals(event.getState().equals(EventState.PUBLISHED))) {
             throw new ValidationException("Event not published");
         }
-        //TODO Реализовать проверку, достигнут ли лимит запросов
-        User requester = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+        User requester = userRepository.findById(userId).orElseThrow(() -> new CustomNotFoundException("User not found"));
         LocalDateTime currentTime = LocalDateTime.now();
         Request request;
         if (event.getRequestModeration().equals(true)) {
@@ -85,8 +87,8 @@ public class RequestService {
     @Transactional(readOnly = false)
     public ParticipationRequestDto cancelParticipationRequest(Integer userId, Integer requestId) {
         Request request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException("Request not found"));
-        if(Boolean.FALSE.equals(request.getRequester().getId().equals(userId))){
+                .orElseThrow(() -> new CustomNotFoundException("Request not found"));
+        if (Boolean.FALSE.equals(request.getRequester().getId().equals(userId))) {
             throw new ValidationException("The requester does not match the received id");
         }
         request.setStatus(RequestStatus.CANCELED);

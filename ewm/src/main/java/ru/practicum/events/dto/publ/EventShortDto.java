@@ -14,9 +14,9 @@ public class EventShortDto {
     private String annotation;         // Краткое описание
     @NotNull
     private CategoryDto category;      // Категория {"id": 1, "name": "Концерты"}
-    private Integer confirmedRequests;          // Количество одобренных заявок на участие в данном событии
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private Integer confirmedRequests; // Количество одобренных заявок на участие в данном событии
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;   // дата начала события формате "yyyy-MM-dd HH:mm:ss"
     private Integer id;
     @NotNull
@@ -25,5 +25,5 @@ public class EventShortDto {
     private Boolean paid;              // Нужно ли оплачивать участие
     @NotNull
     private String title;              // Заголовок
-    private Integer views;                      // Количество просмотрев события
+    private Integer views;             // Количество просмотрев события
 }

@@ -10,6 +10,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdditionalFields implements Serializable {
-    String app;
-    String ip;
+    private String app;
+    private String ip;
 }

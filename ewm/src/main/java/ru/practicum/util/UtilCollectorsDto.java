@@ -11,6 +11,8 @@ import ru.practicum.events.dto.EventMapper;
 import ru.practicum.events.dto.publ.EventFullDto;
 import ru.practicum.events.dto.publ.EventShortDto;
 import ru.practicum.events.entity.Event;
+import ru.practicum.requests.model.RequestStatus;
+import ru.practicum.requests.repository.RequestRepository;
 import ru.practicum.users.dto.UserMapper;
 import ru.practicum.users.dto.UserShortDto;
 
@@ -22,31 +24,33 @@ public final class UtilCollectorsDto {
 
     public static List<EventShortDto> getListEventShortDto(List<Event> events,
                                                            StatisticClient statisticClient,
-                                                           EventMapper eventMapper) {
+                                                           EventMapper eventMapper, RequestRepository requestRepository) {
         return events.stream()
-                .map(e -> UtilCollectorsDto.getEventShortDto(e, eventMapper, statisticClient))
+                .map(e -> UtilCollectorsDto.getEventShortDto(e, eventMapper, statisticClient, requestRepository))
                 .collect(Collectors.toList());
     }
 
-    public static EventShortDto getEventShortDto(Event event, EventMapper eventMapper, StatisticClient statisticClient) {
-        Integer confirmedRequests = 0; // TODO Реализовать просмотр количества одобренных заявок
+    public static EventShortDto getEventShortDto(Event event, EventMapper eventMapper,
+                                                 StatisticClient statisticClient, RequestRepository requestRepository) {
+        Integer confirmedRequests = requestRepository.countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED);
         Integer views = statisticClient.getViewsByUri(event.getId());
         return eventMapper.toEventShortDto(event, confirmedRequests, views);
     }
 
     public static List<EventFullDto> getListEventFullDto(List<Event> events, CategoryMapper categoryMapper,
                                                          UserMapper userMapper, StatisticClient statisticClient,
-                                                         EventMapper eventMapper) {
+                                                         EventMapper eventMapper, RequestRepository requestRepository) {
         return events.stream()
                 .map(event -> UtilCollectorsDto.getEventFullDto(event, categoryMapper, userMapper,
-                        statisticClient, eventMapper))
+                        statisticClient, eventMapper, requestRepository))
                 .collect(Collectors.toList());
     }
 
     public static EventFullDto getEventFullDto(Event event, CategoryMapper categoryMapper, UserMapper userMapper,
-                                               StatisticClient statisticClient, EventMapper eventMapper) {
+                                               StatisticClient statisticClient, EventMapper eventMapper,
+                                               RequestRepository requestRepository) {
         CategoryDto categoryDto = categoryMapper.toCategoryDto(event.getCategory());
-        Integer confirmedRequests = 0; // TODO Реализовать просмотр количества одобренных заявок
+        Integer confirmedRequests = requestRepository.countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED);
         UserShortDto initiator = userMapper.toUserShortDto(event.getInitiator());
         Integer views = statisticClient.getViewsByUri(event.getId());
         return eventMapper.toEventFullDto(event, categoryDto, confirmedRequests,
@@ -56,8 +60,10 @@ public final class UtilCollectorsDto {
     public static CompilationDto getCompilationDto(Compilation compilation,
                                                    StatisticClient statisticClient,
                                                    EventMapper eventMapper,
-                                                   CompilationMapper compilationMapper) {
-        List<EventShortDto> eventsDto = getListEventShortDto(compilation.getEvents(), statisticClient, eventMapper);
+                                                   CompilationMapper compilationMapper,
+                                                   RequestRepository requestRepository) {
+        List<EventShortDto> eventsDto = getListEventShortDto(compilation.getEvents(),
+                statisticClient, eventMapper, requestRepository);
         return compilationMapper.toCompilationDto(compilation, eventsDto);
     }
 

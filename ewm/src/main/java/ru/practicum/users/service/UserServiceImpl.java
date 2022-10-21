@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.CustomNotFoundException;
 import ru.practicum.users.dto.NewUserRequest;
 import ru.practicum.users.dto.UserDto;
 import ru.practicum.users.dto.UserMapper;
@@ -52,15 +52,10 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    @Override
-    @Transactional
-    public boolean isUserExist(Integer userId) {
-        return userRepository.existsById(userId);
-    }
 
     @Override
     @Transactional(readOnly = true)
-    public User getEntityUserById(Integer userId){
-        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    public User getEntityUserById(Integer userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new CustomNotFoundException("User not found"));
     }
 }

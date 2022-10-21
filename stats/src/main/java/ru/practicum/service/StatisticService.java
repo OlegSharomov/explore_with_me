@@ -49,7 +49,8 @@ public class StatisticService {
         List<ViewStats> readyStatistic = new ArrayList<>();
         if (unique) {
             for (String uri : uris) {
-                Statistic statistic = statisticRepository.findByUri(uri).orElseThrow(() -> new NotFoundException());
+                Statistic statistic = statisticRepository.findByUri(uri)
+                        .orElseThrow(() -> new NotFoundException("Statistic not found"));
                 String app = statistic.getAdditionalFields().getApp();
                 Integer views = statisticRepository.getStatisticWithUniqueIp(uri, app, start, end);
                 ViewStats viewStats = ViewStats.builder()
@@ -61,7 +62,8 @@ public class StatisticService {
             }
         } else {
             for (String uri : uris) {
-                Statistic statistic = statisticRepository.findByUri(uri).orElseThrow(() -> new NotFoundException());
+                Statistic statistic = statisticRepository.findByUri(uri)
+                        .orElseThrow(() -> new NotFoundException("Statistic not found"));
                 String app = statistic.getAdditionalFields().getApp();
                 Integer views = statisticRepository.getStatisticWithoutUniqueIp(uri, app, start, end);
                 ViewStats viewStats = ViewStats.builder()

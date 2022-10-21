@@ -1,6 +1,5 @@
 package ru.practicum.compilations.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,7 +35,6 @@ public class Compilation {
     @Column(name = "pinned")
     private Boolean pinned;     // Закреплена ли подборка на главной странице сайта
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-//    @JsonIgnore
     @JoinTable(
             name = "events_compilations",
             uniqueConstraints = {@UniqueConstraint(columnNames = {"compilation_id", "event_id"})},
