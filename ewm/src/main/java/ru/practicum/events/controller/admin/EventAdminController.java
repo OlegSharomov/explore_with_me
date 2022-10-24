@@ -78,5 +78,4 @@ public class EventAdminController {
         log.info("Received a request: PATCH /admin/events/{}/reject ", eventId);
         return eventAdminService.rejectEvent(eventId);
     }
-
 }

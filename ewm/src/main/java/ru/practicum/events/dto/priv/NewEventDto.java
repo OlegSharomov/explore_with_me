@@ -1,7 +1,10 @@
 package ru.practicum.events.dto.priv;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.events.model.Location;
 
@@ -10,6 +13,9 @@ import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NewEventDto {
     @NotNull
     @Length(min = 20, max = 2000)

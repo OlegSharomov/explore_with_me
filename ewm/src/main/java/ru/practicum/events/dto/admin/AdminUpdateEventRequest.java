@@ -1,13 +1,19 @@
 package ru.practicum.events.dto.admin;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.events.model.Location;
 
 import java.time.LocalDateTime;
 
 // Информация для редактирования события администратором. Все поля необязательные. Значение полей не валидируются.
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminUpdateEventRequest {
     private String annotation;          // Краткое описание события
     private Integer category;           // id категории к которой относится событие
