@@ -1,7 +1,10 @@
 package ru.practicum.events.dto.publ;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.events.model.EventState;
 import ru.practicum.events.model.Location;
@@ -11,6 +14,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class EventFullDto {
     @NotNull
     private String annotation;              // Краткое описание

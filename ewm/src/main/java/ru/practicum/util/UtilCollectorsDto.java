@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public final class UtilCollectorsDto {
+public class UtilCollectorsDto {
 
     public static List<EventShortDto> getListEventShortDto(List<Event> events,
                                                            StatisticClient statisticClient,

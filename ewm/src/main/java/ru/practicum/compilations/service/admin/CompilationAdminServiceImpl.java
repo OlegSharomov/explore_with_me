@@ -17,6 +17,7 @@ import ru.practicum.exception.ValidationException;
 import ru.practicum.requests.repository.RequestRepository;
 import ru.practicum.util.UtilCollectorsDto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,11 +56,14 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     public void removeEventFromCompilation(Integer compId, Integer eventId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));
-        List<Event> events = compilation.getEvents();
+        List<Event> events = new ArrayList<>(compilation.getEvents());
         Event event = events.stream().filter(e -> e.getId().equals(eventId)).findFirst()
                 .orElseThrow(() -> new CustomNotFoundException("Event not found in the compilation list"));
         events.remove(event);
+        compilation.setEvents(events);
         compilationRepository.save(compilation);
+        System.out.println("Сейчас сборка выглядит так: " + compilation);
+
     }
 
     // Добавить событие в подборку. Возвращает только статус ответа или ошибку.
@@ -68,14 +72,18 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     public void addEventInCompilation(Integer compId, Integer eventId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));
-        Optional<Event> optionalEventFromList = compilation.getEvents().stream().filter(e -> e.getId().equals(eventId)).findFirst();
+        List<Event> eventsOfCompilation = new ArrayList<>(compilation.getEvents());
+        Optional<Event> optionalEventFromList = eventsOfCompilation
+                .stream().filter(e -> e.getId().equals(eventId)).findFirst();
         if (optionalEventFromList.isPresent()) {
             throw new ValidationException("Event already exists in compilation");
         }
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new CustomNotFoundException("Event not found"));
-        compilation.getEvents().add(event);
+        eventsOfCompilation.add(event);
+        compilation.setEvents(eventsOfCompilation);
         compilationRepository.save(compilation);
+        System.out.println("Сейчас сборка выглядит так: " + compilation);
     }
 
     // Открепить подборку на главной странице. Возвращает только статус ответа или ошибку.

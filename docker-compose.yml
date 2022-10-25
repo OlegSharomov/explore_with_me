@@ -11,15 +11,15 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ewm
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.h2.Driver
-      - SPRING_DATASOURCE_URL=jdbc:h2:mem:ewm
-      - SPRING_DATASOURCE_USERNAME=test
-      - SPRING_DATASOURCE_PASSWORD=test
+#      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.h2.Driver
+#      - SPRING_DATASOURCE_URL=jdbc:h2:mem:ewm
+#      - SPRING_DATASOURCE_USERNAME=test
+#      - SPRING_DATASOURCE_PASSWORD=test
 
   ewm-db:
     image: postgres:14-alpine
-    depends_on:
-      - stats-server
+#    depends_on:
+#      - stats-server
     container_name: ewm
     ports:
       - "6541:5432"
@@ -40,10 +40,10 @@ services:
         - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/stats
         - SPRING_DATASOURCE_USERNAME=root
         - SPRING_DATASOURCE_PASSWORD=root
-        - SPRING_DATASOURCE_DRIVERCLASSNAME=org.h2.Driver
-        - SPRING_DATASOURCE_URL=jdbc:h2:mem:stats
-        - SPRING_DATASOURCE_USERNAME=test
-        - SPRING_DATASOURCE_PASSWORD=test
+#        - SPRING_DATASOURCE_DRIVERCLASSNAME=org.h2.Driver
+#        - SPRING_DATASOURCE_URL=jdbc:h2:mem:stats
+#        - SPRING_DATASOURCE_USERNAME=test
+#        - SPRING_DATASOURCE_PASSWORD=test
 
 
   stats-db:

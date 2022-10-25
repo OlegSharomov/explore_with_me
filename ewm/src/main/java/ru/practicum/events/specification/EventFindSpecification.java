@@ -4,11 +4,12 @@ import org.springframework.data.jpa.domain.Specification;
 import ru.practicum.categories.entity.Category;
 import ru.practicum.events.entity.Event;
 import ru.practicum.events.model.EventState;
+import ru.practicum.users.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public final class EventFindSpecification {
+public class EventFindSpecification {
 
     public static Specification<Event> specificationForPublicSearchWithDate(String text, List<Category> categories,
                                                                             Boolean paid, LocalDateTime rangeStart,
@@ -96,4 +97,34 @@ public final class EventFindSpecification {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.greaterThanOrEqualTo(root.get("eventDate"), currentTime);
     }
+
+    public static Specification<Event> specificationForAdminSearchWithDate(List<User> users, List<EventState> states,
+                                                                           List<Category> categories, LocalDateTime rangeStart,
+                                                                           LocalDateTime rangeEnd) {
+        return Specification
+                .where(initiatorContainsIn(users))
+                .and(stateContainsIn(states))
+                .and(categoryContainsIn(categories))
+                .and(afterDate(rangeStart))
+                .and(beforeDate(rangeEnd));
+    }
+
+    public static Specification<Event> specificationForAdminSearchWithoutDate(List<User> users, List<EventState> states,
+                                                                              List<Category> categories) {
+        return Specification
+                .where(initiatorContainsIn(users))
+                .and(stateContainsIn(states))
+                .and(categoryContainsIn(categories));
+    }
+
+    public static Specification<Event> initiatorContainsIn(List<User> users) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.in(root.get("initiator")).value(users);
+    }
+
+    public static Specification<Event> stateContainsIn(List<EventState> states) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.in(root.get("state")).value(states);
+    }
+
 }

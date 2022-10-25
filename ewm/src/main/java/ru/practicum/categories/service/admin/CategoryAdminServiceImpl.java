@@ -49,12 +49,6 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     }
 
     @Override
-    @Transactional
-    public boolean isCategoryExistsById(Integer categoryId) {
-        return categoryRepository.existsById(categoryId);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public Category getEntityCategoryById(Integer catId) {
         return categoryRepository.findById(catId).orElseThrow(() -> new CustomNotFoundException("Category not found"));

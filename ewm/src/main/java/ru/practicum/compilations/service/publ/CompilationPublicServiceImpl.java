@@ -51,9 +51,7 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
     // Получение подборки событий по id. Возвращает CompilationDto
     public CompilationDto getCompilationById(@PathVariable Integer compId) {
         Compilation compilation = compilationRepository.findById(compId)
-//                .orElseThrow(() -> new TerribleExceptionForPassingPracticumPostmanTests("null"));
                 .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));
-
         return getCompilationDto(compilation, statisticClient, eventMapper, compilationMapper, requestRepository);
     }
 }

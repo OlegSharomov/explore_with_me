@@ -25,29 +25,10 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 public class StatisticClient {
     private final ObjectMapper objectMapper;
 
-//    public static void main(String[] args) throws JsonProcessingException {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        String start = LocalDateTime.now().minusDays(5).format(formatter);
-//        String end = LocalDateTime.now().format(formatter);
-//        StatisticClient statisticClient = new StatisticClient(new ObjectMapper());
-//        String[] uris = {"/event/367"};
-//        Boolean unique = false;
-//        List<ViewStat> result = statisticClient.getStatistic(start, end, uris, unique);
-//        System.out.println("Начинаем обход элементов: ");
-//        for (ViewStat x : result) {
-//            System.out.println(x);
-//        }
-//
-////        String uri = "/event/367";
-////        StatisticClient statisticClient = new StatisticClient(new ObjectMapper());
-////        Integer views = statisticClient.getViewsByUri(uri);
-////        System.out.println("Количество вызовов: " + views);
-//    }
-
     public List<ViewStat> getStatistic(String start, String end, String[] uris, Boolean unique) {
         List<ViewStat> result;
-        String encodeStart = URLEncoder.encode(String.valueOf(start), StandardCharsets.UTF_8);
-        String encodeEnd = URLEncoder.encode(String.valueOf(end), StandardCharsets.UTF_8);
+        String encodeStart = URLEncoder.encode(start, StandardCharsets.UTF_8);
+        String encodeEnd = URLEncoder.encode(end, StandardCharsets.UTF_8);
         String encodeUris = URLEncoder.encode(convertArrayToStringForUrl(uris), StandardCharsets.UTF_8);
         String encodeUnique = URLEncoder.encode(String.valueOf(unique), StandardCharsets.UTF_8);
         URI uri = URI.create("http://localhost:9090/stats?start=" + encodeStart + "&end=" + encodeEnd +

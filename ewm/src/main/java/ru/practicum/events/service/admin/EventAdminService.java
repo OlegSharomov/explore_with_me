@@ -1,6 +1,5 @@
 package ru.practicum.events.service.admin;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.events.dto.admin.AdminUpdateEventRequest;
 import ru.practicum.events.dto.publ.EventFullDto;
 import ru.practicum.events.model.EventState;
@@ -12,11 +11,11 @@ public interface EventAdminService {
     // Поиск событий. Возвращает list of EventFullDto.
     /* Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия */
     List<EventFullDto> getAllEvents(// список id пользователей, чьи события нужно найти
-                                    Integer[] users,
+                                    List<Integer> users,
                                     // список состояний в которых находятся искомые события
-                                    EventState[] states,
+                                    List<EventState> states,
                                     // список id категорий в которых будет вестись поиск
-                                    Integer[] categories,
+                                    List<Integer> categories,
                                     // дата и время не раньше которых должно произойти событие
                                     LocalDateTime rangeStart,
                                     // дата и время не позже которых должно произойти событие

@@ -50,7 +50,10 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = false)
     public ParticipationRequestDto createParticipationRequest(Integer userId, Integer eventId) {
-        if (requestRepository.findByRequesterIdAndEventId(userId, eventId).isPresent()) {
+//        if (requestRepository.findByRequesterIdAndEventId(userId, eventId).isPresent()) {
+//            throw new ValidationException("Request already exists");
+//        }
+        if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
             throw new ValidationException("Request already exists");
         }
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new CustomNotFoundException("Event not found"));

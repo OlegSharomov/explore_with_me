@@ -106,7 +106,7 @@ public class EventPublicServiceImpl implements EventPublicService {
                 statisticClient, eventMapper, requestRepository);
     }
 
-    public void statisticClientCallAndSaveRequest(HttpServletRequest request) {
+    private void statisticClientCallAndSaveRequest(HttpServletRequest request) {
         Map<String, String> endpointHitMap = new HashMap<>();
         endpointHitMap.put("app", "ewm-main-service");
         endpointHitMap.put("uri", request.getRequestURI());

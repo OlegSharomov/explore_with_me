@@ -35,5 +35,5 @@ public interface EventPublicService {
      * Информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики */
     EventFullDto getEventById(@PathVariable Integer id, HttpServletRequest request);
 
-    void statisticClientCallAndSaveRequest(HttpServletRequest request);
+//    void statisticClientCallAndSaveRequest(HttpServletRequest request);
 }

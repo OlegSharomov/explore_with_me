@@ -13,7 +13,5 @@ public interface CategoryAdminService {
 
     void removeCategory(Integer catId);
 
-    boolean isCategoryExistsById(Integer categoryId);
-
     Category getEntityCategoryById(Integer catId);
 }

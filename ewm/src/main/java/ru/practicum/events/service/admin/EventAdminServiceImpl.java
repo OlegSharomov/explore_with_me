@@ -1,6 +1,7 @@
 package ru.practicum.events.service.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,13 @@ import ru.practicum.events.dto.publ.EventFullDto;
 import ru.practicum.events.entity.Event;
 import ru.practicum.events.model.EventState;
 import ru.practicum.events.repository.EventRepository;
+import ru.practicum.events.specification.EventFindSpecification;
 import ru.practicum.exception.CustomNotFoundException;
 import ru.practicum.exception.ValidationException;
 import ru.practicum.requests.repository.RequestRepository;
 import ru.practicum.users.dto.UserMapper;
+import ru.practicum.users.entity.User;
+import ru.practicum.users.repository.UserRepository;
 import ru.practicum.util.UtilCollectorsDto;
 
 import java.time.LocalDateTime;
@@ -32,6 +36,7 @@ public class EventAdminServiceImpl implements EventAdminService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
+    private final UserRepository userRepository;
     private final EventMapper eventMapper;
     private final CategoryMapper categoryMapper;
     private final UserMapper userMapper;
@@ -42,11 +47,11 @@ public class EventAdminServiceImpl implements EventAdminService {
     @Override
     @Transactional
     public List<EventFullDto> getAllEvents(// список id пользователей, чьи события нужно найти
-                                           Integer[] users,
+                                           List<Integer> users,
                                            // список состояний в которых находятся искомые события
-                                           EventState[] states,
+                                           List<EventState> states,
                                            // список id категорий в которых будет вестись поиск
-                                           Integer[] categories,
+                                           List<Integer> categories,
                                            // дата и время не раньше которых должно произойти событие
                                            LocalDateTime rangeStart,
                                            // дата и время не позже которых должно произойти событие
@@ -56,10 +61,18 @@ public class EventAdminServiceImpl implements EventAdminService {
                                            // количество событий в наборе
                                            Integer size     /* (дефолтно = 10) */) {
         Pageable pageable = PageRequest.of(from / size, size);
-        List<Event> listEvent = eventRepository
-                .findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateBetween(List.of(users), List.of(states),
-                        List.of(categories), rangeStart, rangeEnd, pageable);
-        return UtilCollectorsDto.getListEventFullDto(listEvent, categoryMapper, userMapper,
+        List<User> userEntities = userRepository.findAllById(users);
+        List<Category> categoryEntities = categoryRepository.findAllById(categories);
+        Page<Event> listEvent;
+        if (rangeStart == null || rangeEnd == null) {
+            listEvent = eventRepository.findAll(EventFindSpecification
+                    .specificationForAdminSearchWithoutDate(userEntities, states, categoryEntities), pageable);
+        } else {
+            listEvent = eventRepository.findAll(EventFindSpecification
+                    .specificationForAdminSearchWithDate(userEntities, states,
+                            categoryEntities, rangeStart, rangeEnd), pageable);
+        }
+        return UtilCollectorsDto.getListEventFullDto(listEvent.toList(), categoryMapper, userMapper,
                 statisticClient, eventMapper, requestRepository);
     }
 
@@ -71,22 +84,29 @@ public class EventAdminServiceImpl implements EventAdminService {
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
         if (optionalEvent.isPresent()) {
             Event event = optionalEvent.get();
-            Category category = categoryRepository.findById(adminUpdateEventRequest.getCategory())
-                    .orElseThrow(() -> new CustomNotFoundException("Category not found"));
+            Category category = findCategoryOrReturnNull(adminUpdateEventRequest.getCategory());
             eventMapper.updateEventFromAdminUpdateEventRequest(adminUpdateEventRequest, event, category);
             Event readyEvent = eventRepository.save(event);
             return UtilCollectorsDto.getEventFullDto(readyEvent, categoryMapper, userMapper,
                     statisticClient, eventMapper, requestRepository);
         } else {
             LocalDateTime createdOn = LocalDateTime.now();
-            Category category = categoryRepository.findById(adminUpdateEventRequest.getCategory())
-                    .orElseThrow(() -> new CustomNotFoundException("Category not found"));
+            Category category = findCategoryOrReturnNull(adminUpdateEventRequest.getCategory());
             Event event = eventMapper.toEventFromAdminUpdateEventRequest(eventId, adminUpdateEventRequest, category,
                     EventState.PENDING, createdOn);
             Event readyEvent = eventRepository.save(event);
             return UtilCollectorsDto.getEventFullDto(readyEvent, categoryMapper, userMapper,
                     statisticClient, eventMapper, requestRepository);
         }
+    }
+
+    private Category findCategoryOrReturnNull(Integer catId) {
+        Category category = null;
+        if (catId != null) {
+            category = categoryRepository.findById(catId)
+                    .orElseThrow(() -> new CustomNotFoundException("Category not found"));
+        }
+        return category;
     }
 
 
@@ -100,7 +120,7 @@ public class EventAdminServiceImpl implements EventAdminService {
         if (eventEntity.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
             throw new ValidationException("The start of the event cannot be earlier than in an hour");
         }
-        if (!eventEntity.getState().equals(EventState.PENDING)) {
+        if (Boolean.FALSE.equals(eventEntity.getState().equals(EventState.PENDING))) {
             throw new ValidationException("The publication of the event can only be from the PENDING status");
         }
         eventEntity.setState(EventState.PUBLISHED);

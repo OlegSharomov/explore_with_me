@@ -19,7 +19,6 @@ import ru.practicum.events.service.admin.EventAdminService;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -33,12 +32,13 @@ public class EventAdminController {
     @GetMapping
     // Поиск событий. Возвращает list of EventFullDto.
     /* Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия */
-    // список id пользователей, чьи события нужно найти
-    public List<EventFullDto> getAllEvents(@RequestParam(required = false) Integer[] users,
+
+    public List<EventFullDto> getAllEvents(// список id пользователей, чьи события нужно найти
+                                           @RequestParam(required = false) List<Integer> users,
                                            // список состояний в которых находятся искомые события
-                                           @RequestParam(required = false) EventState[] states,
+                                           @RequestParam(required = false) List<EventState> states,
                                            // список id категорий в которых будет вестись поиск
-                                           @RequestParam(required = false) Integer[] categories,
+                                           @RequestParam(required = false) List<Integer> categories,
                                            // дата и время не раньше которых должно произойти событие
                                            @RequestParam(required = false) LocalDateTime rangeStart,
                                            // дата и время не позже которых должно произойти событие
@@ -48,8 +48,8 @@ public class EventAdminController {
                                            // количество событий в наборе
                                            @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Received a request: GET /admin/events with parameters: users = {}, states = {}, categories = {}, " +
-                        "rangeStart = {}, rangeEnd = {}, from = {}, size = {}", Arrays.toString(users),
-                Arrays.toString(states), Arrays.toString(categories), rangeStart, rangeEnd, from, size);
+                        "rangeStart = {}, rangeEnd = {}, from = {}, size = {}", users,
+                states, categories, rangeStart, rangeEnd, from, size);
         return eventAdminService.getAllEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
