@@ -42,7 +42,7 @@ public class StatisticController {
             LocalDateTime end,   // Дата и время конца диапазона за который нужно выгрузить статистику (в формате "yyyy-MM-dd HH:mm:ss")
             @RequestParam(required = false) String[] uris,       // Список uri для которых нужно выгрузить статистику
             @RequestParam(defaultValue = "false") Boolean unique) { // Нужно ли учитывать только уникальные посещения (только с уникальным ip)
-            log.info("Received a request: GET /stats with parameters: start = {}, end = {}, uris = {}, unique = {}",
+        log.info("Received a request: GET /stats with parameters: start = {}, end = {}, uris = {}, unique = {}",
                 start, end, uris, unique);
         return statisticService.getStats(start, end, uris, unique);
     }
