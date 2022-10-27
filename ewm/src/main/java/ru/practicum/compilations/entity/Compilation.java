@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import ru.practicum.events.entity.Event;
 
 import javax.persistence.CascadeType;
@@ -40,5 +41,6 @@ public class Compilation {
             uniqueConstraints = {@UniqueConstraint(columnNames = {"compilation_id", "event_id"})},
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
+    @ToString.Exclude
     private List<Event> events;
 }

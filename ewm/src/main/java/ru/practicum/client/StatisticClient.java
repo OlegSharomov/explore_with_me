@@ -1,8 +1,9 @@
 package ru.practicum.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.practicum.exception.StatisticSendingClientException;
 
@@ -23,9 +24,16 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class StatisticClient {
+    @Autowired
+    public StatisticClient(@Value("${stats-server.url}") String statServerUrl, ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+        this.statServerUrl = statServerUrl;
+    }
+
     private final ObjectMapper objectMapper;
+    private final String statServerUrl;
 
     public List<ViewStat> getStatistic(String start, String end, String[] uris, Boolean unique) {
         List<ViewStat> result;
@@ -33,7 +41,7 @@ public class StatisticClient {
         String encodeEnd = URLEncoder.encode(end, StandardCharsets.UTF_8);
         String encodeUris = URLEncoder.encode(convertArrayToStringForUrl(uris), StandardCharsets.UTF_8);
         String encodeUnique = URLEncoder.encode(String.valueOf(unique), StandardCharsets.UTF_8);
-        URI uri = URI.create("http://localhost:9090/stats?start=" + encodeStart + "&end=" + encodeEnd +
+        URI uri = URI.create(statServerUrl + "/stats?start=" + encodeStart + "&end=" + encodeEnd +
                 "&uris=" + encodeUris + "&unique=" + encodeUnique);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
@@ -62,26 +70,20 @@ public class StatisticClient {
     }
 
     public Integer getViewsByUri(Integer eventId) {
-        System.out.println("Зашли в метод клиента для поиска просмотров с переданным параметром: " + eventId);
         Integer result;
-        URI uri = URI.create("http://localhost:9090/events/" + eventId);
-
+        URI uri = URI.create(statServerUrl + "/events/" + eventId);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Accept", "application/json")
                 .build();
-        System.out.println("Создали запрос: " + request);
-        System.out.println("С uri запроса" + request.uri());
-        System.out.println("С методом запроса: " + request.method());
+
         HttpResponse<String> response;
         try {
-            System.out.println("Зашли в блок try");
             response = HttpClient.newBuilder()
                     .build()
                     .send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("Получили ответ: " + response);
+
             result = objectMapper.readValue(response.body(), Integer.class);
-            System.out.println("Получили результат: " + result);
         } catch (IOException | InterruptedException e) {
             log.warn("Error: " + e + " \n Cause = " + e.getCause() + " \n Message = " + e.getMessage());
             throw new StatisticSendingClientException("An error occurred when sending a request from a client 'GetViewsByUri'");
@@ -91,7 +93,7 @@ public class StatisticClient {
     }
 
     public void saveCall(Map<String, String> endpointHit) {
-        URI uri = URI.create("http://localhost:9090/hit");
+        URI uri = URI.create(statServerUrl + "/hit");
         String body = getFormDataAsString(endpointHit);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)

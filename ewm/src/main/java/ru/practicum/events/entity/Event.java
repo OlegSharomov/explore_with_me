@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import ru.practicum.categories.entity.Category;
 import ru.practicum.compilations.entity.Compilation;
 import ru.practicum.events.model.EventState;
@@ -77,6 +78,7 @@ public class Event {
     private LocalDateTime createdOn;                // Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
     @Column(name = "published_on")
     private LocalDateTime publishedOn;              // Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss")
+    @ToString.Exclude
     @ManyToMany(mappedBy = "events")
     List<Compilation> compilations;                 // Подборки, в которых состоит
     @Column(name = "available_for_request")

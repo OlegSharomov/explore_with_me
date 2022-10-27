@@ -32,11 +32,8 @@ public class UtilCollectorsDto {
 
     public static EventShortDto getEventShortDto(Event event, EventMapper eventMapper,
                                                  StatisticClient statisticClient, RequestRepository requestRepository) {
-        System.out.println("Зашли в метод сборки EventShortDto, с сущностью event = " + event);
-        System.out.println("Получаем количество подтвержденных запросов");
         Integer confirmedRequests = requestRepository
                 .countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).orElse(0);
-        System.out.println("При сборке EventShortDto вызываем поиск просмотров, в котором eventId = " + event.getId());
         Integer views = statisticClient.getViewsByUri(event.getId());
         return eventMapper.toEventShortDto(event, confirmedRequests, views);
     }
