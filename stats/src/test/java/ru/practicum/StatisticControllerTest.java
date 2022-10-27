@@ -74,12 +74,12 @@ public class StatisticControllerTest {
                 .getStats(any(LocalDateTime.class), any(LocalDateTime.class), any(), any(Boolean.class));
     }
 
-    // getViews
+//     getViews
     @Test
     public void shouldCallServiceGetViews() throws Exception {
-        String uri = "/event/367";
-        mockMvc.perform(get("/events")
-                        .content(uri)
+        String uri = "/events/" + 1;
+        mockMvc.perform(get(uri)
+//                        .content(uri)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

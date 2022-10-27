@@ -101,7 +101,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 null, null, true);
         Event readyEvent = eventRepository.save(event);
         return UtilCollectorsDto.getEventFullDto(readyEvent, categoryMapper, userMapper,
-                statisticClient, eventMapper, requestRepository);
+                null, eventMapper, requestRepository);
     }
 
     // Получение полной информации о событии, добавленном текущим пользователем. Возвращает EventFullDto
@@ -161,7 +161,8 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         Event event = readyRequest.getEvent();
         if (event.getParticipantLimit() != 0) {
             Integer participantLimit = event.getParticipantLimit();
-            Integer confirmedRequests = requestRepository.countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED);
+            Integer confirmedRequests = requestRepository
+                    .countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).orElse(0);
             if (participantLimit.equals(confirmedRequests)) {
                 List<Request> cancellationRequests = requestRepository
                         .findAllByEventIdAndStatus(event.getId(), RequestStatus.PENDING);

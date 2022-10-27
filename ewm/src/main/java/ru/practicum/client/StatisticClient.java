@@ -2,8 +2,9 @@ package ru.practicum.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.practicum.exception.StatisticClientException;
+import ru.practicum.exception.StatisticSendingClientException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class StatisticClient {
@@ -48,8 +50,9 @@ public class StatisticClient {
             result = objectMapper.readValue(response.body(), objectMapper.getTypeFactory()
                     .constructCollectionType(List.class, ViewStat.class));
         } catch (IOException | InterruptedException e) {
-            throw new StatisticClientException("An error occurred when sending a request from a client");
+            throw new StatisticSendingClientException("An error occurred when sending a request from a client");
         }
+        log.info("Send request GET uri = {}. \n And get response: {}", uri, response);
         return result;
     }
 
@@ -59,38 +62,47 @@ public class StatisticClient {
     }
 
     public Integer getViewsByUri(Integer eventId) {
+        System.out.println("Зашли в метод клиента для поиска просмотров с переданным параметром: " + eventId);
         Integer result;
-        URI uri = URI.create("http://localhost:9090/events");
+        URI uri = URI.create("http://localhost:9090/events/" + eventId);
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
-                .method("GET", HttpRequest.BodyPublishers.ofString("/events/" + eventId))
-                .timeout(Duration.of(10, SECONDS))
-                .headers("Content-Type", "text/plain;charset=UTF-8")
                 .header("Accept", "application/json")
                 .build();
+        System.out.println("Создали запрос: " + request);
+        System.out.println("С uri запроса" + request.uri());
+        System.out.println("С методом запроса: " + request.method());
         HttpResponse<String> response;
         try {
+            System.out.println("Зашли в блок try");
             response = HttpClient.newBuilder()
                     .build()
                     .send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Получили ответ: " + response);
             result = objectMapper.readValue(response.body(), Integer.class);
+            System.out.println("Получили результат: " + result);
         } catch (IOException | InterruptedException e) {
-            throw new StatisticClientException("An error occurred when sending a request from a client");
+            log.warn("Error: " + e + " \n Cause = " + e.getCause() + " \n Message = " + e.getMessage());
+            throw new StatisticSendingClientException("An error occurred when sending a request from a client 'GetViewsByUri'");
         }
+        log.info("Send request GET uri = {}. \n And get response: {}", uri, response);
         return result;
     }
 
     public void saveCall(Map<String, String> endpointHit) {
         URI uri = URI.create("http://localhost:9090/hit");
+        String body = getFormDataAsString(endpointHit);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
-                .POST(HttpRequest.BodyPublishers.ofString(getFormDataAsString(endpointHit)))
+                .POST(HttpRequest.BodyPublishers.ofString(body))
                 .timeout(Duration.of(10, SECONDS))
                 .headers("Content-Type", "text/plain;charset=UTF-8")
                 .header("Accept", "application/json")
                 .build();
         HttpClient.newBuilder().build()
                 .sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        log.info("Send request POST uri = {} to save statistic with body: {}", uri, body);
     }
 
     private static String getFormDataAsString(Map<String, String> formData) {

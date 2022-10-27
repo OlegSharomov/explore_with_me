@@ -54,7 +54,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleStatisticClientException(final StatisticClientException e) {
+    public String handleStatisticClientException(final StatisticSendingClientException e) {
         log.warn("{}\n{}\n{}", e, e.getMessage(), e.getStackTrace());
         return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, e, e.getMessage(), LocalDateTime.now()).toString();
     }

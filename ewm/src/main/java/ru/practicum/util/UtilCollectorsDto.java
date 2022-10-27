@@ -32,7 +32,11 @@ public class UtilCollectorsDto {
 
     public static EventShortDto getEventShortDto(Event event, EventMapper eventMapper,
                                                  StatisticClient statisticClient, RequestRepository requestRepository) {
-        Integer confirmedRequests = requestRepository.countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED);
+        System.out.println("Зашли в метод сборки EventShortDto, с сущностью event = " + event);
+        System.out.println("Получаем количество подтвержденных запросов");
+        Integer confirmedRequests = requestRepository
+                .countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).orElse(0);
+        System.out.println("При сборке EventShortDto вызываем поиск просмотров, в котором eventId = " + event.getId());
         Integer views = statisticClient.getViewsByUri(event.getId());
         return eventMapper.toEventShortDto(event, confirmedRequests, views);
     }
@@ -50,9 +54,13 @@ public class UtilCollectorsDto {
                                                StatisticClient statisticClient, EventMapper eventMapper,
                                                RequestRepository requestRepository) {
         CategoryDto categoryDto = categoryMapper.toCategoryDto(event.getCategory());
-        Integer confirmedRequests = requestRepository.countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED);
+        Integer confirmedRequests = requestRepository
+                .countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).orElse(0);
         UserShortDto initiator = userMapper.toUserShortDto(event.getInitiator());
-        Integer views = statisticClient.getViewsByUri(event.getId());
+        Integer views = 0;
+        if (statisticClient != null) {
+            views = statisticClient.getViewsByUri(event.getId());
+        }
         return eventMapper.toEventFullDto(event, categoryDto, confirmedRequests,
                 initiator, views);
     }

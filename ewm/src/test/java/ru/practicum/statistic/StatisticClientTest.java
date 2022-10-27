@@ -13,7 +13,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.client.StatisticClient;
 import ru.practicum.client.ViewStat;
-import ru.practicum.exception.StatisticClientException;
+import ru.practicum.exception.StatisticSendingClientException;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -81,26 +81,26 @@ public class StatisticClientTest {
         return fields.stream().map(String::valueOf).collect(Collectors.joining(",", "", ""));
     }
 
-    // getViewsByUri
+//     getViewsByUri
     @Test
     public void shouldGetViews() {
         configureFor("localhost", 9090);
-        wireMockServer.stubFor(get(urlEqualTo("/events"))
+        wireMockServer.stubFor(get(urlEqualTo("/events/1"))
                 .willReturn(aResponse().withBody("100")));
 
         Integer result = statisticClient.getViewsByUri(1);
         assertEquals(100, result);
-        verify(getRequestedFor(urlEqualTo("/events")));
+        verify(getRequestedFor(urlEqualTo("/events/1")));
     }
 
     @Test
-    public void should() {
+    public void shouldThrowException () {
         configureFor("localhost", 9090);
         wireMockServer.stubFor(get(urlEqualTo("/eventts"))
                 .willReturn(aResponse().withBody("100")));
 
-        RuntimeException re = Assertions.assertThrows(StatisticClientException.class,
+        RuntimeException re = Assertions.assertThrows(StatisticSendingClientException.class,
                 () -> statisticClient.getViewsByUri(1));
-        assertEquals("An error occurred when sending a request from a client", re.getMessage());
+        assertEquals("An error occurred when sending a request from a client 'GetViewsByUri'", re.getMessage());
     }
 }

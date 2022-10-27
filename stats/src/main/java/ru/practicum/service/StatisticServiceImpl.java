@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -81,11 +80,12 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Integer getViews(String uri) {
-        Optional<Integer> views = statisticRepository.countByUri(uri);
-        if (views.isEmpty()) {
-            return 0;
-        } else {
-            return views.get();
-        }
+        return statisticRepository.countByUri(uri).orElse(0);
+//        Optional<Integer> views = statisticRepository.countByUri(uri);
+//        if (views.isEmpty()) {
+//            return 0;
+//        } else {
+//            return views.get();
+//        }
     }
 }

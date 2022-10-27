@@ -23,4 +23,6 @@ public interface EventRepository extends JpaRepository<Event, Integer>, JpaSpeci
                                                                                    Pageable pageable);
 
     Integer countByCategoryId(Integer catId);
+
+    List<Event>findAllByIdIn(List<Integer> list);
 }

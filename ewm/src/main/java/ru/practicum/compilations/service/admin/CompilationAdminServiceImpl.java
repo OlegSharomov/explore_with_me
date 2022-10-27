@@ -36,7 +36,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     @Override
     @Transactional(readOnly = false)
     public CompilationDto createNewCompilation(NewCompilationDto newCompilationDto) {
-        List<Event> eventEntities = eventRepository.findAllById(newCompilationDto.getEvents());
+        List<Event> eventEntities = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
         Compilation compilation = compilationMapper.toCompilation(newCompilationDto, eventEntities);
         Compilation readyCompilation = compilationRepository.save(compilation);
         return UtilCollectorsDto.getCompilationDto(readyCompilation, statisticClient,
