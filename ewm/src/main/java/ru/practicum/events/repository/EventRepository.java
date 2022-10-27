@@ -24,5 +24,5 @@ public interface EventRepository extends JpaRepository<Event, Integer>, JpaSpeci
 
     Integer countByCategoryId(Integer catId);
 
-    List<Event>findAllByIdIn(List<Integer> list);
+    List<Event> findAllByIdIn(List<Integer> list);
 }

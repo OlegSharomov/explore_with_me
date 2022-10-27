@@ -81,7 +81,7 @@ public class StatisticClientTest {
         return fields.stream().map(String::valueOf).collect(Collectors.joining(",", "", ""));
     }
 
-//     getViewsByUri
+    //     getViewsByUri
     @Test
     public void shouldGetViews() {
         configureFor("localhost", 9090);
@@ -94,7 +94,7 @@ public class StatisticClientTest {
     }
 
     @Test
-    public void shouldThrowException () {
+    public void shouldThrowException() {
         configureFor("localhost", 9090);
         wireMockServer.stubFor(get(urlEqualTo("/eventts"))
                 .willReturn(aResponse().withBody("100")));

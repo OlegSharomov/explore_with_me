@@ -13,7 +13,6 @@ import ru.practicum.model.EndpointHit;
 import ru.practicum.model.ViewStats;
 import ru.practicum.service.StatisticService;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,7 +48,7 @@ public class StatisticController {
         return statisticService.getStats(start, end, uris, unique);
     }
 
-//    @GetMapping("/events")
+    //    @GetMapping("/events")
 //    public Integer getViews(@NotEmpty(message = "request empty") @RequestBody String uri) {
 //        log.info("Received a request: GET /events with body: {}", uri);
 //        return statisticService.getViews(uri);
