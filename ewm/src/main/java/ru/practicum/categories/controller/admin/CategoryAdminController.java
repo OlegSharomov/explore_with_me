@@ -56,5 +56,4 @@ public class CategoryAdminController {
         log.info("Received a request: DELETE /admin/categories/{}", catId);
         adminService.removeCategory(catId);
     }
-
 }

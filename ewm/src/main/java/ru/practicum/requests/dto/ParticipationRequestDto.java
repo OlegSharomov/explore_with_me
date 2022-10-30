@@ -1,6 +1,7 @@
 package ru.practicum.requests.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +14,17 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ParticipationRequestDto {          // Заявка на участие в событии
+@Schema(description = "Заявка на участие в событии")
+public class ParticipationRequestDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime created;          // Дата и время создания заявки
-    private Integer event;                  // Идентификатор события
-    private Integer id;                     // Идентификатор заявки
-    private Integer requester;              // Идентификатор пользователя, отправившего заявку
-    private RequestStatus status;           // Статус заявки.  PENDING, CONFIRMED, REJECTED
+    @Schema(description = "Дата и время создания заявки")
+    private LocalDateTime created;
+    @Schema(description = "Идентификатор события")
+    private Integer event;
+    @Schema(description = "Идентификатор заявки")
+    private Integer id;
+    @Schema(description = "Идентификатор пользователя, отправившего заявку")
+    private Integer requester;
+    @Schema(description = "Статус заявки.  PENDING, CONFIRMED, REJECTED")
+    private RequestStatus status;
 }

@@ -42,7 +42,7 @@ public class EventAdminServiceImpl implements EventAdminService {
     private final UserMapper userMapper;
     private final StatisticClient statisticClient;
 
-    // Поиск событий. Возвращает list of EventFullDto.
+    // Поиск событий.
     /* Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия */
     @Override
     @Transactional
@@ -76,7 +76,7 @@ public class EventAdminServiceImpl implements EventAdminService {
                 statisticClient, eventMapper, requestRepository);
     }
 
-    // Редактирование событий. Возвращает EventFullDto.
+    // Редактирование событий.
     /* Редактирование данных любого события администратором. Валидация данных не требуется. */
     @Override
     @Transactional(readOnly = false)
@@ -110,7 +110,7 @@ public class EventAdminServiceImpl implements EventAdminService {
     }
 
 
-    // Публикация события. Возвращает EventFullDto.
+    // Публикация события.
     /* Дата начала события должна быть не ранее чем за час от даты публикации.
      * Событие должно быть в состоянии ожидания публикации*/
     @Override
@@ -129,8 +129,8 @@ public class EventAdminServiceImpl implements EventAdminService {
                 statisticClient, eventMapper, requestRepository);
     }
 
-    // Отклонение события. Возвращает EventFullDto.
-    /* Обратите внимание: событие не должно быть опубликовано.*/
+    // Отклонение события.
+    // Обратите внимание: событие не должно быть опубликовано.
     @Override
     @Transactional(readOnly = false)
     public EventFullDto rejectEvent(Integer eventId) {

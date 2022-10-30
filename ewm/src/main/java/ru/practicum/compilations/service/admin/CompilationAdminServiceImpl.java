@@ -32,7 +32,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     private final StatisticClient statisticClient;
     private final EventMapper eventMapper;
 
-    // Добавление новой подборки. Возвращает CompilationDto.
+    // Добавление новой подборки.
     @Override
     @Transactional(readOnly = false)
     public CompilationDto createNewCompilation(NewCompilationDto newCompilationDto) {
@@ -43,7 +43,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
                 eventMapper, compilationMapper, requestRepository);
     }
 
-    // Удаление подборки. Возвращает только статус ответа или ошибку.
+    // Удаление подборки.
     @Override
     @Transactional(readOnly = false)
     public void removeCompilation(Integer compId) {

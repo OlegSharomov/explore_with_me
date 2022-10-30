@@ -1,6 +1,7 @@
 package ru.practicum.events.dto.priv;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,27 +17,37 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "DTO для создания новой категории")
 public class NewEventDto {
     @NotNull
     @Length(min = 20, max = 2000)
-    private String annotation;              // Краткое описание события
+    @Schema(description = "Краткое описание события")
+    private String annotation;
     @NotNull
     @Positive
-    private Integer category;               // id категории к которой относится событие
+    @Schema(description = "id категории к которой относится событие")
+    private Integer category;
     @NotNull
     @Length(min = 20, max = 7000)
-    private String description;             // Полное описание события
+    @Schema(description = "Полное описание события")
+    private String description;
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate;        // Дата и время на которые намечено событие. Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
+    @Schema(description = "Дата и время на которые намечено событие. Дата и время указываются в формате yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime eventDate;
     @NotNull
-    private Location location;              // Широта и долгота места проведения события
-    private Boolean paid = false;           // Нужно ли оплачивать участие в событии. Значение по умолчанию = false
+    @Schema(description = "Широта и долгота места проведения события")
+    private Location location;
+    @Schema(description = "Нужно ли оплачивать участие в событии. Значение по умолчанию = false")
+    private Boolean paid = false;
     @Positive
-    private Integer participantLimit = 0;   // Ограничение на количество участников. Значение 0 - означает отсутствие ограничения
-    private Boolean requestModeration = true; /* Нужна ли пре-модерация заявок на участие. Если true,
-     то все заявки будут ожидать подтверждения инициатором события. Если false - то будут подтверждаться автоматически. */
+    @Schema(description = "Ограничение на количество участников. Значение 0 - означает отсутствие ограничения")
+    private Integer participantLimit = 0;
+    @Schema(description = "Нужна ли пре-модерация заявок на участие. Если true, то все заявки " +
+            "будут ожидать подтверждения инициатором события. Если false - то будут подтверждаться автоматически")
+    private Boolean requestModeration = true; /* . */
     @NotNull
     @Length(min = 3, max = 120)
-    private String title;                   // Заголовок события
+    @Schema(description = "Заголовок события")
+    private String title;
 }

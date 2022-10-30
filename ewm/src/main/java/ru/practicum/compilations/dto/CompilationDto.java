@@ -1,5 +1,6 @@
 package ru.practicum.compilations.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 import org.hibernate.validator.constraints.UniqueElements;
@@ -11,13 +12,18 @@ import java.util.List;
 
 @Value
 @Builder
-public class CompilationDto {       // Подборка событий
+@Schema(description = "Подборка событий")
+public class CompilationDto {
     @UniqueElements
-    List<EventShortDto> events;     // Подборка событий
+    @Schema(description = "Подборка событий")
+    List<EventShortDto> events;
     @NotNull
-    Integer id;            // Идентификатор
+    @Schema(description = "Идентификатор")
+    Integer id;
     @NotNull
-    Boolean pinned;        // Закреплена ли подборка на главной странице сайта
+    @Schema(description = "Закреплена ли подборка на главной странице сайта")
+    Boolean pinned;
     @NotBlank
-    String title;         // Заголовок подборки
+    @Schema(description = "Заголовок подборки")
+    String title;
 }

@@ -74,7 +74,7 @@ public class StatisticControllerTest {
                 .getStats(any(LocalDateTime.class), any(LocalDateTime.class), any(), any(Boolean.class));
     }
 
-//     getViews
+    //     getViews
     @Test
     public void shouldCallServiceGetViews() throws Exception {
         String uri = "/events/" + 1;

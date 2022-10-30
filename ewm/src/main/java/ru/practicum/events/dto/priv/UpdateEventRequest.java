@@ -1,6 +1,7 @@
 package ru.practicum.events.dto.priv;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,21 +16,30 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateEventRequest {               // Данные для изменения информации о событии
+@Schema(description = "Данные для изменения информации о событии")
+public class UpdateEventRequest {
     @Length(min = 20, max = 2000)
-    private String annotation;          // Новая аннотация
+    @Schema(description = "Новая аннотация")
+    private String annotation;
     @Positive
-    private Integer category;           // Новая категория
+    @Schema(description = "Новая категория")
+    private Integer category;
     @Length(min = 20, max = 7000)
-    private String description;         // Новое описание
+    @Schema(description = "Новое описание")
+    private String description;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate;    // Новые дата и время на которые намечено событие. Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
+    @Schema(description = "Новые дата и время на которые намечено событие. Дата и время указываются в формате yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime eventDate;
     @NotNull
     @Positive
-    private Integer eventId;            // Идентификатор события
-    private Boolean paid;               // Новое значение флага о платности мероприятия
+    @Schema(description = "Идентификатор события")
+    private Integer eventId;
+    @Schema(description = "Новое значение флага о платности мероприятия")
+    private Boolean paid;
     @Positive
-    private Integer participantLimit;   // Новый лимит пользователей
+    @Schema(description = "Новый лимит пользователей")
+    private Integer participantLimit;
     @Length(min = 3, max = 120)
-    private String title;               // Новый заголовок
+    @Schema(description = "Новый заголовок")
+    private String title;
 }

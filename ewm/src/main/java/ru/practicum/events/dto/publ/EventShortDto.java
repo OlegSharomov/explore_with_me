@@ -1,6 +1,7 @@
 package ru.practicum.events.dto.publ;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,21 +16,31 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "DTO с кратким описанием события")
 public class EventShortDto {
     @NotNull
-    private String annotation;         // Краткое описание
+    @Schema(description = "Краткое описание")
+    private String annotation;
     @NotNull
-    private CategoryDto category;      // Категория {"id": 1, "name": "Концерты"}
-    private Integer confirmedRequests; // Количество одобренных заявок на участие в данном событии
+    @Schema(description = "Категория", example = "{\"id\": 1, \"name\": \"Концерты\"}")
+    private CategoryDto category;
+    @Schema(description = "Количество одобренных заявок на участие в данном событии")
+    private Integer confirmedRequests;
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate;   // дата начала события формате "yyyy-MM-dd HH:mm:ss"
+    @Schema(description = "дата начала события формате yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime eventDate;
+    @Schema(description = "")
     private Integer id;
     @NotNull
-    private UserShortDto initiator;    // Пользователь (краткая информация) {"id": 3, "name": "Фёдоров Матвей"}
+    @Schema(description = "Пользователь (краткая информация)", example = "{\"id\": 3, \"name\": \"Фёдоров Матвей\"}")
+    private UserShortDto initiator;
     @NotNull
-    private Boolean paid;              // Нужно ли оплачивать участие
+    @Schema(description = "Нужно ли оплачивать участие")
+    private Boolean paid;
     @NotNull
-    private String title;              // Заголовок
-    private Integer views;             // Количество просмотрев события
+    @Schema(description = "Заголовок")
+    private String title;
+    @Schema(description = "Количество просмотрев события")
+    private Integer views;
 }

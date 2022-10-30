@@ -1,5 +1,6 @@
 package ru.practicum.users.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,10 +14,13 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "DTO для создания нового пользователя")
 public class NewUserRequest {
     @NotNull
     @Email
-    private String email;       // Почтовый адрес
+    @Schema(description = "Почтовый адрес")
+    private String email;
     @NotBlank
-    private String name;        // Имя
+    @Schema(description = "Имя пользователя")
+    private String name;
 }

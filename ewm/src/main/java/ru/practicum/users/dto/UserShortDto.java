@@ -13,5 +13,4 @@ public class UserShortDto {
     Integer id;
     @NotBlank
     String name;
-
 }

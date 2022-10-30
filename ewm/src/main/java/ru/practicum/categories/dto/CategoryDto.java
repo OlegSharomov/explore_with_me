@@ -1,5 +1,6 @@
 package ru.practicum.categories.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +13,12 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "DTO категории")
 public class CategoryDto {
     @NotNull
-    private Integer id;     // Идентификатор категории
+    @Schema(description = "Идентификатор категории")
+    private Integer id;
     @NotBlank
-    private String name;    // Название категории
+    @Schema(description = "Название категории")
+    private String name;
 }

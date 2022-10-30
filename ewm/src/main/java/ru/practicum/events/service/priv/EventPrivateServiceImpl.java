@@ -48,7 +48,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final UserMapper userMapper;
     private final RequestMapper requestMapper;
 
-    // Получение событий, добавленных текущим пользователем. Возвращает список EventShortDto.
+    // Получение событий, добавленных текущим пользователем.
     @Override
     @Transactional
     public List<EventShortDto> getEventsByUserId(Integer userId, Integer from, Integer size) {
@@ -58,7 +58,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         return UtilCollectorsDto.getListEventShortDto(events, statisticClient, eventMapper, requestRepository);
     }
 
-    // Изменение события, добавленного текущим пользователем. Возвращает EventFullDto.
+    // Изменение события, добавленного текущим пользователем.
     /* Изменять можно только отмененные события или события в состоянии ожидания модерации
      * Если редактируется отменённое событие, то оно автоматически переходит в состояние ожидания модерации
      * Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента */
@@ -89,7 +89,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 statisticClient, eventMapper, requestRepository);
     }
 
-    // Добавление нового события. Возвращает EventFullDto.
+    // Добавление нового события.
     /* !!! Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента*/
     @Override
     @Transactional(readOnly = false)
@@ -104,7 +104,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 null, eventMapper, requestRepository);
     }
 
-    // Получение полной информации о событии, добавленном текущим пользователем. Возвращает EventFullDto
+    // Получение полной информации о событии, добавленном текущим пользователем.
     @Override
     @Transactional
     public EventFullDto getEventById(Integer userId, Integer eventId) {
@@ -114,7 +114,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 statisticClient, eventMapper, requestRepository);
     }
 
-    // Отмена события добавленного текущим пользователем. Возвращает EventFullDto.
+    // Отмена события добавленного текущим пользователем.
     /* Обратите внимание: Отменить можно только событие в состоянии ожидания модерации.*/
     @Override
     @Transactional(readOnly = false)
@@ -130,7 +130,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 statisticClient, eventMapper, requestRepository);
     }
 
-    // Получение информации о запросах на участие в событии текущего пользователя. Возвращает список ParticipationRequestDto.
+    // Получение информации о запросах на участие в событии текущего пользователя.
     @Override
     @Transactional
     public List<ParticipationRequestDto> getParticipationRequest(Integer userId, Integer eventId) {
@@ -140,7 +140,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 .collect(Collectors.toList());
     }
 
-    // Подтверждение чужой заявки на участие в событии текущего пользователя. Возвращает ParticipationRequestDto.
+    // Подтверждение чужой заявки на участие в событии текущего пользователя.
     /* Если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
      * Нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие
      * Если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки
@@ -178,7 +178,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 readyRequest.getRequester().getId());
     }
 
-    // Отклонение чужой заявки на участие в событии текущего пользователя. Возвращает ParticipationRequestDto.
+    // Отклонение чужой заявки на участие в событии текущего пользователя.
     @Override
     @Transactional(readOnly = false)
     public ParticipationRequestDto rejectParticipationRequest(Integer userId, Integer eventId, Integer reqId) {

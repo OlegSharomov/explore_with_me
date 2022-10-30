@@ -1,5 +1,6 @@
 package ru.practicum.compilations.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,15 +10,18 @@ import org.hibernate.validator.constraints.UniqueElements;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-// DTO подборки событий для создания
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "DTO для создания новой подборки событий")
 public class NewCompilationDto {
     @UniqueElements
-    private List<Integer> events;           // Список идентификаторов событий входящих в подборку
-    private Boolean pinned = false;         // Закреплена ли подборка на главной странице сайта
+    @Schema(description = "Список идентификаторов событий входящих в подборку")
+    private List<Integer> events;
+    @Schema(description = "Закреплена ли подборка на главной странице сайта")
+    private Boolean pinned = false;
     @NotBlank
-    private String title;                   // Заголовок подборки
+    @Schema(description = "Заголовок подборки")
+    private String title;
 }

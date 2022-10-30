@@ -33,7 +33,7 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
 
     @Override
     @Transactional
-    //Получение подборок событий. Возвращает список CompilationDto.
+    //Получение подборок событий.
     // Искать только закрепленные/не закрепленные подборки
     public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
@@ -48,7 +48,7 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
 
     @Override
     @Transactional
-    // Получение подборки событий по id. Возвращает CompilationDto
+    // Получение подборки событий по id.
     public CompilationDto getCompilationById(@PathVariable Integer compId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));

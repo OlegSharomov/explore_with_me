@@ -1,6 +1,7 @@
 package ru.practicum.events.dto.publ;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,41 +18,47 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "DTO с полным описанием события")
 public class EventFullDto {
     @NotNull
-    private String annotation;              // Краткое описание
+    @Schema(description = "Краткое описание")
+    private String annotation;
     @NotNull
-    private CategoryDto category;           // Категория {"id": 1, "name": "Концерты"}
-    private Integer confirmedRequests;      // Количество одобренных заявок на участие в данном событии
+    @Schema(description = "Категория", example = "{\"id\": 1, \"name\": \"Концерты\"}")
+    private CategoryDto category;
+    @Schema(description = "Количество одобренных заявок на участие в данном событии")
+    private Integer confirmedRequests;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdOn;        // Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
-    private String description;             // Полное описание события
+    @Schema(description = "Дата и время создания события (в формате yyyy-MM-dd HH:mm:ss)")
+    private LocalDateTime createdOn;
+    @Schema(description = "Полное описание события")
+    private String description;
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate;        // Дата и время на которые намечено событие (в формате "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Дата и время на которые намечено событие (в формате yyyy-MM-dd HH:mm:ss)")
+    private LocalDateTime eventDate;
     private Integer id;
     @NotNull
-    private UserShortDto initiator;         // Пользователь (краткая информация) {"id": 3, "name": "Фёдоров Матвей"}
+    @Schema(description = "Пользователь (краткая информация)", example = "{\"id\": 3, \"name\": \"Фёдоров Матвей\"}")
+    private UserShortDto initiator;
     @NotNull
-    private Location location;              // Широта и долгота места проведения события {"lat": 55.754167, "lon": 37.62}
+    @Schema(description = "Широта и долгота места проведения события", example = "{\"lat\": 55.754167, \"lon\": 37.62}")
+    private Location location;
     @NotNull
-    private Boolean paid;                   // Нужно ли оплачивать участие
-    private Integer participantLimit = 0;   // Ограничение на количество участников. Значение 0 - означает отсутствие ограничения.
+    @Schema(description = "Нужно ли оплачивать участие")
+    private Boolean paid;
+    @Schema(description = "Ограничение на количество участников. Значение 0 - означает отсутствие ограничения")
+    private Integer participantLimit = 0;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime publishedOn;      // Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss")
-    private Boolean requestModeration = true; // Нужна ли пре-модерация заявок на участие. Дефолтно: true
-    private EventState state;               // Список состояний жизненного цикла события. [PENDING, PUBLISHED, CANCELED]
+    @Schema(description = "Дата и время публикации события (в формате yyyy-MM-dd HH:mm:ss)")
+    private LocalDateTime publishedOn;
+    @Schema(description = "Нужна ли пре-модерация заявок на участие. Дефолтно: true")
+    private Boolean requestModeration = true;
+    @Schema(description = "Список состояний жизненного цикла события [PENDING, PUBLISHED, CANCELED]")
+    private EventState state;
     @NotNull
-    private String title;                   // Заголовок
-    private Integer views;                  // Количество просмотрев события
-
-    /* В отличие от NewEventDto у FullEventDto есть поля:
-    Integer confirmedRequests;          // Количество одобренных заявок на участие в данном событии
-    LocalDateTime createdOn;            // Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
-    Integer id;
-    @NotNull UserShortDto initiator;    // Пользователь (краткая информация) {"id": 3, "name": "Фёдоров Матвей"}
-    LocalDateTime publishedOn;          // Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss")
-    EventState state;                   // Список состояний жизненного цикла события. [PENDING, PUBLISHED, CANCELED]
-    Integer views;                      // Количество просмотрев события
-    */
+    @Schema(description = "Заголовок")
+    private String title;
+    @Schema(description = "Количество просмотрев события")
+    private Integer views;
 }

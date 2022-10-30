@@ -29,10 +29,10 @@ public class RequestServiceImpl implements RequestService {
     private final UserRepository userRepository;
     private final RequestMapper requestMapper;
 
-    // Получение информации о заявках текущего пользователя на участие в чужих событиях. Возвращает ParticipationRequestDto.
+    // Получение информации о заявках текущего пользователя на участие в чужих событиях.
     @Override
     @Transactional
-    // Получение информации о заявках текущего пользователя на участие в чужих событиях. Возвращает список ParticipationRequestDto.
+    // Получение информации о заявках текущего пользователя на участие в чужих событиях.
     public List<ParticipationRequestDto> getParticipationRequest(Integer userId) {
         List<Request> requests = requestRepository.findAllByRequesterId(userId);
         return requests.stream()
@@ -40,7 +40,7 @@ public class RequestServiceImpl implements RequestService {
                 .collect(Collectors.toList());
     }
 
-    // Добавление запроса от текущего пользователя на участие в событии. Возвращает ParticipationRequestDto.
+    // Добавление запроса от текущего пользователя на участие в событии.
     /* Нельзя добавить повторный запрос
      * Инициатор события не может добавить запрос на участие в своём событии
      * Нельзя участвовать в неопубликованном событии
@@ -85,7 +85,7 @@ public class RequestServiceImpl implements RequestService {
         return requestMapper.toRequestDto(readyRequest, readyRequest.getEvent().getId(), readyRequest.getRequester().getId());
     }
 
-    // Отмена своего запроса на участие в событии. Возвращает ParticipationRequestDto.
+    // Отмена своего запроса на участие в событии.
     @Override
     @Transactional(readOnly = false)
     public ParticipationRequestDto cancelParticipationRequest(Integer userId, Integer requestId) {

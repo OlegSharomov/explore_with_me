@@ -1,6 +1,7 @@
 package ru.practicum.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,10 +14,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EndpointHit {
-    private Integer id;         // Идентификатор записи
-    private String app;         // Идентификатор сервиса для которого записывается информация
-    private String uri;         // URI для которого был осуществлен запрос
-    private String ip;          // IP-адрес пользователя, осуществившего запрос
+    @Schema(description = "Идентификатор записи")
+    private Integer id;
+    @Schema(description = "Идентификатор сервиса для которого записывается информация", example = "ewm-main-service")
+    private String app;
+    @Schema(description = "URI для которого был осуществлен запрос", example = "/event/367")
+    private String uri;
+    @Schema(description = "IP-адрес пользователя, осуществившего запрос", example = "172.16.255.254")
+    private String ip;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime timestamp;    // Дата и время, когда был совершен/ запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
+    @Schema(description = "Дата и время, когда был совершен/ запрос к эндпоинту (в формате yyyy-MM-dd HH:mm:ss)")
+    private LocalDateTime timestamp;
 }
