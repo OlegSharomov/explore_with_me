@@ -1,5 +1,8 @@
 package ru.practicum.compilations.controller.admin;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -22,48 +25,58 @@ import javax.validation.constraints.Positive;
 @RequestMapping("/admin/compilations")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Admin.Подборки событий", description = "API для работы с подборками событий. Только для администраторов.")
 public class CompilationAdminController {
     private final CompilationAdminService compilationAdminService;
 
     @PostMapping
-    // Добавление новой подборки. Возвращает CompilationDto.
-    public CompilationDto createNewCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
+    @Operation(summary = "Добавление новой подборки", description = "Возвращает CompilationDto")
+    public CompilationDto createNewCompilation(@Valid @RequestBody @Parameter(name = "DTO для создания нового события")
+                                               NewCompilationDto newCompilationDto) {
         log.info("Received a request POST /admin/compilations with body: {}", newCompilationDto);
         return compilationAdminService.createNewCompilation(newCompilationDto);
     }
 
     @DeleteMapping("/{compId}")
-    // Удаление подборки. Возвращает только статус ответа или ошибку.
+    @Operation(summary = "Удаление подборки по id", description = "Возвращает только статус ответа или ошибку")
     public void removeCompilation(@Positive @PathVariable Integer compId) {
         log.info("Received a request DELETE /admin/compilations/{}", compId);
         compilationAdminService.removeCompilation(compId);
     }
 
     @DeleteMapping("/{compId}/events/{eventId}")
-    // Удалить событие из подборки. Возвращает только статус ответа или ошибку.
-    public void removeEventFromCompilation(@Positive @PathVariable Integer compId,
-                                           @Positive @PathVariable Integer eventId) {
+    @Operation(summary = "Удалить событие из подборки", description = "Возвращает только статус ответа или ошибку.")
+    public void removeEventFromCompilation(@Positive @PathVariable
+                                           @Parameter(name = "id подборки, из которой нужно удалить")
+                                           Integer compId,
+                                           @Positive @PathVariable
+                                           @Parameter(name = "id события, которое нужно удалить из подборки")
+                                           Integer eventId) {
         log.info("Received a request DELETE /admin/compilations/{}/events/{}", compId, eventId);
         compilationAdminService.removeEventFromCompilation(compId, eventId);
     }
 
     @PatchMapping("/{compId}/events/{eventId}")
-    // Добавить событие в подборку. Возвращает только статус ответа или ошибку.
-    public void addEventInCompilation(@Positive @PathVariable Integer compId,
-                                      @Positive @PathVariable Integer eventId) {
+    @Operation(summary = "Добавить событие в подборку", description = "Возвращает только статус ответа или ошибку")
+    public void addEventInCompilation(@Positive @PathVariable
+                                      @Parameter(name = "id подборки, в которую нужно добавить событие")
+                                      Integer compId,
+                                      @Positive @PathVariable
+                                      @Parameter(name = "id события, которое нужно добавить в подборку")
+                                      Integer eventId) {
         log.info("Received a request PATCH /admin/compilations/{}/events/{}", compId, eventId);
         compilationAdminService.addEventInCompilation(compId, eventId);
     }
 
     @DeleteMapping("/{compId}/pin")
-    // Открепить подборку на главной странице. Возвращает только статус ответа или ошибку.
+    @Operation(summary = "Открепить подборку на главной странице", description = "Возвращает только статус ответа или ошибку")
     public void unpinCompilation(@Positive @PathVariable Integer compId) {
         log.info("Received a request DELETE /admin/compilations/{}/pin", compId);
         compilationAdminService.unpinCompilation(compId);
     }
 
     @PatchMapping("/{compId}/pin")
-    // Закрепить подборку на главной странице. Возвращает только статус ответа или ошибку.
+    @Operation(summary = "Закрепить подборку на главной странице", description = "Возвращает только статус ответа или ошибку")
     public void pinCompilation(@Positive @PathVariable Integer compId) {
         log.info("Received a request PATCH /admin/compilations/{}/pin", compId);
         compilationAdminService.pinCompilation(compId);

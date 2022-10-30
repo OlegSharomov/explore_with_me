@@ -1,5 +1,7 @@
 package ru.practicum.categories.controller.publ;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -20,11 +22,12 @@ import java.util.List;
 @RequestMapping("/categories")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Public.Категории", description = "Публичный API для работы с категориями.")
 public class CategoryPublicController {
     private final CategoryPublicService categoryPublicService;
 
     @GetMapping
-    // Получение категорий. Возвращает список CategoryDto.
+    @Operation(summary = "Получение категорий", description = "Возвращает список CategoryDto")
     public List<CategoryDto> getCategories(@PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                            @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Received a request: GET /categories with parameters: from = {}, size = {}", from, size);
@@ -32,7 +35,7 @@ public class CategoryPublicController {
     }
 
     @GetMapping("/{catId}")
-    // Получение информации о категории по ее id. Возвращает CategoryDto.
+    @Operation(summary = "Получение информации о категории по ее id", description = "Возвращает CategoryDto")
     public CategoryDto getCategoryById(@Positive @PathVariable Integer catId) {
         log.info("Received a request: GET /categories/{}", catId);
         return categoryPublicService.getCategoryById(catId);

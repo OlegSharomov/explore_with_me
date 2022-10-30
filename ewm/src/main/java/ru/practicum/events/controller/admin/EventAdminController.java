@@ -1,5 +1,8 @@
 package ru.practicum.events.controller.admin;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -26,26 +29,26 @@ import java.util.List;
 @RequestMapping("/admin/events")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Admin.События", description = "API для работы с событиями. Только для администраторов.")
 public class EventAdminController {
     private final EventAdminService eventAdminService;
 
     @GetMapping
-    // Поиск событий. Возвращает list of EventFullDto.
-    /* Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия */
-
-    public List<EventFullDto> getAllEvents(// список id пользователей, чьи события нужно найти
+    @Operation(summary = "Поиск событий", description = "Возвращает list of EventFullDto. Эндпоинт возвращает полную " +
+            "информацию обо всех событиях подходящих под переданные условия")
+    public List<EventFullDto> getAllEvents(@Parameter(name = "список id пользователей, чьи события нужно найти")
                                            @RequestParam(required = false) List<Integer> users,
-                                           // список состояний в которых находятся искомые события
+                                           @Parameter(name = "список состояний в которых находятся искомые события")
                                            @RequestParam(required = false) List<EventState> states,
-                                           // список id категорий в которых будет вестись поиск
+                                           @Parameter(name = "список id категорий в которых будет вестись поиск")
                                            @RequestParam(required = false) List<Integer> categories,
-                                           // дата и время не раньше которых должно произойти событие
+                                           @Parameter(name = "дата и время не раньше которых должно произойти событие")
                                            @RequestParam(required = false) LocalDateTime rangeStart,
-                                           // дата и время не позже которых должно произойти событие
+                                           @Parameter(name = "дата и время не позже которых должно произойти событие")
                                            @RequestParam(required = false) LocalDateTime rangeEnd,
-                                           // количество событий, которые нужно пропустить для формирования текущего набора
+                                           @Parameter(name = "количество событий, которые нужно пропустить для формирования текущего набора")
                                            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                           // количество событий в наборе
+                                           @Parameter(name = "количество событий в наборе")
                                            @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Received a request: GET /admin/events with parameters: users = {}, states = {}, categories = {}, " +
                         "rangeStart = {}, rangeEnd = {}, from = {}, size = {}", users,
@@ -54,26 +57,26 @@ public class EventAdminController {
     }
 
     @PutMapping("/{eventId}")
-    // Редактирование событий. Возвращает EventFullDto.
-    /* Редактирование данных любого события администратором. Валидация данных не требуется. */
+    @Operation(summary = "Редактирование событий", description = "Возвращает EventFullDto. Редактирование данных " +
+            "любого события администратором. Валидация данных не требуется.")
     public EventFullDto changeEvent(@Positive @PathVariable Integer eventId,
+                                    @Parameter(name = "DTO для изменения события администратором")
                                     @RequestBody AdminUpdateEventRequest adminUpdateEventRequest) {
         log.info("Received a request: PUT /admin/events/{} with body: {}", eventId, adminUpdateEventRequest);
         return eventAdminService.changeEvent(eventId, adminUpdateEventRequest);
     }
 
     @PatchMapping("/{eventId}/publish")
-    // Публикация события. Возвращает EventFullDto.
-    /* Дата начала события должна быть не ранее чем за час от даты публикации.
-     * Событие должно быть в состоянии ожидания публикации*/
+    @Operation(summary = "Публикация события", description = "Возвращает EventFullDto. Дата начала события должна быть " +
+            "не ранее чем за час от даты публикации. Событие должно быть в состоянии ожидания публикации")
     public EventFullDto publishingEvent(@Positive @PathVariable Integer eventId) {
         log.info("Received a request: PATCH /admin/events/{}/publish ", eventId);
         return eventAdminService.publishingEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
-    // Отклонение события. Возвращает EventFullDto.
-    /* Обратите внимание: событие не должно быть опубликовано.*/
+    @Operation(summary = "Отклонение события", description = "Возвращает EventFullDto. Отклонение возможно только, если " +
+            "событие не опубликовано.")
     public EventFullDto rejectEvent(@Positive @PathVariable Integer eventId) {
         log.info("Received a request: PATCH /admin/events/{}/reject ", eventId);
         return eventAdminService.rejectEvent(eventId);

@@ -24,7 +24,6 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 @Slf4j
 @Component
-//@RequiredArgsConstructor
 public class StatisticClient {
     @Autowired
     public StatisticClient(@Value("${stats-server.url}") String statServerUrl, ObjectMapper objectMapper) {

@@ -1,5 +1,7 @@
 package ru.practicum.users.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -26,13 +28,16 @@ import java.util.List;
 @RequestMapping("/admin/users")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Admin.Пользователи", description = "API для работы с пользователями.")
 public class UserController {
     private final UserService userService;
 
     @GetMapping
-    // Получение информации о пользователях. Возвращает list of UserDto.
-    /* Возвращает информацию обо всех пользователях (учитываются параметры ограничения выборки),
-     * либо о конкретных (учитываются указанные идентификаторы)*/
+    @Operation(summary = "Получение информации о пользователях",
+            description = "Возвращает list of UserDto. " +
+                    "Возвращает информацию обо всех пользователях (учитываются параметры ограничения выборки), " +
+                    "либо о конкретных (учитываются указанные идентификаторы)")
+    // . */
     public List<UserDto> getUsers(@RequestParam(required = false) Integer[] ids,      // id пользователей
                                   @PositiveOrZero(message = "'from' must be positive or zero")
                                   @RequestParam(defaultValue = "0") Integer from,
@@ -44,14 +49,14 @@ public class UserController {
     }
 
     @PostMapping
-    // Добавление нового пользователя. Возвращает UserDto.
+    @Operation(summary = "Добавление нового пользователя", description = "Возвращает UserDto")
     public UserDto createUser(@Valid @RequestBody NewUserRequest newUserRequest) {
         log.info("Received a request: POST /admin/users with body = {}", newUserRequest);
         return userService.createUser(newUserRequest);
     }
 
     @DeleteMapping("/{userId}")
-    // Удаление пользователя. Возвращает только статус ответа или ошибку.
+    @Operation(summary = "Удаление пользователя", description = "Возвращает только статус ответа или ошибку")
     public void removeUser(@Positive(message = "'userId' must be positive")
                            @PathVariable Integer userId) {
         log.info("Received a request: DELETE /admin/users/{}", userId);

@@ -81,11 +81,5 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Integer getViews(String uri) {
         return statisticRepository.countByUri(uri).orElse(0);
-//        Optional<Integer> views = statisticRepository.countByUri(uri);
-//        if (views.isEmpty()) {
-//            return 0;
-//        } else {
-//            return views.get();
-//        }
     }
 }

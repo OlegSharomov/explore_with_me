@@ -1,5 +1,7 @@
 package ru.practicum.events.controller.priv;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -30,11 +32,12 @@ import java.util.List;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Private.События", description = "Закрытый API для работы с событиями.")
 public class EventPrivateController {
     private final EventPrivateService eventPrivateService;
 
     @GetMapping("/{userId}/events")
-    // Получение событий, добавленных текущим пользователем. Возвращает список EventShortDto.
+    @Operation(summary = "Получение событий, добавленных текущим пользователем", description = "Возвращает список EventShortDto")
     public List<EventShortDto> getEventsByUserId(@Positive @PathVariable Integer userId,
                                                  @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                  @Positive @RequestParam(defaultValue = "10") Integer size) {
@@ -43,10 +46,10 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events")
-    // Изменение события, добавленного текущим пользователем. Возвращает EventFullDto.
-    /* Изменить можно только отмененные события или события в состоянии ожидания модерации
-     * Если редактируется отменённое событие, то оно автоматически переходит в состояние ожидания модерации
-     * Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента */
+    @Operation(summary = "Изменение события, добавленного текущим пользователем",
+            description = "Изменить можно только отмененные события или события в состоянии ожидания модерации. " +
+                    "Если редактируется отменённое событие, то оно автоматически переходит в состояние ожидания модерации. " +
+                    "Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента.")
     public EventFullDto changeEventByUser(@Positive @PathVariable Integer userId,
                                           @Valid @RequestBody UpdateEventRequest updateEventRequest) {
         log.info("Received a request: PATCH /users/{}/events with body: {}", userId, updateEventRequest);
@@ -54,8 +57,8 @@ public class EventPrivateController {
     }
 
     @PostMapping("/{userId}/events")
-    // Добавление нового события. Возвращает EventFullDto.
-    /* !!! Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента*/
+    @Operation(summary = "Добавление нового события", description = "Возвращает EventFullDto. " +
+            "Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента")
     public EventFullDto createEvent(@Positive @PathVariable Integer userId,
                                     @Valid @RequestBody NewEventDto newEventDto) {
         log.info("Received a request: POST /users/{}/events with body: {}", userId, newEventDto);
@@ -66,7 +69,8 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{userId}/events/{eventId}")
-    // Получение полной информации о событии, добавленном текущим пользователем. Возвращает EventFullDto
+    @Operation(summary = "Получение полной информации о событии, добавленном текущим пользователем",
+            description = "Возвращает EventFullDto")
     public EventFullDto getEventById(@Positive @PathVariable Integer userId,
                                      @Positive @PathVariable Integer eventId) {
         log.info("Received a request: GET /users/{}/events/{} ", userId, eventId);
@@ -74,8 +78,8 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}")
-    // Отмена события добавленного текущим пользователем. Возвращает EventFullDto.
-    /* Обратите внимание: Отменить можно только событие в состоянии ожидания модерации.*/
+    @Operation(summary = "Отмена события добавленного текущим пользователем", description = "Возвращает EventFullDto. " +
+            "Обратите внимание: Отменить можно только событие в состоянии ожидания модерации.")
     public EventFullDto cancellationEvent(@Positive @PathVariable Integer userId,
                                           @Positive @PathVariable Integer eventId) {
         log.info("Received a request: PATCH /users/{}/events/{} ", userId, eventId);
@@ -83,7 +87,8 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{userId}/events/{eventId}/requests")
-    // Получение информации о запросах на участие в событии текущего пользователя. Возвращает ParticipationRequestDto.
+    @Operation(summary = "Получение информации о запросах на участие в событии текущего пользователя",
+            description = "Возвращает ParticipationRequestDto.")
     public List<ParticipationRequestDto> getParticipationRequest(@Positive @PathVariable Integer userId,
                                                                  @Positive @PathVariable Integer eventId) {
         log.info("Received a request: GET /users/{}/events/{}/requests ", userId, eventId);
@@ -91,11 +96,11 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
-    // Подтверждение чужой заявки на участие в событии текущего пользователя. Возвращает ParticipationRequestDto.
-    /* Если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
-     * Нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие
-     * Если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки
-     * необходимо отклонить */
+    @Operation(summary = "Подтверждение чужой заявки на участие в событии текущего пользователя",
+            description = "Если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение " +
+                    "заявок не требуется. Если при подтверждении данной заявки, лимит заявок для события исчерпан, " +
+                    "то все неподтверждённые заявки необходимо отклонить")
+
     public ParticipationRequestDto acceptParticipationRequest(@Positive @PathVariable Integer userId,
                                                               @Positive @PathVariable Integer eventId,
                                                               @Positive @PathVariable Integer reqId) {
@@ -104,12 +109,12 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
-    // Отклонение чужой заявки на участие в событии текущего пользователя. Возвращает ParticipationRequestDto.
+    @Operation(summary = "Отклонение чужой заявки на участие в событии текущего пользователя",
+            description = "Возвращает ParticipationRequestDto")
     public ParticipationRequestDto rejectParticipationRequest(@Positive @PathVariable Integer userId,
                                                               @Positive @PathVariable Integer eventId,
                                                               @Positive @PathVariable Integer reqId) {
         log.info("Received a request: PATCH /users/{}/events/{}/requests/{}/reject", userId, eventId, reqId);
         return eventPrivateService.rejectParticipationRequest(userId, eventId, reqId);
     }
-
 }

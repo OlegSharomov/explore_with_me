@@ -1,5 +1,8 @@
 package ru.practicum.compilations.controller.publ;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -20,23 +23,25 @@ import java.util.List;
 @RequestMapping("/compilations")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Public.Подборки событий", description = "Публичный API для работы с подборками событий.")
 public class CompilationsPublicController {
     private final CompilationPublicService compilationPublicService;
 
     @GetMapping
-    //Получение подборок событий. Возвращает список CompilationDto.
-    // Искать только закрепленные/не закрепленные подборки
-    public List<CompilationDto> getCompilations(@RequestParam(required = false) Boolean pinned,
-                                                // Количество элементов, которые нужно пропустить для формирования текущего набора
-                                                @PositiveOrZero @RequestParam(defaultValue = "10") Integer from,
-                                                // Количество элементов в наборе
-                                                @Positive @RequestParam(defaultValue = "10") Integer size) {
+    @Operation(summary = "Получение подборок событий", description = "Возвращает список CompilationDto")
+    public List<CompilationDto> getCompilations(@RequestParam(required = false)
+                                                @Parameter(name = "Искать только закрепленные/не закрепленные подборки")
+                                                Boolean pinned,
+                                                @PositiveOrZero @RequestParam(defaultValue = "0")
+                                                Integer from,
+                                                @Positive @RequestParam(defaultValue = "10")
+                                                Integer size) {
         log.info("Received a request GET /compilations");
         return compilationPublicService.getCompilations(pinned, from, size);
     }
 
     @GetMapping("/{compId}")
-    // Получение подборки событий по id. Возвращает CompilationDto
+    @Operation(summary = "Получение подборки событий по id", description = "Возвращает CompilationDto")
     public CompilationDto getCompilationById(@Positive @PathVariable Integer compId) {
         log.info("Received a request GET /compilations/{}", compId);
         return compilationPublicService.getCompilationById(compId);

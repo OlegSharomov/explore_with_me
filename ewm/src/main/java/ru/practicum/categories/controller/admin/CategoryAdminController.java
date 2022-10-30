@@ -1,5 +1,8 @@
 package ru.practicum.categories.controller.admin;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -22,29 +25,34 @@ import javax.validation.constraints.Positive;
 @RequestMapping("/admin/categories")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Admin.Категории", description = "API для работы с категориями. Только для администраторов.")
 public class CategoryAdminController {
     private final CategoryAdminService adminService;
 
     @PatchMapping
-    // Изменение категории. Возвращает CategoryDto.
-    /* Обратите внимание: имя категории должно быть уникальным*/
-    public CategoryDto changeCategory(@Valid @RequestBody CategoryDto categoryDto) {
+    @Operation(summary = "Изменение категории",
+            description = "Возвращает CategoryDto. Имя категории должно быть уникальным.")
+    public CategoryDto changeCategory(@Valid @RequestBody @Parameter(description = "Входящее DTO категории")
+                                      CategoryDto categoryDto) {
         log.info("Received a request: PATCH /admin/categories with body: " + categoryDto);
         return adminService.changeCategory(categoryDto);
     }
 
     @PostMapping
-    // Добавление новой категории. Возвращает CategoryDto.
-    /* Обратите внимание: имя категории должно быть уникальным*/
-    public CategoryDto createCategory(@Valid @RequestBody NewCategoryDto newCategoryDto) {
+    @Operation(summary = "Добавление новой категории",
+            description = "Возвращает CategoryDto. Имя категории должно быть уникальным.")
+    public CategoryDto createCategory(@Valid @RequestBody @Parameter(description = "DTO для создания новой категории")
+                                      NewCategoryDto newCategoryDto) {
         log.info("Received a request: POST /admin/categories with body: " + newCategoryDto);
         return adminService.createCategory(newCategoryDto);
     }
 
     @DeleteMapping("/{catId}")
-    // Удаление категории. Возвращает только статус выполнения или ошибку.
-    /* Обратите внимание: с категорией не должно быть связано ни одного события.*/
-    public void removeCategory(@Positive @PathVariable Integer catId) {
+    @Operation(summary = "Удаление категории",
+            description = "Возвращает только статус выполнения или ошибку. " +
+                    "С категорией не должно быть связано ни одного события.")
+    public void removeCategory(@Positive @PathVariable @Parameter(name = "Id события для удаления")
+                               Integer catId) {
         log.info("Received a request: DELETE /admin/categories/{}", catId);
         adminService.removeCategory(catId);
     }
