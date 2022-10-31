@@ -2,8 +2,9 @@ package ru.practicum.events.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.categories.entity.Category;
 import ru.practicum.compilations.entity.Compilation;
@@ -29,10 +30,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "events", schema = "public")
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -83,4 +87,17 @@ public class Event {
     List<Compilation> compilations;                 // Подборки, в которых состоит
     @Column(name = "available_for_request")
     private Boolean availableForRequest;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return Objects.equals(id, event.id) && Objects.equals(annotation, event.annotation) && Objects.equals(category, event.category) && Objects.equals(description, event.description) && Objects.equals(eventDate, event.eventDate) && Objects.equals(location, event.location) && Objects.equals(paid, event.paid) && Objects.equals(participantLimit, event.participantLimit) && Objects.equals(requestModeration, event.requestModeration) && Objects.equals(title, event.title) && Objects.equals(initiator, event.initiator) && state == event.state && Objects.equals(createdOn, event.createdOn) && Objects.equals(publishedOn, event.publishedOn) && Objects.equals(compilations, event.compilations) && Objects.equals(availableForRequest, event.availableForRequest);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, annotation, category, description, eventDate, location, paid, participantLimit, requestModeration, title, initiator, state, createdOn, publishedOn, compilations, availableForRequest);
+    }
 }

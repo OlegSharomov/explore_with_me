@@ -6,5 +6,4 @@ CREATE TABLE IF NOT EXISTS statistics
     created_at        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     additional_fields jsonb
 );
-CREATE INDEX IF NOT EXISTS uri_index ON statistics
-    (uri);
+CREATE INDEX IF NOT EXISTS uri_index ON statistics (uri);
