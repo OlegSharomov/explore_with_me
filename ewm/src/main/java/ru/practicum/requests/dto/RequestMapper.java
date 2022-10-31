@@ -9,5 +9,5 @@ public interface RequestMapper {
     @Mapping(target = "id", source = "request.id")
     @Mapping(target = "event", source = "event")
     @Mapping(target = "requester", source = "requester")
-    ParticipationRequestDto toRequestDto(Request request, Integer event, Integer requester);
+    ParticipationRequestDto toRequestDto(Request request, Long event, Long requester);
 }

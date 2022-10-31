@@ -40,7 +40,7 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @Column(name = "annotation", length = 2000, nullable = false)
     @Size(min = 20)
     private String annotation;                                  // Краткое описание
@@ -62,7 +62,7 @@ public class Event {
     @Column(name = "paid", nullable = false)
     private Boolean paid;                                       // Нужно ли оплачивать участие
     @Column(name = "participant_limit", nullable = false)
-    private Integer participantLimit;       // Ограничение на количество участников. Значение 0 - означает отсутствие ограничения.
+    private Long participantLimit;       // Ограничение на количество участников. Значение 0 - означает отсутствие ограничения.
     @Column(name = "request_moderation", nullable = false)
     private Boolean requestModeration;                          // Нужна ли пре-модерация заявок на участие. Дефолтно: true
     @Column(name = "title", length = 120, nullable = false)
@@ -74,7 +74,7 @@ public class Event {
     @Column(name = "state", length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
     private EventState state;                       // Список состояний жизненного цикла события. [PENDING, PUBLISHED, CANCELED]
-    @Column(name = "craeted_on", nullable = false)
+    @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;                // Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
     @Column(name = "published_on")
     private LocalDateTime publishedOn;              // Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss")

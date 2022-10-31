@@ -38,7 +38,7 @@ public class UserController {
                     "Возвращает информацию обо всех пользователях (учитываются параметры ограничения выборки), " +
                     "либо о конкретных (учитываются указанные идентификаторы)")
     // . */
-    public List<UserDto> getUsers(@RequestParam(required = false) Integer[] ids,      // id пользователей
+    public List<UserDto> getUsers(@RequestParam(required = false) Long[] ids,      // id пользователей
                                   @PositiveOrZero(message = "'from' must be positive or zero")
                                   @RequestParam(defaultValue = "0") Integer from,
                                   @Positive(message = "'size' must be positive")
@@ -58,7 +58,7 @@ public class UserController {
     @DeleteMapping("/{userId}")
     @Operation(summary = "Удаление пользователя", description = "Возвращает только статус ответа или ошибку")
     public void removeUser(@Positive(message = "'userId' must be positive")
-                           @PathVariable Integer userId) {
+                           @PathVariable Long userId) {
         log.info("Received a request: DELETE /admin/users/{}", userId);
         userService.removeUser(userId);
     }

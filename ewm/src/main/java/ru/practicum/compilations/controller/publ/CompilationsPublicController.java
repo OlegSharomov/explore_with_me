@@ -42,7 +42,7 @@ public class CompilationsPublicController {
 
     @GetMapping("/{compId}")
     @Operation(summary = "Получение подборки событий по id", description = "Возвращает CompilationDto")
-    public CompilationDto getCompilationById(@Positive @PathVariable Integer compId) {
+    public CompilationDto getCompilationById(@Positive @PathVariable Long compId) {
         log.info("Received a request GET /compilations/{}", compId);
         return compilationPublicService.getCompilationById(compId);
     }

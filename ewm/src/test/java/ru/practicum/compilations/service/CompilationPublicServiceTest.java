@@ -46,19 +46,19 @@ public class CompilationPublicServiceTest {
     Integer from = 0;
     Integer size = 10;
     Pageable pageable = PageRequest.of(from / size, size);
-    Event event1 = Event.builder().id(1).build();
-    Event event2 = Event.builder().id(2).build();
-    Compilation compilation1 = Compilation.builder().id(1)
+    Event event1 = Event.builder().id(1L).build();
+    Event event2 = Event.builder().id(2L).build();
+    Compilation compilation1 = Compilation.builder().id(1L)
             .events(List.of(event1, event2)).pinned(false).title("Weekend").build();
-    Compilation compilation2 = Compilation.builder().id(2)
+    Compilation compilation2 = Compilation.builder().id(2L)
             .events(List.of(event1)).pinned(false).title("Halloween").build();
 
-    EventShortDto eventShortDto1 = EventShortDto.builder().id(1).build();
-    EventShortDto eventShortDto2 = EventShortDto.builder().id(2).build();
+    EventShortDto eventShortDto1 = EventShortDto.builder().id(1L).build();
+    EventShortDto eventShortDto2 = EventShortDto.builder().id(2L).build();
     CompilationDto compilationDto1 = CompilationDto.builder()
-            .id(1).events(List.of(eventShortDto1, eventShortDto2)).pinned(false).title("Weekend").build();
+            .id(1L).events(List.of(eventShortDto1, eventShortDto2)).pinned(false).title("Weekend").build();
     CompilationDto compilationDto2 = CompilationDto.builder()
-            .id(2).events(List.of(eventShortDto1)).pinned(false).title("Halloween").build();
+            .id(2L).events(List.of(eventShortDto1)).pinned(false).title("Halloween").build();
 
 
     // getCompilations
@@ -73,16 +73,16 @@ public class CompilationPublicServiceTest {
     // getCompilationById
     @Test
     public void shouldGetCompilationById() {
-        when(compilationRepository.findById(1)).thenReturn(Optional.of(compilation1));
-        CompilationDto result = compilationService.getCompilationById(1);
+        when(compilationRepository.findById(1L)).thenReturn(Optional.of(compilation1));
+        CompilationDto result = compilationService.getCompilationById(1L);
         assertEquals(compilationDto1, result);
     }
 
     @Test
     public void shouldThrowExceptionWhenCompilationNotFound() {
-        when(compilationRepository.findById(99)).thenReturn(Optional.empty());
+        when(compilationRepository.findById(99L)).thenReturn(Optional.empty());
         RuntimeException re = Assertions.assertThrows(CustomNotFoundException.class,
-                () -> compilationService.getCompilationById(99));
+                () -> compilationService.getCompilationById(99L));
         assertEquals("Compilation not found", re.getMessage());
     }
 }

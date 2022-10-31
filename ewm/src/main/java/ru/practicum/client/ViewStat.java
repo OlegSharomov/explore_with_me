@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class ViewStat {
     private String app;         // Название сервиса
     private String uri;         // URI сервиса
-    private Integer hits;       // Количество просмотров
+    private Long hits;       // Количество просмотров
 }

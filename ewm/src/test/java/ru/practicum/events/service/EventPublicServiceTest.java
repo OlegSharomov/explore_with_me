@@ -62,7 +62,7 @@ public class EventPublicServiceTest {
     public void shouldGetAllEventsByUserId() {
 
         String text = "Sport";          // текст для поиска в содержимом аннотации и подробном описании события
-        int[] categories = {1};     // список идентификаторов категорий в которых будет вестись поиск
+        long[] categories = {1L};     // список идентификаторов категорий в которых будет вестись поиск
         Boolean paid = false;         // поиск только платных/бесплатных событий
         LocalDateTime rangeStart = LocalDateTime.now().minusDays(10);    // дата и время не раньше которых должно произойти событие
         LocalDateTime rangeEnd = LocalDateTime.now();      // дата и время не позже которых должно произойти событие
@@ -71,18 +71,18 @@ public class EventPublicServiceTest {
                                                                                 Available values : EVENT_DATE, VIEWS */
         Integer from = 1;       // количество событий, которые нужно пропустить для формирования текущего набора
         Integer size = 20;
-        Category category1 = Category.builder().id(1).name("Category1").build();
+        Category category1 = Category.builder().id(1L).name("Category1").build();
         List<Category> listCategories = List.of(category1);
-        when(categoryRepository.findAllByIdIn(List.of(1))).thenReturn(listCategories);
+        when(categoryRepository.findAllByIdIn(List.of(1L))).thenReturn(listCategories);
 
-        Event event1 = Event.builder().id(1).title("Sport").build();
+        Event event1 = Event.builder().id(1L).title("Sport").build();
         Page<Event> page = new PageImpl<>(List.of(event1));
         when(eventRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(page);
 
         List<EventShortDto> result = eventService.getEvents(text, categories, paid, rangeStart, rangeEnd,
                 onlyAvailable, sort, from, size, request);
-        EventShortDto eventDto1 = EventShortDto.builder().id(1).title("Sport").confirmedRequests(0).views(0).build();
+        EventShortDto eventDto1 = EventShortDto.builder().id(1L).title("Sport").confirmedRequests(0L).views(0L).build();
 
         assertEquals(List.of(eventDto1), result);
     }
@@ -90,10 +90,10 @@ public class EventPublicServiceTest {
     // getEventById
     @Test
     public void shouldGetEventById() {
-        Event event1 = Event.builder().id(1).title("Sport").state(EventState.PUBLISHED).build();
-        when(eventRepository.findById(1)).thenReturn(Optional.of(event1));
-        EventFullDto result = eventService.getEventById(1, request);
-        EventFullDto eventToCheck = EventFullDto.builder().id(1).title("Sport").confirmedRequests(0).views(0)
+        Event event1 = Event.builder().id(1L).title("Sport").state(EventState.PUBLISHED).build();
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(event1));
+        EventFullDto result = eventService.getEventById(1L, request);
+        EventFullDto eventToCheck = EventFullDto.builder().id(1L).title("Sport").confirmedRequests(0L).views(0L)
                 .state(EventState.PUBLISHED).build();
         assertEquals(eventToCheck, result);
     }

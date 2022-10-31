@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class EndpointHit {
     @Schema(description = "Идентификатор записи")
-    private Integer id;
+    private Long id;
     @Schema(description = "Идентификатор сервиса для которого записывается информация", example = "ewm-main-service")
     private String app;
     @Schema(description = "URI для которого был осуществлен запрос", example = "/event/367")

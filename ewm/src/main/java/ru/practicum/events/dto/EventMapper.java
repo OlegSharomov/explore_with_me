@@ -31,14 +31,14 @@ public interface EventMapper {
                                  Boolean availableForRequest);
 
     @Mapping(target = "id", source = "event.id")
-    EventFullDto toEventFullDto(Event event, CategoryDto category, Integer confirmedRequests,
-                                UserShortDto initiator, Integer views);
+    EventFullDto toEventFullDto(Event event, CategoryDto category, Long confirmedRequests,
+                                UserShortDto initiator, Long views);
 
-    EventShortDto toEventShortDto(Event event, Integer confirmedRequests, Integer views);
+    EventShortDto toEventShortDto(Event event, Long confirmedRequests, Long views);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "category", source = "category")
-    Event toEventFromAdminUpdateEventRequest(Integer id, AdminUpdateEventRequest adminUpdateEventRequest, Category category,
+    Event toEventFromAdminUpdateEventRequest(Long id, AdminUpdateEventRequest adminUpdateEventRequest, Category category,
                                              EventState state, LocalDateTime createdOn);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

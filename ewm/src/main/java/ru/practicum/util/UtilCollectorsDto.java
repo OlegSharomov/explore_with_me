@@ -32,9 +32,9 @@ public class UtilCollectorsDto {
 
     public static EventShortDto getEventShortDto(Event event, EventMapper eventMapper,
                                                  StatisticClient statisticClient, RequestRepository requestRepository) {
-        Integer confirmedRequests = requestRepository
-                .countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).orElse(0);
-        Integer views = statisticClient.getViewsByUri(event.getId());
+        Long confirmedRequests = requestRepository
+                .countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).orElse(0L);
+        Long views = statisticClient.getViewsByUri(event.getId());
         return eventMapper.toEventShortDto(event, confirmedRequests, views);
     }
 
@@ -51,10 +51,10 @@ public class UtilCollectorsDto {
                                                StatisticClient statisticClient, EventMapper eventMapper,
                                                RequestRepository requestRepository) {
         CategoryDto categoryDto = categoryMapper.toCategoryDto(event.getCategory());
-        Integer confirmedRequests = requestRepository
-                .countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).orElse(0);
+        Long confirmedRequests = requestRepository
+                .countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).orElse(0L);
         UserShortDto initiator = userMapper.toUserShortDto(event.getInitiator());
-        Integer views = 0;
+        Long views = 0L;
         if (statisticClient != null) {
             views = statisticClient.getViewsByUri(event.getId());
         }

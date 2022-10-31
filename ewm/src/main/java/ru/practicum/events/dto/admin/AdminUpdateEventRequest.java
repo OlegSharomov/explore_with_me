@@ -19,7 +19,7 @@ public class AdminUpdateEventRequest {
     @Schema(description = "Краткое описание события")
     private String annotation;
     @Schema(description = "id категории к которой относится событие")
-    private Integer category;
+    private Long category;
     @Schema(description = "Полное описание события")
     private String description;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -30,7 +30,7 @@ public class AdminUpdateEventRequest {
     @Schema(description = "Нужно ли оплачивать участие в событии")
     private Boolean paid;
     @Schema(description = "Ограничение на количество участников. Значение 0 - означает отсутствие ограничения")
-    private Integer participantLimit;
+    private Long participantLimit;
     @Schema(description = "Нужна ли пре-модерация заявок на участие")
     private Boolean requestModeration = false;
     @Schema(description = "Заголовок события")

@@ -10,6 +10,8 @@ import ru.practicum.users.entity.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,15 +31,16 @@ public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @ManyToOne(targetEntity = Event.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "event_id", referencedColumnName = "id")
+    @JoinColumn(name = "event_id", referencedColumnName = "id", nullable = false)
     private Event event;
     @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "requester_id", referencedColumnName = "id")
+    @JoinColumn(name = "requester_id", referencedColumnName = "id", nullable = false)
     private User requester;
-    @Column(name = "status")
+    @Column(name = "status", length = 20, nullable = false)
+    @Enumerated(EnumType.STRING)
     private RequestStatus status;
-    @Column(name = "created")
+    @Column(name = "created", nullable = false)
     private LocalDateTime created;
 }

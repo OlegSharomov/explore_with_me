@@ -40,13 +40,13 @@ public class RequestServiceTest {
     // getParticipationRequest
     @Test
     public void shouldGetParticipationRequest() {
-        User requester = User.builder().id(1).name("User1").email("user1@gmail.com").build();
-        Event event1 = Event.builder().id(1).title("Title1").build();
-        Request request1 = Request.builder().id(1).requester(requester).event(event1).build();
-        when(requestRepository.findAllByRequesterId(1)).thenReturn(List.of(request1));
-        List<ParticipationRequestDto> result = requestService.getParticipationRequest(1);
+        User requester = User.builder().id(1L).name("User1").email("user1@gmail.com").build();
+        Event event1 = Event.builder().id(1L).title("Title1").build();
+        Request request1 = Request.builder().id(1L).requester(requester).event(event1).build();
+        when(requestRepository.findAllByRequesterId(1L)).thenReturn(List.of(request1));
+        List<ParticipationRequestDto> result = requestService.getParticipationRequest(1L);
         ParticipationRequestDto requestDto = ParticipationRequestDto.builder()
-                .id(1).requester(1).event(1).build();
+                .id(1L).requester(1L).event(1L).build();
         List<ParticipationRequestDto> listToCheck = List.of(requestDto);
         assertEquals(listToCheck, result);
     }
@@ -54,37 +54,37 @@ public class RequestServiceTest {
     // createParticipationRequest
     @Test
     public void shouldCreateParticipationRequest() {
-        User requester = User.builder().id(1).name("User1").email("user1@gmail.com").build();
-        User initiatorOfEvent = User.builder().id(2).name("User2").email("user2@gmail.com").build();
-        Event event1 = Event.builder().id(1).title("Title1").initiator(initiatorOfEvent)
+        User requester = User.builder().id(1L).name("User1").email("user1@gmail.com").build();
+        User initiatorOfEvent = User.builder().id(2L).name("User2").email("user2@gmail.com").build();
+        Event event1 = Event.builder().id(1L).title("Title1").initiator(initiatorOfEvent)
                 .state(EventState.PUBLISHED).requestModeration(false).availableForRequest(true).build();
-        Request request1 = Request.builder().id(1).requester(requester).event(event1).build();
-        when(requestRepository.existsByRequesterIdAndEventId(1, 1))
+        Request request1 = Request.builder().id(1L).requester(requester).event(event1).build();
+        when(requestRepository.existsByRequesterIdAndEventId(1L, 1L))
                 .thenReturn(false);
-        when(eventRepository.findById(1)).thenReturn(Optional.of(event1));
-        when(userRepository.findById(1)).thenReturn(Optional.of(requester));
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(event1));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(requester));
         when(requestRepository.save(any(Request.class))).thenReturn(request1);
-        ParticipationRequestDto result = requestService.createParticipationRequest(1, 1);
+        ParticipationRequestDto result = requestService.createParticipationRequest(1L, 1L);
         ParticipationRequestDto requestToCheck = ParticipationRequestDto.builder()
-                .id(1).requester(1).event(1).build();
+                .id(1L).requester(1L).event(1L).build();
         assertEquals(requestToCheck, result);
     }
 
     // cancelParticipationRequest
     @Test
     public void shouldCancelParticipationRequest() {
-        User requester = User.builder().id(1).name("User1").email("user1@gmail.com").build();
-        User initiatorOfEvent = User.builder().id(2).name("User2").email("user2@gmail.com").build();
-        Event event1 = Event.builder().id(1).title("Title1").initiator(initiatorOfEvent)
+        User requester = User.builder().id(1L).name("User1").email("user1@gmail.com").build();
+        User initiatorOfEvent = User.builder().id(2L).name("User2").email("user2@gmail.com").build();
+        Event event1 = Event.builder().id(1L).title("Title1").initiator(initiatorOfEvent)
                 .state(EventState.PUBLISHED).requestModeration(false).availableForRequest(true).build();
-        Request request1 = Request.builder().id(1).requester(requester).event(event1).build();
-        when(requestRepository.findById(1)).thenReturn(Optional.of(request1));
-        Request updatedRequest = Request.builder().id(1).requester(requester).event(event1)
+        Request request1 = Request.builder().id(1L).requester(requester).event(event1).build();
+        when(requestRepository.findById(1L)).thenReturn(Optional.of(request1));
+        Request updatedRequest = Request.builder().id(1L).requester(requester).event(event1)
                 .status(RequestStatus.CANCELED).build();
         when(requestRepository.save(any(Request.class))).thenReturn(updatedRequest);
-        ParticipationRequestDto result = requestService.cancelParticipationRequest(1, 1);
+        ParticipationRequestDto result = requestService.cancelParticipationRequest(1L, 1L);
         ParticipationRequestDto requestToCheck = ParticipationRequestDto.builder()
-                .id(1).requester(1).event(1).status(RequestStatus.CANCELED).build();
+                .id(1L).requester(1L).event(1L).status(RequestStatus.CANCELED).build();
         assertEquals(requestToCheck, result);
     }
 

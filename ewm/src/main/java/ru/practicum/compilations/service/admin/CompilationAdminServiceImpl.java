@@ -46,14 +46,14 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     // Удаление подборки.
     @Override
     @Transactional(readOnly = false)
-    public void removeCompilation(Integer compId) {
+    public void removeCompilation(Long compId) {
         compilationRepository.deleteById(compId);
     }
 
     // Удалить событие из подборки. Возвращает только статус ответа или ошибку.
     @Override
     @Transactional(readOnly = false)
-    public void removeEventFromCompilation(Integer compId, Integer eventId) {
+    public void removeEventFromCompilation(Long compId, Long eventId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));
         List<Event> events = new ArrayList<>(compilation.getEvents());
@@ -69,7 +69,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     // Добавить событие в подборку. Возвращает только статус ответа или ошибку.
     @Override
     @Transactional(readOnly = false)
-    public void addEventInCompilation(Integer compId, Integer eventId) {
+    public void addEventInCompilation(Long compId, Long eventId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));
         List<Event> eventsOfCompilation = new ArrayList<>(compilation.getEvents());
@@ -89,7 +89,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     // Открепить подборку на главной странице. Возвращает только статус ответа или ошибку.
     @Override
     @Transactional(readOnly = false)
-    public void unpinCompilation(Integer compId) {
+    public void unpinCompilation(Long compId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));
         if (compilation.getPinned().equals(false)) {
@@ -102,7 +102,7 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     // Закрепить подборку на главной странице. Возвращает только статус ответа или ошибку.
     @Override
     @Transactional(readOnly = false)
-    public void pinCompilation(Integer compId) {
+    public void pinCompilation(Long compId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));
         if (compilation.getPinned().equals(true)) {

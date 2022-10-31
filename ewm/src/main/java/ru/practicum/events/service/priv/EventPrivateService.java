@@ -9,20 +9,20 @@ import ru.practicum.requests.dto.ParticipationRequestDto;
 import java.util.List;
 
 public interface EventPrivateService {
-    List<EventShortDto> getEventsByUserId(Integer userId, Integer from, Integer size);
+    List<EventShortDto> getEventsByUserId(Long userId, Integer from, Integer size);
 
-    EventFullDto changeEventByUser(Integer userId, UpdateEventRequest updateEventRequest);
+    EventFullDto changeEventByUser(Long userId, UpdateEventRequest updateEventRequest);
 
-    EventFullDto createEvent(Integer userId, NewEventDto newEventDto);
+    EventFullDto createEvent(Long userId, NewEventDto newEventDto);
 
-    EventFullDto getEventById(Integer userId, Integer eventId);
+    EventFullDto getEventById(Long userId, Long eventId);
 
-    EventFullDto cancellationEvent(Integer userId, Integer eventId);
+    EventFullDto cancellationEvent(Long userId, Long eventId);
 
-    List<ParticipationRequestDto> getParticipationRequest(Integer userId, Integer eventId);
+    List<ParticipationRequestDto> getParticipationRequest(Long userId, Long eventId);
 
-    ParticipationRequestDto acceptParticipationRequest(Integer userId, Integer eventId, Integer reqId);
+    ParticipationRequestDto acceptParticipationRequest(Long userId, Long eventId, Long reqId);
 
-    ParticipationRequestDto rejectParticipationRequest(Integer userId, Integer eventId, Integer reqId);
+    ParticipationRequestDto rejectParticipationRequest(Long userId, Long eventId, Long reqId);
 
 }

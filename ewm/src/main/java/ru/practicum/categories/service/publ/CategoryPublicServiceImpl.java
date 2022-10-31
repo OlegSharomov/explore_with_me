@@ -33,7 +33,7 @@ public class CategoryPublicServiceImpl implements CategoryPublicService {
 
     @Override
     @Transactional
-    public CategoryDto getCategoryById(Integer catId) {
+    public CategoryDto getCategoryById(Long catId) {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new CustomNotFoundException("Category not found"));
         return categoryMapper.toCategoryDto(category);

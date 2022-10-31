@@ -33,7 +33,7 @@ public class CategoryAdminControllerTest {
     @MockBean
     private CategoryAdminService adminService;
     NewCategoryDto newCategoryDto = NewCategoryDto.builder().name("Sport").build();
-    CategoryDto categoryDto = CategoryDto.builder().id(1).name("Sport").build();
+    CategoryDto categoryDto = CategoryDto.builder().id(1L).name("Sport").build();
 
     // createCategory
     @Test
@@ -76,6 +76,6 @@ public class CategoryAdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(adminService, Mockito.times(1))
-                .removeCategory(1);
+                .removeCategory(1L);
     }
 }

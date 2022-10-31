@@ -66,7 +66,7 @@ public class EventAdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventAdminService, Mockito.times(1))
-                .changeEvent(1, adminUpdateEventRequest);
+                .changeEvent(1L, adminUpdateEventRequest);
     }
 
     // publishingEvent
@@ -79,7 +79,7 @@ public class EventAdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventAdminService, Mockito.times(1))
-                .publishingEvent(1);
+                .publishingEvent(1L);
     }
 
     // rejectEvent
@@ -92,7 +92,7 @@ public class EventAdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventAdminService, Mockito.times(1))
-                .rejectEvent(1);
+                .rejectEvent(1L);
     }
 
 }

@@ -47,11 +47,11 @@ public class EventAdminServiceImpl implements EventAdminService {
     @Override
     @Transactional
     public List<EventFullDto> getAllEvents(// список id пользователей, чьи события нужно найти
-                                           List<Integer> users,
+                                           List<Long> users,
                                            // список состояний в которых находятся искомые события
                                            List<EventState> states,
                                            // список id категорий в которых будет вестись поиск
-                                           List<Integer> categories,
+                                           List<Long> categories,
                                            // дата и время не раньше которых должно произойти событие
                                            LocalDateTime rangeStart,
                                            // дата и время не позже которых должно произойти событие
@@ -80,7 +80,7 @@ public class EventAdminServiceImpl implements EventAdminService {
     /* Редактирование данных любого события администратором. Валидация данных не требуется. */
     @Override
     @Transactional(readOnly = false)
-    public EventFullDto changeEvent(Integer eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
+    public EventFullDto changeEvent(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
         if (optionalEvent.isPresent()) {
             Event event = optionalEvent.get();
@@ -100,7 +100,7 @@ public class EventAdminServiceImpl implements EventAdminService {
         }
     }
 
-    private Category findCategoryOrReturnNull(Integer catId) {
+    private Category findCategoryOrReturnNull(Long catId) {
         Category category = null;
         if (catId != null) {
             category = categoryRepository.findById(catId)
@@ -115,7 +115,7 @@ public class EventAdminServiceImpl implements EventAdminService {
      * Событие должно быть в состоянии ожидания публикации*/
     @Override
     @Transactional(readOnly = false)
-    public EventFullDto publishingEvent(Integer eventId) {
+    public EventFullDto publishingEvent(Long eventId) {
         Event eventEntity = eventRepository.findById(eventId).orElseThrow(() -> new CustomNotFoundException("Event not found"));
         if (eventEntity.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
             throw new ValidationException("The start of the event cannot be earlier than in an hour");
@@ -133,7 +133,7 @@ public class EventAdminServiceImpl implements EventAdminService {
     // Обратите внимание: событие не должно быть опубликовано.
     @Override
     @Transactional(readOnly = false)
-    public EventFullDto rejectEvent(Integer eventId) {
+    public EventFullDto rejectEvent(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new CustomNotFoundException("Event not found"));
         if (event.getState().equals(EventState.PUBLISHED)) {
             throw new ValidationException("The event has already been published");

@@ -9,8 +9,8 @@ import ru.practicum.users.entity.User;
 import java.util.Collection;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
-    Page<User> findAllByIdIn(Collection<Integer> id, Pageable pageable);
+public interface UserRepository extends JpaRepository<User, Long> {
+    Page<User> findAllByIdIn(Collection<Long> id, Pageable pageable);
 
     Page<User> findAll(Pageable pageable);
 }

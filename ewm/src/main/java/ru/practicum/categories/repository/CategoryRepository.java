@@ -7,6 +7,6 @@ import ru.practicum.categories.entity.Category;
 import java.util.List;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Integer> {
-    List<Category> findAllByIdIn(List<Integer> categories);
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+    List<Category> findAllByIdIn(List<Long> categories);
 }

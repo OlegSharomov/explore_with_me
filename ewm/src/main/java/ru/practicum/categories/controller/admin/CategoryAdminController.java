@@ -52,7 +52,7 @@ public class CategoryAdminController {
             description = "Возвращает только статус выполнения или ошибку. " +
                     "С категорией не должно быть связано ни одного события.")
     public void removeCategory(@Positive @PathVariable @Parameter(name = "Id события для удаления")
-                               Integer catId) {
+                               Long catId) {
         log.info("Received a request: DELETE /admin/categories/{}", catId);
         adminService.removeCategory(catId);
     }

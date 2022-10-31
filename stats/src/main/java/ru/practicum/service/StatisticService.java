@@ -17,5 +17,5 @@ public interface StatisticService {
                              String[] uris,
                              Boolean unique);
 
-    Integer getViews(String uri);
+    Long getViews(String uri);
 }

@@ -19,7 +19,7 @@ public class CompilationDto {
     List<EventShortDto> events;
     @NotNull
     @Schema(description = "Идентификатор")
-    Integer id;
+    Long id;
     @NotNull
     @Schema(description = "Закреплена ли подборка на главной странице сайта")
     Boolean pinned;

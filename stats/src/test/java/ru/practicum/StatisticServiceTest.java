@@ -61,7 +61,7 @@ public class StatisticServiceTest {
 
         AdditionalFields additionalFields = new AdditionalFields("ewm-main-service", "172.16.255.254");
         Statistic statistic = Statistic.builder()
-                .id(1)
+                .id(1L)
                 .uri("/event/367")
                 .createdAt(LocalDateTime.now().minusDays(15))
                 .additionalFields(additionalFields)
@@ -69,12 +69,12 @@ public class StatisticServiceTest {
         when(statisticRepository.findByUri("/event/367")).thenReturn(Optional.of(statistic));
 
         when(statisticRepository.getStatisticWithoutUniqueIp("/event/367", "ewm-main-service", start, end))
-                .thenReturn(99);
+                .thenReturn(99L);
 
         ViewStats viewStats = ViewStats.builder()
                 .app("ewm-main-service")
                 .uri("/event/367")
-                .hits(99)
+                .hits(99L)
                 .build();
         List<ViewStats> result = statisticService.getStats(start, end, uris, unique);
         List<ViewStats> statisticToCheck = List.of(viewStats);
@@ -90,7 +90,7 @@ public class StatisticServiceTest {
 
         AdditionalFields additionalFields = new AdditionalFields("ewm-main-service", "172.16.255.254");
         Statistic statistic = Statistic.builder()
-                .id(1)
+                .id(1L)
                 .uri("/event/367")
                 .createdAt(LocalDateTime.now().minusDays(15))
                 .additionalFields(additionalFields)
@@ -98,12 +98,12 @@ public class StatisticServiceTest {
         when(statisticRepository.findByUri("/event/367")).thenReturn(Optional.of(statistic));
 
         when(statisticRepository.getStatisticWithUniqueIp("/event/367", "ewm-main-service", start, end))
-                .thenReturn(99);
+                .thenReturn(99L);
 
         ViewStats viewStats = ViewStats.builder()
                 .app("ewm-main-service")
                 .uri("/event/367")
-                .hits(99)
+                .hits(99L)
                 .build();
         List<ViewStats> result = statisticService.getStats(start, end, uris, unique);
         List<ViewStats> statisticToCheck = List.of(viewStats);
@@ -128,9 +128,9 @@ public class StatisticServiceTest {
     @Test
     public void shouldReturnViews() {
         String uri = "/event/367";
-        when(statisticRepository.countByUri(uri)).thenReturn(Optional.of(5));
-        Integer result = statisticService.getViews(uri);
-        assertEquals(5, result);
+        when(statisticRepository.countByUri(uri)).thenReturn(Optional.of(5L));
+        Long result = statisticService.getViews(uri);
+        assertEquals(5L, result);
     }
 
 }

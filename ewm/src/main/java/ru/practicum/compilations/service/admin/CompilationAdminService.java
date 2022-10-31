@@ -6,13 +6,13 @@ import ru.practicum.compilations.dto.NewCompilationDto;
 public interface CompilationAdminService {
     CompilationDto createNewCompilation(NewCompilationDto newCompilationDto);
 
-    void removeCompilation(Integer compId);
+    void removeCompilation(Long compId);
 
-    void removeEventFromCompilation(Integer compId, Integer eventId);
+    void removeEventFromCompilation(Long compId, Long eventId);
 
-    void addEventInCompilation(Integer compId, Integer eventId);
+    void addEventInCompilation(Long compId, Long eventId);
 
-    void unpinCompilation(Integer compId);
+    void unpinCompilation(Long compId);
 
-    void pinCompilation(Integer compId);
+    void pinCompilation(Long compId);
 }

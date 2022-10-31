@@ -35,12 +35,12 @@ public class EventPrivateControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private EventPrivateService eventPrivateService;
-    UpdateEventRequest updateEventRequest = UpdateEventRequest.builder().eventId(1)
+    UpdateEventRequest updateEventRequest = UpdateEventRequest.builder().eventId(1L)
             .description("Bring happiness and kindness").build();
     Location location = Location.builder().lat(58.605731F).lon(49.644289F).build();
     NewEventDto newEventDto = NewEventDto.builder()
             .annotation("Exhibition of paintings")
-            .category(1)
+            .category(1L)
             .description("Exhibition dedicated to the colors of spring")
             .eventDate(LocalDateTime.now().plusDays(2))
             .location(location)
@@ -59,7 +59,7 @@ public class EventPrivateControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventPrivateService, Mockito.times(1))
-                .getEventsByUserId(1, 1, 20);
+                .getEventsByUserId(1L, 1, 20);
     }
 
     // changeEventByUser
@@ -73,7 +73,7 @@ public class EventPrivateControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventPrivateService, Mockito.times(1))
-                .changeEventByUser(1, updateEventRequest);
+                .changeEventByUser(1L, updateEventRequest);
     }
 
     // createEvent
@@ -87,14 +87,14 @@ public class EventPrivateControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventPrivateService, Mockito.times(1))
-                .createEvent(eq(1), any(NewEventDto.class));
+                .createEvent(eq(1L), any(NewEventDto.class));
     }
 
     @Test
     public void shouldGetNewEventDtoAndThrowException() throws Exception {
         NewEventDto newEventDto2 = NewEventDto.builder()
                 .annotation("Exhibition of paintings")
-                .category(1)
+                .category(1L)
                 .description("Exhibition dedicated to the colors of spring")
                 .eventDate(LocalDateTime.now())
                 .location(location)
@@ -111,7 +111,7 @@ public class EventPrivateControllerTest {
                 .andExpect(result -> assertTrue(result.getResponse().getContentAsString()
                         .contains("The start of the event cannot be earlier than 2 hours later")));
         Mockito.verify(eventPrivateService, Mockito.times(0))
-                .createEvent(eq(1), any(NewEventDto.class));
+                .createEvent(eq(1L), any(NewEventDto.class));
     }
 
     // getEventById
@@ -124,7 +124,7 @@ public class EventPrivateControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventPrivateService, Mockito.times(1))
-                .getEventById(1, 1);
+                .getEventById(1L, 1L);
     }
 
     // cancellationEvent
@@ -137,7 +137,7 @@ public class EventPrivateControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventPrivateService, Mockito.times(1))
-                .cancellationEvent(1, 1);
+                .cancellationEvent(1L, 1L);
     }
 
     // getParticipationRequest
@@ -150,7 +150,7 @@ public class EventPrivateControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventPrivateService, Mockito.times(1))
-                .getParticipationRequest(1, 1);
+                .getParticipationRequest(1L, 1L);
     }
 
     // acceptParticipationRequest
@@ -163,7 +163,7 @@ public class EventPrivateControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventPrivateService, Mockito.times(1))
-                .acceptParticipationRequest(1, 1, 1);
+                .acceptParticipationRequest(1L, 1L, 1L);
     }
 
 
@@ -177,6 +177,6 @@ public class EventPrivateControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventPrivateService, Mockito.times(1))
-                .rejectParticipationRequest(1, 1, 1);
+                .rejectParticipationRequest(1L, 1L, 1L);
     }
 }

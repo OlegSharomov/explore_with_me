@@ -37,12 +37,12 @@ public class UserServiceTest {
 
     Integer from = 0;
     Integer size = 10;
-    Integer[] ids = {1, 2};
+    Long[] ids = {1L, 2L};
     Pageable pageable = PageRequest.of(from / size, size, Sort.by("id"));
-    User user1 = User.builder().id(1).name("User1").email("user1@gmail.com").build();
-    User user2 = User.builder().id(2).name("User2").email("user2@gmail.com").build();
-    UserDto userDto1 = UserDto.builder().id(1).name("User1").email("user1@gmail.com").build();
-    UserDto userDto2 = UserDto.builder().id(2).name("User2").email("user2@gmail.com").build();
+    User user1 = User.builder().id(1L).name("User1").email("user1@gmail.com").build();
+    User user2 = User.builder().id(2L).name("User2").email("user2@gmail.com").build();
+    UserDto userDto1 = UserDto.builder().id(1L).name("User1").email("user1@gmail.com").build();
+    UserDto userDto2 = UserDto.builder().id(2L).name("User2").email("user2@gmail.com").build();
     List<User> users = List.of(user1, user2);
     Page<User> page = new PageImpl<>(users);
 
@@ -77,25 +77,25 @@ public class UserServiceTest {
     // removeUser
     @Test
     public void shouldRemoveUserAndCallRepository() {
-        userRepository.deleteById(1);
+        userRepository.deleteById(1L);
         Mockito.verify(userRepository, Mockito.times(1))
-                .deleteById(1);
+                .deleteById(1L);
     }
 
     // getEntityUserById
     @Test
     public void shouldGetUserEntity() {
-        when(userRepository.findById(1)).thenReturn(Optional.of(user1));
-        User result = userService.getEntityUserById(1);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        User result = userService.getEntityUserById(1L);
         User userToCheck = user1;
         assertEquals(userToCheck, result);
     }
 
     @Test
     public void shouldGetNotFindEntityUserByIdAndThrowException() {
-        when(userRepository.findById(99)).thenReturn(Optional.empty());
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
         RuntimeException re = Assertions.assertThrows(CustomNotFoundException.class,
-                () -> userService.getEntityUserById(99));
+                () -> userService.getEntityUserById(99L));
         assertEquals("User not found", re.getMessage());
     }
 }

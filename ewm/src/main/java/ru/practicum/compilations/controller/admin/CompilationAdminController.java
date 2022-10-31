@@ -39,7 +39,7 @@ public class CompilationAdminController {
 
     @DeleteMapping("/{compId}")
     @Operation(summary = "Удаление подборки по id", description = "Возвращает только статус ответа или ошибку")
-    public void removeCompilation(@Positive @PathVariable Integer compId) {
+    public void removeCompilation(@Positive @PathVariable Long compId) {
         log.info("Received a request DELETE /admin/compilations/{}", compId);
         compilationAdminService.removeCompilation(compId);
     }
@@ -48,10 +48,10 @@ public class CompilationAdminController {
     @Operation(summary = "Удалить событие из подборки", description = "Возвращает только статус ответа или ошибку.")
     public void removeEventFromCompilation(@Positive @PathVariable
                                            @Parameter(name = "id подборки, из которой нужно удалить")
-                                           Integer compId,
+                                           Long compId,
                                            @Positive @PathVariable
                                            @Parameter(name = "id события, которое нужно удалить из подборки")
-                                           Integer eventId) {
+                                           Long eventId) {
         log.info("Received a request DELETE /admin/compilations/{}/events/{}", compId, eventId);
         compilationAdminService.removeEventFromCompilation(compId, eventId);
     }
@@ -60,24 +60,24 @@ public class CompilationAdminController {
     @Operation(summary = "Добавить событие в подборку", description = "Возвращает только статус ответа или ошибку")
     public void addEventInCompilation(@Positive @PathVariable
                                       @Parameter(name = "id подборки, в которую нужно добавить событие")
-                                      Integer compId,
+                                      Long compId,
                                       @Positive @PathVariable
                                       @Parameter(name = "id события, которое нужно добавить в подборку")
-                                      Integer eventId) {
+                                      Long eventId) {
         log.info("Received a request PATCH /admin/compilations/{}/events/{}", compId, eventId);
         compilationAdminService.addEventInCompilation(compId, eventId);
     }
 
     @DeleteMapping("/{compId}/pin")
     @Operation(summary = "Открепить подборку на главной странице", description = "Возвращает только статус ответа или ошибку")
-    public void unpinCompilation(@Positive @PathVariable Integer compId) {
+    public void unpinCompilation(@Positive @PathVariable Long compId) {
         log.info("Received a request DELETE /admin/compilations/{}/pin", compId);
         compilationAdminService.unpinCompilation(compId);
     }
 
     @PatchMapping("/{compId}/pin")
     @Operation(summary = "Закрепить подборку на главной странице", description = "Возвращает только статус ответа или ошибку")
-    public void pinCompilation(@Positive @PathVariable Integer compId) {
+    public void pinCompilation(@Positive @PathVariable Long compId) {
         log.info("Received a request PATCH /admin/compilations/{}/pin", compId);
         compilationAdminService.pinCompilation(compId);
     }

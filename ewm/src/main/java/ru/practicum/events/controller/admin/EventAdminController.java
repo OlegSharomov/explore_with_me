@@ -37,11 +37,11 @@ public class EventAdminController {
     @Operation(summary = "Поиск событий", description = "Возвращает list of EventFullDto. Эндпоинт возвращает полную " +
             "информацию обо всех событиях подходящих под переданные условия")
     public List<EventFullDto> getAllEvents(@Parameter(name = "список id пользователей, чьи события нужно найти")
-                                           @RequestParam(required = false) List<Integer> users,
+                                           @RequestParam(required = false) List<Long> users,
                                            @Parameter(name = "список состояний в которых находятся искомые события")
                                            @RequestParam(required = false) List<EventState> states,
                                            @Parameter(name = "список id категорий в которых будет вестись поиск")
-                                           @RequestParam(required = false) List<Integer> categories,
+                                           @RequestParam(required = false) List<Long> categories,
                                            @Parameter(name = "дата и время не раньше которых должно произойти событие")
                                            @RequestParam(required = false) LocalDateTime rangeStart,
                                            @Parameter(name = "дата и время не позже которых должно произойти событие")
@@ -59,7 +59,7 @@ public class EventAdminController {
     @PutMapping("/{eventId}")
     @Operation(summary = "Редактирование событий", description = "Возвращает EventFullDto. Редактирование данных " +
             "любого события администратором. Валидация данных не требуется.")
-    public EventFullDto changeEvent(@Positive @PathVariable Integer eventId,
+    public EventFullDto changeEvent(@Positive @PathVariable Long eventId,
                                     @Parameter(name = "DTO для изменения события администратором")
                                     @RequestBody AdminUpdateEventRequest adminUpdateEventRequest) {
         log.info("Received a request: PUT /admin/events/{} with body: {}", eventId, adminUpdateEventRequest);
@@ -69,7 +69,7 @@ public class EventAdminController {
     @PatchMapping("/{eventId}/publish")
     @Operation(summary = "Публикация события", description = "Возвращает EventFullDto. Дата начала события должна быть " +
             "не ранее чем за час от даты публикации. Событие должно быть в состоянии ожидания публикации")
-    public EventFullDto publishingEvent(@Positive @PathVariable Integer eventId) {
+    public EventFullDto publishingEvent(@Positive @PathVariable Long eventId) {
         log.info("Received a request: PATCH /admin/events/{}/publish ", eventId);
         return eventAdminService.publishingEvent(eventId);
     }
@@ -77,7 +77,7 @@ public class EventAdminController {
     @PatchMapping("/{eventId}/reject")
     @Operation(summary = "Отклонение события", description = "Возвращает EventFullDto. Отклонение возможно только, если " +
             "событие не опубликовано.")
-    public EventFullDto rejectEvent(@Positive @PathVariable Integer eventId) {
+    public EventFullDto rejectEvent(@Positive @PathVariable Long eventId) {
         log.info("Received a request: PATCH /admin/events/{}/reject ", eventId);
         return eventAdminService.rejectEvent(eventId);
     }

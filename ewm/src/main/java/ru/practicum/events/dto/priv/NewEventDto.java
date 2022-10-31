@@ -26,7 +26,7 @@ public class NewEventDto {
     @NotNull
     @Positive
     @Schema(description = "id категории к которой относится событие")
-    private Integer category;
+    private Long category;
     @NotNull
     @Length(min = 20, max = 7000)
     @Schema(description = "Полное описание события")
@@ -42,7 +42,7 @@ public class NewEventDto {
     private Boolean paid = false;
     @Positive
     @Schema(description = "Ограничение на количество участников. Значение 0 - означает отсутствие ограничения")
-    private Integer participantLimit = 0;
+    private Long participantLimit = 0L;
     @Schema(description = "Нужна ли пре-модерация заявок на участие. Если true, то все заявки " +
             "будут ожидать подтверждения инициатором события. Если false - то будут подтверждаться автоматически")
     private Boolean requestModeration = true; /* . */

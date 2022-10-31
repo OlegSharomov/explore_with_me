@@ -23,7 +23,7 @@ public class UpdateEventRequest {
     private String annotation;
     @Positive
     @Schema(description = "Новая категория")
-    private Integer category;
+    private Long category;
     @Length(min = 20, max = 7000)
     @Schema(description = "Новое описание")
     private String description;
@@ -33,12 +33,12 @@ public class UpdateEventRequest {
     @NotNull
     @Positive
     @Schema(description = "Идентификатор события")
-    private Integer eventId;
+    private Long eventId;
     @Schema(description = "Новое значение флага о платности мероприятия")
     private Boolean paid;
     @Positive
     @Schema(description = "Новый лимит пользователей")
-    private Integer participantLimit;
+    private Long participantLimit;
     @Length(min = 3, max = 120)
     @Schema(description = "Новый заголовок")
     private String title;

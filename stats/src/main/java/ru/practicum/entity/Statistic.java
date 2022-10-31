@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
 public class Statistic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(name = "uri")
     private String uri;
     @Column(name = "created_at")

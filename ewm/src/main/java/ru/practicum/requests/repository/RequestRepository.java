@@ -9,16 +9,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RequestRepository extends JpaRepository<Request, Integer> {
+public interface RequestRepository extends JpaRepository<Request, Long> {
 
-    List<Request> findAllByRequesterId(Integer requesterId);
+    List<Request> findAllByRequesterId(Long requesterId);
 
-    List<Request> findAllByEventId(Integer eventId);
+    List<Request> findAllByEventId(Long eventId);
 
-    Optional<Integer> countByEventIdAndStatus(Integer eventId, RequestStatus requestStatus);
+    Optional<Long> countByEventIdAndStatus(Long eventId, RequestStatus requestStatus);
 
-    List<Request> findAllByEventIdAndStatus(Integer eventId, RequestStatus requestStatus);
+    List<Request> findAllByEventIdAndStatus(Long eventId, RequestStatus requestStatus);
 
-    Boolean existsByRequesterIdAndEventId(Integer userId, Integer eventId);
+    Boolean existsByRequesterIdAndEventId(Long userId, Long eventId);
 
 }

@@ -51,7 +51,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     // Получение событий, добавленных текущим пользователем.
     @Override
     @Transactional
-    public List<EventShortDto> getEventsByUserId(Integer userId, Integer from, Integer size) {
+    public List<EventShortDto> getEventsByUserId(Long userId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         User initiator = userService.getEntityUserById(userId);
         List<Event> events = eventRepository.findByInitiator(initiator, pageable);
@@ -64,7 +64,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
      * Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента */
     @Override
     @Transactional(readOnly = false)
-    public EventFullDto changeEventByUser(Integer userId, UpdateEventRequest updateEventRequest) {
+    public EventFullDto changeEventByUser(Long userId, UpdateEventRequest updateEventRequest) {
         Event event = eventRepository.findById(updateEventRequest.getEventId())
                 .orElseThrow(() -> new CustomNotFoundException("Event not found"));
         checkInitiatorId(event, userId);
@@ -93,7 +93,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     /* !!! Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента*/
     @Override
     @Transactional(readOnly = false)
-    public EventFullDto createEvent(Integer userId, NewEventDto newEventDto) {
+    public EventFullDto createEvent(Long userId, NewEventDto newEventDto) {
         LocalDateTime createdOn = LocalDateTime.now();
         User initiator = userService.getEntityUserById(userId);
         Category category = categoryAdminService.getEntityCategoryById(newEventDto.getCategory());
@@ -107,7 +107,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     // Получение полной информации о событии, добавленном текущим пользователем.
     @Override
     @Transactional
-    public EventFullDto getEventById(Integer userId, Integer eventId) {
+    public EventFullDto getEventById(Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new CustomNotFoundException("Event not found"));
         checkInitiatorId(event, userId);
         return UtilCollectorsDto.getEventFullDto(event, categoryMapper, userMapper,
@@ -118,7 +118,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     /* Обратите внимание: Отменить можно только событие в состоянии ожидания модерации.*/
     @Override
     @Transactional(readOnly = false)
-    public EventFullDto cancellationEvent(Integer userId, Integer eventId) {
+    public EventFullDto cancellationEvent(Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new CustomNotFoundException("Event not found"));
         checkInitiatorId(event, userId);
         if (Boolean.FALSE.equals(event.getState().equals(EventState.PENDING))) {
@@ -133,7 +133,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     // Получение информации о запросах на участие в событии текущего пользователя.
     @Override
     @Transactional
-    public List<ParticipationRequestDto> getParticipationRequest(Integer userId, Integer eventId) {
+    public List<ParticipationRequestDto> getParticipationRequest(Long userId, Long eventId) {
         List<Request> requests = requestRepository.findAllByEventId(eventId);
         return requests.stream()
                 .map(e -> requestMapper.toRequestDto(e, e.getEvent().getId(), e.getRequester().getId()))
@@ -147,11 +147,11 @@ public class EventPrivateServiceImpl implements EventPrivateService {
      * необходимо отклонить */
     @Override
     @Transactional(readOnly = false)
-    public ParticipationRequestDto acceptParticipationRequest(Integer userId, Integer eventId, Integer reqId) {
+    public ParticipationRequestDto acceptParticipationRequest(Long userId, Long eventId, Long reqId) {
         Request request = requestRepository.findById(reqId)
                 .orElseThrow(() -> new CustomNotFoundException("Request not found"));
         checkParametersOfRequest(request, userId, eventId);
-        if (request.getEvent().getRequestModeration().equals(false) || request.getEvent().getParticipantLimit().equals(0)) {
+        if (request.getEvent().getRequestModeration().equals(false) || request.getEvent().getParticipantLimit().equals(0L)) {
             throw new ValidationException("Confirmation of requests for this event is not required");
         }
         request.setStatus(RequestStatus.CONFIRMED);
@@ -160,9 +160,9 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         необходимо отклонить*/
         Event event = readyRequest.getEvent();
         if (event.getParticipantLimit() != 0) {
-            Integer participantLimit = event.getParticipantLimit();
-            Integer confirmedRequests = requestRepository
-                    .countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).orElse(0);
+            Long participantLimit = event.getParticipantLimit();
+            Long confirmedRequests = requestRepository
+                    .countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).orElse(0L);
             if (participantLimit.equals(confirmedRequests)) {
                 List<Request> cancellationRequests = requestRepository
                         .findAllByEventIdAndStatus(event.getId(), RequestStatus.PENDING);
@@ -181,7 +181,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     // Отклонение чужой заявки на участие в событии текущего пользователя.
     @Override
     @Transactional(readOnly = false)
-    public ParticipationRequestDto rejectParticipationRequest(Integer userId, Integer eventId, Integer reqId) {
+    public ParticipationRequestDto rejectParticipationRequest(Long userId, Long eventId, Long reqId) {
         Request request = requestRepository.findById(reqId)
                 .orElseThrow(() -> new CustomNotFoundException("Request not found"));
         checkParametersOfRequest(request, userId, eventId);
@@ -197,7 +197,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 readyRequest.getRequester().getId());
     }
 
-    private void checkParametersOfRequest(Request request, Integer userId, Integer eventId) {
+    private void checkParametersOfRequest(Request request, Long userId, Long eventId) {
         if (Boolean.FALSE.equals(request.getEvent().getInitiator().getId().equals(userId))) {
             throw new ValidationException("The requester does not match the passed value");
         }
@@ -206,7 +206,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         }
     }
 
-    private void checkInitiatorId(Event event, Integer userId) {
+    private void checkInitiatorId(Event event, Long userId) {
         if (Boolean.FALSE.equals(event.getInitiator().getId().equals(userId))) {
             throw new ValidationException("The initiator of the event does not match the passed value");
         }

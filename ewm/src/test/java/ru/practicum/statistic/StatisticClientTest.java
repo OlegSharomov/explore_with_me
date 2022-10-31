@@ -64,7 +64,7 @@ public class StatisticClientTest {
         String encodeUris = URLEncoder.encode(convertArrayToStringForUrl(uris), StandardCharsets.UTF_8);
         String encodeUnique = URLEncoder.encode(String.valueOf(unique), StandardCharsets.UTF_8);
 
-        ViewStat viewStat1 = ViewStat.builder().app("ewm-main-service").uri("/event/367").hits(15).build();
+        ViewStat viewStat1 = ViewStat.builder().app("ewm-main-service").uri("/event/367").hits(15L).build();
         List<ViewStat> listViewStat = List.of(viewStat1);
 
         configureFor(host, 9090);
@@ -90,7 +90,7 @@ public class StatisticClientTest {
         wireMockServer.stubFor(get(urlEqualTo("/events/1"))
                 .willReturn(aResponse().withBody("100")));
 
-        Integer result = statisticClient.getViewsByUri(1);
+        Long result = statisticClient.getViewsByUri(1L);
         assertEquals(100, result);
         verify(getRequestedFor(urlEqualTo("/events/1")));
     }
@@ -98,7 +98,7 @@ public class StatisticClientTest {
     @Test
     public void shouldThrowException() {
         RuntimeException re = Assertions.assertThrows(StatisticSendingClientException.class,
-                () -> statisticClient.getViewsByUri(1));
+                () -> statisticClient.getViewsByUri(1L));
         assertEquals("An error occurred when sending a request from a client 'GetViewsByUri'", re.getMessage());
     }
 }

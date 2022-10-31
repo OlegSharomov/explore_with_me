@@ -50,6 +50,6 @@ public class CategoryPublicControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(categoryPublicService, Mockito.times(1))
-                .getCategoryById(1);
+                .getCategoryById(1L);
     }
 }

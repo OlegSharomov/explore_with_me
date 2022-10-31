@@ -33,7 +33,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     // Получение информации о заявках текущего пользователя на участие в чужих событиях.
-    public List<ParticipationRequestDto> getParticipationRequest(Integer userId) {
+    public List<ParticipationRequestDto> getParticipationRequest(Long userId) {
         List<Request> requests = requestRepository.findAllByRequesterId(userId);
         return requests.stream()
                 .map(e -> requestMapper.toRequestDto(e, e.getEvent().getId(), e.getRequester().getId()))
@@ -49,7 +49,7 @@ public class RequestServiceImpl implements RequestService {
      * в состояние подтвержденного*/
     @Override
     @Transactional(readOnly = false)
-    public ParticipationRequestDto createParticipationRequest(Integer userId, Integer eventId) {
+    public ParticipationRequestDto createParticipationRequest(Long userId, Long eventId) {
         if (requestRepository.existsByRequesterIdAndEventId(userId, eventId)) {
             throw new ValidationException("Request already exists");
         }
@@ -88,7 +88,7 @@ public class RequestServiceImpl implements RequestService {
     // Отмена своего запроса на участие в событии.
     @Override
     @Transactional(readOnly = false)
-    public ParticipationRequestDto cancelParticipationRequest(Integer userId, Integer requestId) {
+    public ParticipationRequestDto cancelParticipationRequest(Long userId, Long requestId) {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new CustomNotFoundException("Request not found"));
         if (Boolean.FALSE.equals(request.getRequester().getId().equals(userId))) {

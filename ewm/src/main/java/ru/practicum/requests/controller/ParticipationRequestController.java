@@ -31,7 +31,7 @@ public class ParticipationRequestController {
     @GetMapping
     @Operation(summary = "Получение информации о заявках текущего пользователя на участие в чужих событиях",
             description = "Возвращает список ParticipationRequestDto")
-    public List<ParticipationRequestDto> getParticipationRequest(@Positive @PathVariable Integer userId) {
+    public List<ParticipationRequestDto> getParticipationRequest(@Positive @PathVariable Long userId) {
         log.info("Received a request: GET /users/{}/requests", userId);
         return requestService.getParticipationRequest(userId);
     }
@@ -44,16 +44,16 @@ public class ParticipationRequestController {
                     "Если у события достигнут лимит запросов на участие - необходимо вернуть ошибку. " +
                     "Если для события отключена пре-модерация запросов на участие, то запрос должен автоматически " +
                     "перейти в состояние подтвержденного*/")
-    public ParticipationRequestDto createParticipationRequest(@Positive @PathVariable Integer userId,
-                                                              @Positive @RequestParam Integer eventId) {
+    public ParticipationRequestDto createParticipationRequest(@Positive @PathVariable Long userId,
+                                                              @Positive @RequestParam Long eventId) {
         log.info("Received a request: POST /users/{}/requests with parameter: eventId = {}", userId, eventId);
         return requestService.createParticipationRequest(userId, eventId);
     }
 
     @PatchMapping("/{requestId}/cancel")
     @Operation(summary = "Отмена своего запроса на участие в событии", description = "Возвращает ParticipationRequestDto")
-    public ParticipationRequestDto cancelParticipationRequest(@Positive @PathVariable Integer userId,
-                                                              @PathVariable Integer requestId) {
+    public ParticipationRequestDto cancelParticipationRequest(@Positive @PathVariable Long userId,
+                                                              @PathVariable Long requestId) {
         log.info("Received a request: PATCH /users/{}/requests/{}/cancel", userId, requestId);
         return requestService.cancelParticipationRequest(userId, requestId);
     }

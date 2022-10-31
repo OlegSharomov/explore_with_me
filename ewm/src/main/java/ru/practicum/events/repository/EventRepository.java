@@ -10,10 +10,10 @@ import ru.practicum.users.entity.User;
 import java.util.List;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Integer>, JpaSpecificationExecutor<Event> {
+public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
     List<Event> findByInitiator(User initiator, Pageable pageable);
 
-    Integer countByCategoryId(Integer catId);
+    Long countByCategoryId(Long catId);
 
-    List<Event> findAllByIdIn(List<Integer> list);
+    List<Event> findAllByIdIn(List<Long> list);
 }

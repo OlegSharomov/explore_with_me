@@ -49,6 +49,6 @@ public class CompilationsPublicControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(compilationPublicService, Mockito.times(1))
-                .getCompilationById(1);
+                .getCompilationById(1L);
     }
 }

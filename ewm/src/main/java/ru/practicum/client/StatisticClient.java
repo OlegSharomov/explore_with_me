@@ -68,8 +68,8 @@ public class StatisticClient {
         return fields.stream().map(String::valueOf).collect(Collectors.joining(",", "", ""));
     }
 
-    public Integer getViewsByUri(Integer eventId) {
-        Integer result;
+    public Long getViewsByUri(Long eventId) {
+        Long result;
         URI uri = URI.create(statServerUrl + "/events/" + eventId);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
@@ -82,7 +82,7 @@ public class StatisticClient {
                     .build()
                     .send(request, HttpResponse.BodyHandlers.ofString());
 
-            result = objectMapper.readValue(response.body(), Integer.class);
+            result = objectMapper.readValue(response.body(), Long.class);
         } catch (IOException | InterruptedException e) {
             log.warn("Error: " + e + " \n Cause = " + e.getCause() + " \n Message = " + e.getMessage());
             throw new StatisticSendingClientException("An error occurred when sending a request from a client 'GetViewsByUri'");

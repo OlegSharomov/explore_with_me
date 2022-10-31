@@ -49,7 +49,7 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
     @Override
     @Transactional
     // Получение подборки событий по id.
-    public CompilationDto getCompilationById(@PathVariable Integer compId) {
+    public CompilationDto getCompilationById(@PathVariable Long compId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));
         System.out.println("\n Из БД вытащили объект Compilation: " + compilation);

@@ -20,11 +20,11 @@ public class ParticipationRequestDto {
     @Schema(description = "Дата и время создания заявки")
     private LocalDateTime created;
     @Schema(description = "Идентификатор события")
-    private Integer event;
+    private Long event;
     @Schema(description = "Идентификатор заявки")
-    private Integer id;
+    private Long id;
     @Schema(description = "Идентификатор пользователя, отправившего заявку")
-    private Integer requester;
+    private Long requester;
     @Schema(description = "Статус заявки.  PENDING, CONFIRMED, REJECTED")
     private RequestStatus status;
 }

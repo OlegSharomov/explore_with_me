@@ -18,7 +18,7 @@ import java.util.List;
 public class NewCompilationDto {
     @UniqueElements
     @Schema(description = "Список идентификаторов событий входящих в подборку")
-    private List<Integer> events;
+    private List<Long> events;
     @Schema(description = "Закреплена ли подборка на главной странице сайта")
     private Boolean pinned = false;
     @NotBlank

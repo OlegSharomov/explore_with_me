@@ -70,6 +70,6 @@ public class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(userService, Mockito.times(1))
-                .removeUser(1);
+                .removeUser(1L);
     }
 }

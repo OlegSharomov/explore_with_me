@@ -58,8 +58,8 @@ public class StatisticController {
 
     @GetMapping("/events/{eventId}")
     @Operation(summary = "Получение информации о количестве просмотров события")
-    public Integer getViews(@NotNull(message = "Controller get request to path '/events/{eventId}' where eventId==null")
-                            @PathVariable Integer eventId) {
+    public Long getViews(@NotNull(message = "Controller get request to path '/events/{eventId}' where eventId==null")
+                            @PathVariable Long eventId) {
         log.info("Received a request: GET /events with pathVariable: {}", eventId);
         return statisticService.getViews("/events/" + eventId);
     }

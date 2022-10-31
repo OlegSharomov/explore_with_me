@@ -33,9 +33,9 @@ public class CompilationAdminControllerTest {
     @MockBean
     private CompilationAdminService compilationAdminService;
     NewCompilationDto newCompilationDto = NewCompilationDto.builder()
-            .events(List.of(1, 2)).pinned(true).title("Weekend").build();
+            .events(List.of(1L, 2L)).pinned(true).title("Weekend").build();
     CompilationDto compilationDto = CompilationDto.builder()
-            .id(1).events(List.of()).pinned(true).title("Weekend").build();
+            .id(1L).events(List.of()).pinned(true).title("Weekend").build();
 
     // createNewCompilation
     @Test
@@ -63,7 +63,7 @@ public class CompilationAdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(compilationAdminService, Mockito.times(1))
-                .removeCompilation(1);
+                .removeCompilation(1L);
     }
 
     // removeEventFromCompilation
@@ -76,7 +76,7 @@ public class CompilationAdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(compilationAdminService, Mockito.times(1))
-                .removeEventFromCompilation(1, 1);
+                .removeEventFromCompilation(1L, 1L);
     }
 
     // addEventInCompilation
@@ -89,7 +89,7 @@ public class CompilationAdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(compilationAdminService, Mockito.times(1))
-                .addEventInCompilation(1, 1);
+                .addEventInCompilation(1L, 1L);
     }
 
     // unpinCompilation
@@ -102,7 +102,7 @@ public class CompilationAdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(compilationAdminService, Mockito.times(1))
-                .unpinCompilation(1);
+                .unpinCompilation(1L);
     }
 
     // pinCompilation
@@ -115,7 +115,7 @@ public class CompilationAdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(compilationAdminService, Mockito.times(1))
-                .pinCompilation(1);
+                .pinCompilation(1L);
     }
 
 }

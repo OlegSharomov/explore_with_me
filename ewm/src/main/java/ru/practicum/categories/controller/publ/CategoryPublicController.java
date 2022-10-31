@@ -36,7 +36,7 @@ public class CategoryPublicController {
 
     @GetMapping("/{catId}")
     @Operation(summary = "Получение информации о категории по ее id", description = "Возвращает CategoryDto")
-    public CategoryDto getCategoryById(@Positive @PathVariable Integer catId) {
+    public CategoryDto getCategoryById(@Positive @PathVariable Long catId) {
         log.info("Received a request: GET /categories/{}", catId);
         return categoryPublicService.getCategoryById(catId);
     }

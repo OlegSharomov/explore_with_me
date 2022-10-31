@@ -13,7 +13,7 @@ public class UserDto {
     @NotNull
     @Email
     String email;
-    Integer id;
+    Long id;
     @NotBlank
     String name;
 }

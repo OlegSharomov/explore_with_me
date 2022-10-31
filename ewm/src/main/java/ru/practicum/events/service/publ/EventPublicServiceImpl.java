@@ -55,7 +55,7 @@ public class EventPublicServiceImpl implements EventPublicService {
     @Override
     @Transactional
     public List<EventShortDto> getEvents(String text,          // текст для поиска в содержимом аннотации и подробном описании события
-                                         int[] categories,     // список идентификаторов категорий в которых будет вестись поиск
+                                         long[] categories,     // список идентификаторов категорий в которых будет вестись поиск
                                          Boolean paid,         // поиск только платных/бесплатных событий
                                          LocalDateTime rangeStart,    // дата и время не раньше которых должно произойти событие
                                          LocalDateTime rangeEnd,      // дата и время не позже которых должно произойти событие
@@ -75,7 +75,7 @@ public class EventPublicServiceImpl implements EventPublicService {
         } else {
             pageable = PageRequest.of(from / size, size);
         }
-        List<Integer> listOfCategoriesId = Arrays.stream(categories).boxed().collect(Collectors.toList());
+        List<Long> listOfCategoriesId = Arrays.stream(categories).boxed().collect(Collectors.toList());
         List<Category> listOfCategories = categoryRepository.findAllByIdIn(listOfCategoriesId);
         Page<Event> events;
         if (rangeStart == null || rangeEnd == null) {
@@ -96,7 +96,7 @@ public class EventPublicServiceImpl implements EventPublicService {
      * Информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики */
     @Override
     @Transactional
-    public EventFullDto getEventById(@PathVariable Integer id, HttpServletRequest request) {
+    public EventFullDto getEventById(@PathVariable Long id, HttpServletRequest request) {
         statisticClientCallAndSaveRequest(request);
         Event event = eventRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("Event not found"));
         if (Boolean.FALSE.equals(event.getState().equals(EventState.PUBLISHED))) {

@@ -42,7 +42,7 @@ public class EventPublicController {
     public List<EventShortDto> getEvents(@Parameter(name = "текст для поиска в содержимом аннотации и подробном описании события")
                                          @RequestParam(required = false) String text,
                                          @Parameter(name = "список идентификаторов категорий в которых будет вестись поиск")
-                                         @RequestParam(required = false) int[] categories,
+                                         @RequestParam(required = false) long[] categories,
                                          @Parameter(name = "поиск только платных/бесплатных событий")
                                          @RequestParam(required = false) Boolean paid,
                                          @Parameter(name = "дата и время не раньше которых должно произойти событие")
@@ -75,7 +75,7 @@ public class EventPublicController {
                     "Информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, " +
                     "нужно сохранить в сервисе статистики")
     public EventFullDto getEventById(@Positive @PathVariable @Parameter(name = "id события")
-                                     Integer id,
+                                     Long id,
                                      @Parameter(name = "HttpServletRequest для сохранения из него ip, " +
                                              "с которого был сделан запрос на просмотр события")
                                      HttpServletRequest request) {

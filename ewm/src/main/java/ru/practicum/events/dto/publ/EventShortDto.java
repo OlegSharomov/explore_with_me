@@ -25,13 +25,13 @@ public class EventShortDto {
     @Schema(description = "Категория", example = "{\"id\": 1, \"name\": \"Концерты\"}")
     private CategoryDto category;
     @Schema(description = "Количество одобренных заявок на участие в данном событии")
-    private Integer confirmedRequests;
+    private Long confirmedRequests;
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "дата начала события формате yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     @Schema(description = "")
-    private Integer id;
+    private Long id;
     @NotNull
     @Schema(description = "Пользователь (краткая информация)", example = "{\"id\": 3, \"name\": \"Фёдоров Матвей\"}")
     private UserShortDto initiator;
@@ -42,5 +42,5 @@ public class EventShortDto {
     @Schema(description = "Заголовок")
     private String title;
     @Schema(description = "Количество просмотрев события")
-    private Integer views;
+    private Long views;
 }

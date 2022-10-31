@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface EventAdminService {
 
-    List<EventFullDto> getAllEvents(List<Integer> users,
+    List<EventFullDto> getAllEvents(List<Long> users,
                                     List<EventState> states,
-                                    List<Integer> categories,
+                                    List<Long> categories,
                                     LocalDateTime rangeStart,
                                     LocalDateTime rangeEnd,
                                     Integer from,
                                     Integer size);
 
-    EventFullDto changeEvent(Integer eventId, AdminUpdateEventRequest adminUpdateEventRequest);
+    EventFullDto changeEvent(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest);
 
-    EventFullDto publishingEvent(Integer eventId);
+    EventFullDto publishingEvent(Long eventId);
 
-    EventFullDto rejectEvent(Integer eventId);
+    EventFullDto rejectEvent(Long eventId);
 }

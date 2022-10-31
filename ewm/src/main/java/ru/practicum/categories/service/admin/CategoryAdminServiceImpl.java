@@ -40,8 +40,8 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
 
     @Override
     @Transactional(readOnly = false)
-    public void removeCategory(Integer catId) {
-        Integer relatedEvents = eventRepository.countByCategoryId(catId);
+    public void removeCategory(Long catId) {
+        Long relatedEvents = eventRepository.countByCategoryId(catId);
         if (relatedEvents != 0) {
             throw new ValidationException("You cannot delete a category that events are associated with");
         }
@@ -50,7 +50,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
 
     @Override
     @Transactional(readOnly = true)
-    public Category getEntityCategoryById(Integer catId) {
+    public Category getEntityCategoryById(Long catId) {
         return categoryRepository.findById(catId).orElseThrow(() -> new CustomNotFoundException("Category not found"));
     }
 }

@@ -34,7 +34,7 @@ public class ParticipationRequestControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(requestService, Mockito.times(1))
-                .getParticipationRequest(1);
+                .getParticipationRequest(1L);
     }
 
     // createParticipationRequest
@@ -48,7 +48,7 @@ public class ParticipationRequestControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(requestService, Mockito.times(1))
-                .createParticipationRequest(1, 1);
+                .createParticipationRequest(1L, 1L);
     }
 
 
@@ -62,6 +62,6 @@ public class ParticipationRequestControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(requestService, Mockito.times(1))
-                .cancelParticipationRequest(1, 1);
+                .cancelParticipationRequest(1L, 1L);
     }
 }

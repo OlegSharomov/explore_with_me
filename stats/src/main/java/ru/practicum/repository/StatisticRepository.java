@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
-public interface StatisticRepository extends JpaRepository<Statistic, Integer> {
+public interface StatisticRepository extends JpaRepository<Statistic, Long> {
     Optional<Statistic> findByUri(String uri);
 
-    Optional<Integer> countByUri(String uri);
+    Optional<Long> countByUri(String uri);
 
     @Query(value =
             "SELECT count(distinct (additional_fields->>'ip'))  " +
@@ -20,7 +20,7 @@ public interface StatisticRepository extends JpaRepository<Statistic, Integer> {
                     "WHERE uri = ?1 " +
                     "AND additional_fields->>'app' = ?2 " +
                     "AND (cast(created_at as date)) BETWEEN ?3 AND ?4", nativeQuery = true)
-    Integer getStatisticWithUniqueIp(String uri, String app, LocalDateTime start, LocalDateTime end);
+    Long getStatisticWithUniqueIp(String uri, String app, LocalDateTime start, LocalDateTime end);
 
 
     @Query(value =
@@ -29,5 +29,5 @@ public interface StatisticRepository extends JpaRepository<Statistic, Integer> {
                     "WHERE uri = ?1 " +
                     "AND additional_fields->>'app' = ?2 " +
                     "AND (cast(created_at as date)) BETWEEN ?3 AND ?4", nativeQuery = true)
-    Integer getStatisticWithoutUniqueIp(String uri, String app, LocalDateTime start, LocalDateTime end);
+    Long getStatisticWithoutUniqueIp(String uri, String app, LocalDateTime start, LocalDateTime end);
 }

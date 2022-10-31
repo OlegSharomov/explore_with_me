@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 public class CategoryDto {
     @NotNull
     @Schema(description = "Идентификатор категории")
-    private Integer id;
+    private Long id;
     @NotBlank
     @Schema(description = "Название категории")
     private String name;

@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<UserDto> getUsers(Integer[] ids, Integer from, Integer size) {
+    public List<UserDto> getUsers(Long[] ids, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("id"));
         Page<User> users;
         if (ids != null) {
@@ -48,14 +48,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = false)
-    public void removeUser(Integer userId) {
+    public void removeUser(Long userId) {
         userRepository.deleteById(userId);
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public User getEntityUserById(Integer userId) {
+    public User getEntityUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new CustomNotFoundException("User not found"));
     }
 }

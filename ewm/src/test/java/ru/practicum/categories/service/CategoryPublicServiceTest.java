@@ -31,10 +31,10 @@ public class CategoryPublicServiceTest {
     private CategoryRepository categoryRepository;
     @Spy
     private CategoryMapperImpl categoryMapper;
-    Category category1 = Category.builder().id(1).name("Sport").build();
-    Category category2 = Category.builder().id(2).name("ArtHouse").build();
-    CategoryDto categoryDto1 = CategoryDto.builder().id(1).name("Sport").build();
-    CategoryDto categoryDto2 = CategoryDto.builder().id(2).name("ArtHouse").build();
+    Category category1 = Category.builder().id(1L).name("Sport").build();
+    Category category2 = Category.builder().id(2L).name("ArtHouse").build();
+    CategoryDto categoryDto1 = CategoryDto.builder().id(1L).name("Sport").build();
+    CategoryDto categoryDto2 = CategoryDto.builder().id(2L).name("ArtHouse").build();
     Integer from = 0;
     Integer size = 10;
     Pageable pageable = PageRequest.of(from / size, size, Sort.by("id"));
@@ -51,8 +51,8 @@ public class CategoryPublicServiceTest {
     // getCategoryById
     @Test
     public void shouldGetCategoryDtoById() {
-        when(categoryRepository.findById(1)).thenReturn(Optional.of(category1));
-        CategoryDto result = categoryService.getCategoryById(1);
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category1));
+        CategoryDto result = categoryService.getCategoryById(1L);
         assertEquals(categoryDto1, result);
     }
 }

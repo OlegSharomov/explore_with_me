@@ -65,6 +65,6 @@ public class EventPublicControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
         Mockito.verify(eventPublicService, Mockito.times(1))
-                .getEventById(eq(1), any(HttpServletRequest.class));
+                .getEventById(eq(1L), any(HttpServletRequest.class));
     }
 }

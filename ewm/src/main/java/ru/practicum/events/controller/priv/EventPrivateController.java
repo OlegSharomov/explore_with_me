@@ -38,7 +38,7 @@ public class EventPrivateController {
 
     @GetMapping("/{userId}/events")
     @Operation(summary = "Получение событий, добавленных текущим пользователем", description = "Возвращает список EventShortDto")
-    public List<EventShortDto> getEventsByUserId(@Positive @PathVariable Integer userId,
+    public List<EventShortDto> getEventsByUserId(@Positive @PathVariable Long userId,
                                                  @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                  @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Received a request: GET /users/{}/events with parameters: from = {}, size = {}", userId, from, size);
@@ -50,7 +50,7 @@ public class EventPrivateController {
             description = "Изменить можно только отмененные события или события в состоянии ожидания модерации. " +
                     "Если редактируется отменённое событие, то оно автоматически переходит в состояние ожидания модерации. " +
                     "Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента.")
-    public EventFullDto changeEventByUser(@Positive @PathVariable Integer userId,
+    public EventFullDto changeEventByUser(@Positive @PathVariable Long userId,
                                           @Valid @RequestBody UpdateEventRequest updateEventRequest) {
         log.info("Received a request: PATCH /users/{}/events with body: {}", userId, updateEventRequest);
         return eventPrivateService.changeEventByUser(userId, updateEventRequest);
@@ -59,7 +59,7 @@ public class EventPrivateController {
     @PostMapping("/{userId}/events")
     @Operation(summary = "Добавление нового события", description = "Возвращает EventFullDto. " +
             "Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента")
-    public EventFullDto createEvent(@Positive @PathVariable Integer userId,
+    public EventFullDto createEvent(@Positive @PathVariable Long userId,
                                     @Valid @RequestBody NewEventDto newEventDto) {
         log.info("Received a request: POST /users/{}/events with body: {}", userId, newEventDto);
         if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
@@ -71,8 +71,8 @@ public class EventPrivateController {
     @GetMapping("/{userId}/events/{eventId}")
     @Operation(summary = "Получение полной информации о событии, добавленном текущим пользователем",
             description = "Возвращает EventFullDto")
-    public EventFullDto getEventById(@Positive @PathVariable Integer userId,
-                                     @Positive @PathVariable Integer eventId) {
+    public EventFullDto getEventById(@Positive @PathVariable Long userId,
+                                     @Positive @PathVariable Long eventId) {
         log.info("Received a request: GET /users/{}/events/{} ", userId, eventId);
         return eventPrivateService.getEventById(userId, eventId);
     }
@@ -80,8 +80,8 @@ public class EventPrivateController {
     @PatchMapping("/{userId}/events/{eventId}")
     @Operation(summary = "Отмена события добавленного текущим пользователем", description = "Возвращает EventFullDto. " +
             "Обратите внимание: Отменить можно только событие в состоянии ожидания модерации.")
-    public EventFullDto cancellationEvent(@Positive @PathVariable Integer userId,
-                                          @Positive @PathVariable Integer eventId) {
+    public EventFullDto cancellationEvent(@Positive @PathVariable Long userId,
+                                          @Positive @PathVariable Long eventId) {
         log.info("Received a request: PATCH /users/{}/events/{} ", userId, eventId);
         return eventPrivateService.cancellationEvent(userId, eventId);
     }
@@ -89,8 +89,8 @@ public class EventPrivateController {
     @GetMapping("/{userId}/events/{eventId}/requests")
     @Operation(summary = "Получение информации о запросах на участие в событии текущего пользователя",
             description = "Возвращает ParticipationRequestDto.")
-    public List<ParticipationRequestDto> getParticipationRequest(@Positive @PathVariable Integer userId,
-                                                                 @Positive @PathVariable Integer eventId) {
+    public List<ParticipationRequestDto> getParticipationRequest(@Positive @PathVariable Long userId,
+                                                                 @Positive @PathVariable Long eventId) {
         log.info("Received a request: GET /users/{}/events/{}/requests ", userId, eventId);
         return eventPrivateService.getParticipationRequest(userId, eventId);
     }
@@ -101,9 +101,9 @@ public class EventPrivateController {
                     "заявок не требуется. Если при подтверждении данной заявки, лимит заявок для события исчерпан, " +
                     "то все неподтверждённые заявки необходимо отклонить")
 
-    public ParticipationRequestDto acceptParticipationRequest(@Positive @PathVariable Integer userId,
-                                                              @Positive @PathVariable Integer eventId,
-                                                              @Positive @PathVariable Integer reqId) {
+    public ParticipationRequestDto acceptParticipationRequest(@Positive @PathVariable Long userId,
+                                                              @Positive @PathVariable Long eventId,
+                                                              @Positive @PathVariable Long reqId) {
         log.info("Received a request: PATCH /users/{}/events/{}/requests/{}/confirm", userId, eventId, reqId);
         return eventPrivateService.acceptParticipationRequest(userId, eventId, reqId);
     }
@@ -111,9 +111,9 @@ public class EventPrivateController {
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
     @Operation(summary = "Отклонение чужой заявки на участие в событии текущего пользователя",
             description = "Возвращает ParticipationRequestDto")
-    public ParticipationRequestDto rejectParticipationRequest(@Positive @PathVariable Integer userId,
-                                                              @Positive @PathVariable Integer eventId,
-                                                              @Positive @PathVariable Integer reqId) {
+    public ParticipationRequestDto rejectParticipationRequest(@Positive @PathVariable Long userId,
+                                                              @Positive @PathVariable Long eventId,
+                                                              @Positive @PathVariable Long reqId) {
         log.info("Received a request: PATCH /users/{}/events/{}/requests/{}/reject", userId, eventId, reqId);
         return eventPrivateService.rejectParticipationRequest(userId, eventId, reqId);
     }

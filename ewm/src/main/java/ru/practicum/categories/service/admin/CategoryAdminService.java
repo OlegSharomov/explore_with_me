@@ -11,7 +11,7 @@ public interface CategoryAdminService {
 
     CategoryDto createCategory(NewCategoryDto newCategoryDto);
 
-    void removeCategory(Integer catId);
+    void removeCategory(Long catId);
 
-    Category getEntityCategoryById(Integer catId);
+    Category getEntityCategoryById(Long catId);
 }

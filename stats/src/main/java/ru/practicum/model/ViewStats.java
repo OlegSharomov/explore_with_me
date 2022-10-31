@@ -12,5 +12,5 @@ public class ViewStats {
     @Schema(description = "URI сервиса", example = "/event/367")
     String uri;
     @Schema(description = "Количество просмотров")
-    Integer hits;
+    Long hits;
 }
