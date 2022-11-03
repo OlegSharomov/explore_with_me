@@ -20,8 +20,16 @@ public class Censorship {
         this.stopWords = readStopWordsFromFile(FILE_WITH_STOP_WORDS);
     }
 
-    private static final String FILE_WITH_STOP_WORDS = "BAD_WORDS";
+    private static final String FILE_WITH_STOP_WORDS = "ewm/BAD_WORDS";
     private String[] stopWords;
+
+//    public static void main(String[] args) {
+//        Censorship censorship = new Censorship();
+//        censorship.readStopWordsFromFile(FILE_WITH_STOP_WORDS);
+//        for(String s : censorship.stopWords){
+//            System.out.println(s);
+//        }
+//    }
 
     // проверка текста на наличие стоп-слов
     public boolean isTextCorrect(String text) {
@@ -34,7 +42,11 @@ public class Censorship {
         return true;
     }
 
-    public void addStopWord(String newStopWord) {
+    public String[] showAllStopWords(){
+        return Arrays.copyOf(stopWords, stopWords.length);
+    }
+
+    public String[] addStopWord(String newStopWord) {
         String readyStopWord = newStopWord.trim();
         if (Arrays.asList(stopWords).contains(readyStopWord)) {
             throw new ValidationException(String.format("Word %s already exists", newStopWord));
@@ -45,14 +57,16 @@ public class Censorship {
 
         stopWords = updatedStopWords;
         writeByteToFile(stopWords);
+        return Arrays.copyOf(stopWords, stopWords.length);
     }
 
-    public void removeFromStopWords(String wordToRemove) {
+    public String[] removeFromStopWords(String wordToRemove) {
         if (Boolean.FALSE.equals(Arrays.asList(stopWords).contains(wordToRemove))) {
             throw new ValidationException(String.format("Word %s not found", wordToRemove));
         }
         stopWords = Arrays.stream(stopWords).filter(e -> e.equals(wordToRemove)).toArray(String[]::new);
         writeByteToFile(stopWords);
+        return Arrays.copyOf(stopWords, stopWords.length);
     }
 
 

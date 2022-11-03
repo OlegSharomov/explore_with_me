@@ -3,6 +3,8 @@ package ru.practicum.comments.service.admin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
+import ru.practicum.comments.censorship.Censorship;
 import ru.practicum.comments.dto.CommentAdminUpdateDto;
 import ru.practicum.comments.dto.CommentFullDto;
 import ru.practicum.comments.dto.CommentMapper;
@@ -22,6 +24,7 @@ public class CommentAdminService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final CommentMapper commentMapper;
+    private final Censorship censorship;
 
     // Редактирование комментария.
     /* Редактирование данных любого события администратором. Валидация данных не требуется. */
@@ -44,5 +47,18 @@ public class CommentAdminService {
     @Transactional(readOnly = false)
     public void removeCommentById(Long commentId) {
         commentRepository.deleteById(commentId);
+    }
+
+    // Посмотреть все стоп-слова
+    public String[] showAllStopWords() {
+        return censorship.showAllStopWords();
+    }
+
+    public String[] addStopWord(@RequestParam String stopWord) {
+        return censorship.addStopWord(stopWord);
+    }
+
+    public String[] removeStopWord(@RequestParam String stopWord) {
+        return censorship.removeFromStopWords(stopWord);
     }
 }

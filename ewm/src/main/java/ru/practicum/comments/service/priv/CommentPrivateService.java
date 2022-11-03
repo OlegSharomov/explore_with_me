@@ -3,7 +3,7 @@ package ru.practicum.comments.service.priv;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
+import ru.practicum.comments.censorship.Censorship;
 import ru.practicum.comments.dto.CommentFullDto;
 import ru.practicum.comments.dto.CommentMapper;
 import ru.practicum.comments.dto.CommentUpdateDto;
@@ -30,15 +30,13 @@ public class CommentPrivateService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final CommentMapper commentMapper;
+    private final Censorship censorship;
 
     // Добавление нового комментария. Возвращает CommentDto.
     // Должна производиться проверка на корректность введенных данных.
     @Transactional(readOnly = false)
     public CommentFullDto createComment(Long userId, NewCommentDto newCommentDto) {
-
-        // TODO добавить проверку на корректность введенных данных
-        Boolean correct = null;
-
+        boolean correct = censorship.isTextCorrect(newCommentDto.getText());
         User commentator = userRepository.findById(userId).orElseThrow(() -> new CustomNotFoundException("User not found"));
         Event event = eventRepository.findById(newCommentDto.getEventId())
                 .orElseThrow(() -> new CustomNotFoundException("Event not found"));
@@ -58,8 +56,9 @@ public class CommentPrivateService {
     // Произвести проверку на существование пользователя по id, принадлежность commentatorId к текущему пользователю
     @Transactional(readOnly = false)
     public CommentFullDto updateComment(Long userId, CommentUpdateDto commentUpdateDto) {
-        // TODO Добавить проверку корректности введенных данных
-
+        if (Boolean.FALSE.equals(censorship.isTextCorrect(commentUpdateDto.getText()))) {
+            throw new ValidationException("Text contains incorrect words. Try again with the correct content.");
+        }
         if (Boolean.FALSE.equals(userRepository.existsById(userId))) {
             throw new CustomNotFoundException("User not found");
         }
@@ -91,7 +90,6 @@ public class CommentPrivateService {
 
     // Просмотр всех комментариев текущего пользователя
     @Transactional
-    @GetMapping("/users/{userId}/comments")
     public List<CommentFullDto> getAllCommentsOfCurrentUser(Long userId) {
         List<Comment> comments = commentRepository.findAllByCommentatorId(userId);
         return comments.stream()

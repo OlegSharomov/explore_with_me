@@ -38,11 +38,11 @@ public class Comment {
     @ManyToOne(targetEntity = Event.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "event_id", referencedColumnName = "id", nullable = false)
     private Event event;
-    @Column(name = "status", length = 15, nullable = false)
+    @Column(name = "status", length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
     private CommentStatus status;
     @NotBlank
-    @Column(name = "text", length = 7000, nullable = false)
+    @Column(name = "comment_text", length = 7000, nullable = false)
     private String text;
     @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;
