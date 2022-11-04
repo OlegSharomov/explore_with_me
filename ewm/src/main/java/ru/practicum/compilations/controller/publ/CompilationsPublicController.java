@@ -28,7 +28,7 @@ public class CompilationsPublicController {
     private final CompilationPublicService compilationPublicService;
 
     @GetMapping
-    @Operation(summary = "Получение подборок событий", description = "Возвращает список CompilationDto")
+    @Operation(summary = "Получение подборок событий")
     public List<CompilationDto> getCompilations(@RequestParam(required = false)
                                                 @Parameter(name = "Искать только закрепленные/не закрепленные подборки")
                                                 Boolean pinned,
@@ -41,7 +41,7 @@ public class CompilationsPublicController {
     }
 
     @GetMapping("/{compId}")
-    @Operation(summary = "Получение подборки событий по id", description = "Возвращает CompilationDto")
+    @Operation(summary = "Получение подборки событий по id")
     public CompilationDto getCompilationById(@Positive @PathVariable Long compId) {
         log.info("Received a request GET /compilations/{}", compId);
         return compilationPublicService.getCompilationById(compId);

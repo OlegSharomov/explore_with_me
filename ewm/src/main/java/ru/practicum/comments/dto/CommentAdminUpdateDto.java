@@ -1,5 +1,6 @@
 package ru.practicum.comments.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,8 @@ import ru.practicum.comments.model.CommentStatus;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Информация для редактирования комментария администратором. " +
+        "Все поля необязательные. Значение полей не валидируются")
 public class CommentAdminUpdateDto {
     private Long id;
     private Long commentatorId;

@@ -23,19 +23,10 @@ public class Censorship {
     private static final String FILE_WITH_STOP_WORDS = "ewm/BAD_WORDS";
     private String[] stopWords;
 
-//    public static void main(String[] args) {
-//        Censorship censorship = new Censorship();
-//        censorship.readStopWordsFromFile(FILE_WITH_STOP_WORDS);
-//        for(String s : censorship.stopWords){
-//            System.out.println(s);
-//        }
-//    }
-
     // проверка текста на наличие стоп-слов
     public boolean isTextCorrect(String text) {
         for (String stopWord : stopWords) {
             String searchWord = "(^|[_ ])" + stopWord + "([ _]|$)";
-//            if (Pattern.compile(Pattern.quote(stopWord), Pattern.CASE_INSENSITIVE).matcher(text).find()) {
             if (Pattern.compile(String.valueOf(Pattern.compile(searchWord)), Pattern.CASE_INSENSITIVE).matcher(text).find()) {
                 return false;
             }
@@ -71,7 +62,6 @@ public class Censorship {
         writeByteToFile(stopWords);
         return Arrays.copyOf(stopWords, stopWords.length);
     }
-
 
     private String[] readStopWordsFromFile(String fileName) {
         byte[] bytesEncoded;

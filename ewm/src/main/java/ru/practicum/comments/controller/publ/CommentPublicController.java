@@ -1,5 +1,8 @@
 package ru.practicum.comments.controller.publ;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -19,11 +22,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Public.Комментарии", description = "Публичный API для работы с комментариями.")
 public class CommentPublicController {
     private final CommentPublicService commentPublicService;
 
-    //+
-    // Просмотр всех комментариев события. Выводиться должны только опубликованные комментарии.
+    @Operation(summary = "Просмотр всех комментариев события",
+            description = "Выводиться должны только опубликованные комментарии")
     @GetMapping("/comments/event/{eventId}")
     public List<CommentShortDto> getAllCommentsOfEvent(@Positive @PathVariable Long eventId,
                                                        @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
@@ -32,12 +36,13 @@ public class CommentPublicController {
         return commentPublicService.getAllCommentsOfEvent(eventId, from, size);
     }
 
-    //+
-    // Просмотр всех комментариев инициатора событий по всем его событиям. Выводиться должны только опубликованные комментарии.
+    @Operation(summary = "Просмотр всех комментариев инициатора событий по всем его событиям",
+            description = "Выводиться должны только опубликованные комментарии")
     @GetMapping("/comments/initiator/{initiatorId}")
     public List<CommentShortDto> getAllCommentsByInitiatorOfEvents(@PathVariable Long initiatorId,
-                                                            /* Вариант сортировки: по дате комментария или по событиям
-                                                                                 values : CREATED_ON, EVENTS */
+                                                                   @Parameter(name = "Вариант сортировки: " +
+                                                                           "по дате комментария или по событиям",
+                                                                           example = "CREATED_ON, EVENTS")
                                                                    @RequestParam(defaultValue = "CREATED_ON") String sort,
                                                                    @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                                    @Positive @RequestParam(defaultValue = "10") Integer size) {
@@ -46,10 +51,10 @@ public class CommentPublicController {
         return commentPublicService.getAllCommentsByInitiatorOfEvents(initiatorId, sort, from, size);
     }
 
-    //+
-    // Просмотр события по id
+    @Operation(summary = "Просмотр события по id")
     @GetMapping("/comments/{commentId}")
     public CommentFullDto getCommentById(@PathVariable Long commentId) {
+        log.info("Received a request: GET /comments/{}", commentId);
         return commentPublicService.getCommentById(commentId);
     }
 }

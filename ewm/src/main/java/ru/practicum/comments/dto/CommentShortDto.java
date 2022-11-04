@@ -1,6 +1,7 @@
 package ru.practicum.comments.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "DTO категории. Текст комментария выводится в укороченном виде. Не более 150 символов")
 public class CommentShortDto {
     private Long id;
     private Long commentatorId;

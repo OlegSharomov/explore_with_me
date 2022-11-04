@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Информация для редактирования события администратором. Все поля необязательные. Значение полей не валидируются")
+@Schema(description = "Информация для редактирования события администратором. Все поля необязательные. " +
+        "Значение полей не валидируются")
 public class AdminUpdateEventRequest {
     @Schema(description = "Краткое описание события")
     private String annotation;

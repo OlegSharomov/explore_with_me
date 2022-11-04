@@ -30,7 +30,7 @@ public class CompilationAdminController {
     private final CompilationAdminService compilationAdminService;
 
     @PostMapping
-    @Operation(summary = "Добавление новой подборки", description = "Возвращает CompilationDto")
+    @Operation(summary = "Добавление новой подборки")
     public CompilationDto createNewCompilation(@Valid @RequestBody @Parameter(name = "DTO для создания нового события")
                                                NewCompilationDto newCompilationDto) {
         log.info("Received a request POST /admin/compilations with body: {}", newCompilationDto);

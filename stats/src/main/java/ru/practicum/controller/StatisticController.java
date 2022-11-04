@@ -40,8 +40,8 @@ public class StatisticController {
     }
 
     @GetMapping("/stats")
-    @Operation(summary = "Получение статистики по посещениям", description = "Возвращает список ViewStats. " +
-            "Значение даты и времени должно быть закодировано (Например, используя java.net.URLEncoder.encode)")
+    @Operation(summary = "Получение статистики по посещениям",
+            description = "Значение даты и времени должно быть закодировано (Например, используя java.net.URLEncoder.encode)")
     public List<ViewStats> getStatistic(
             @Parameter(name = "Дата и время начала диапазона за который нужно выгрузить статистику (в формате yyyy-MM-dd HH:mm:ss)")
             @RequestParam LocalDateTime start,

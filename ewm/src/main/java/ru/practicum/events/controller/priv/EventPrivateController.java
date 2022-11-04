@@ -37,7 +37,7 @@ public class EventPrivateController {
     private final EventPrivateService eventPrivateService;
 
     @GetMapping("/{userId}/events")
-    @Operation(summary = "Получение событий, добавленных текущим пользователем", description = "Возвращает список EventShortDto")
+    @Operation(summary = "Получение событий, добавленных текущим пользователем")
     public List<EventShortDto> getEventsByUserId(@Positive @PathVariable Long userId,
                                                  @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                  @Positive @RequestParam(defaultValue = "10") Integer size) {
@@ -57,8 +57,8 @@ public class EventPrivateController {
     }
 
     @PostMapping("/{userId}/events")
-    @Operation(summary = "Добавление нового события", description = "Возвращает EventFullDto. " +
-            "Дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента")
+    @Operation(summary = "Добавление нового события", description = "Дата и время на которые намечено " +
+            "событие не может быть раньше, чем через два часа от текущего момента")
     public EventFullDto createEvent(@Positive @PathVariable Long userId,
                                     @Valid @RequestBody NewEventDto newEventDto) {
         log.info("Received a request: POST /users/{}/events with body: {}", userId, newEventDto);
@@ -69,8 +69,7 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{userId}/events/{eventId}")
-    @Operation(summary = "Получение полной информации о событии, добавленном текущим пользователем",
-            description = "Возвращает EventFullDto")
+    @Operation(summary = "Получение полной информации о событии, добавленном текущим пользователем")
     public EventFullDto getEventById(@Positive @PathVariable Long userId,
                                      @Positive @PathVariable Long eventId) {
         log.info("Received a request: GET /users/{}/events/{} ", userId, eventId);
@@ -78,8 +77,8 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}")
-    @Operation(summary = "Отмена события добавленного текущим пользователем", description = "Возвращает EventFullDto. " +
-            "Обратите внимание: Отменить можно только событие в состоянии ожидания модерации.")
+    @Operation(summary = "Отмена события добавленного текущим пользователем",
+            description = "Обратите внимание: Отменить можно только событие в состоянии ожидания модерации.")
     public EventFullDto cancellationEvent(@Positive @PathVariable Long userId,
                                           @Positive @PathVariable Long eventId) {
         log.info("Received a request: PATCH /users/{}/events/{} ", userId, eventId);
@@ -87,8 +86,7 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{userId}/events/{eventId}/requests")
-    @Operation(summary = "Получение информации о запросах на участие в событии текущего пользователя",
-            description = "Возвращает ParticipationRequestDto.")
+    @Operation(summary = "Получение информации о запросах на участие в событии текущего пользователя")
     public List<ParticipationRequestDto> getParticipationRequest(@Positive @PathVariable Long userId,
                                                                  @Positive @PathVariable Long eventId) {
         log.info("Received a request: GET /users/{}/events/{}/requests ", userId, eventId);
@@ -109,8 +107,7 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/reject")
-    @Operation(summary = "Отклонение чужой заявки на участие в событии текущего пользователя",
-            description = "Возвращает ParticipationRequestDto")
+    @Operation(summary = "Отклонение чужой заявки на участие в событии текущего пользователя")
     public ParticipationRequestDto rejectParticipationRequest(@Positive @PathVariable Long userId,
                                                               @Positive @PathVariable Long eventId,
                                                               @Positive @PathVariable Long reqId) {

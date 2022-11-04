@@ -34,8 +34,7 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Получение информации о пользователях",
-            description = "Возвращает list of UserDto. " +
-                    "Возвращает информацию обо всех пользователях (учитываются параметры ограничения выборки), " +
+            description = "Возвращает информацию обо всех пользователях (учитываются параметры ограничения выборки), " +
                     "либо о конкретных (учитываются указанные идентификаторы)")
     public List<UserDto> getUsers(@RequestParam(required = false) Long[] ids,      // id пользователей
                                   @PositiveOrZero(message = "'from' must be positive or zero")
@@ -48,7 +47,7 @@ public class UserController {
     }
 
     @PostMapping
-    @Operation(summary = "Добавление нового пользователя", description = "Возвращает UserDto")
+    @Operation(summary = "Добавление нового пользователя")
     public UserDto createUser(@Valid @RequestBody NewUserRequest newUserRequest) {
         log.info("Received a request: POST /admin/users with body = {}", newUserRequest);
         return userService.createUser(newUserRequest);
