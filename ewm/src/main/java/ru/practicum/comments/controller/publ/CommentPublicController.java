@@ -22,6 +22,7 @@ import java.util.List;
 public class CommentPublicController {
     private final CommentPublicService commentPublicService;
 
+    //+
     // Просмотр всех комментариев события. Выводиться должны только опубликованные комментарии.
     @GetMapping("/comments/event/{eventId}")
     public List<CommentShortDto> getAllCommentsOfEvent(@Positive @PathVariable Long eventId,
@@ -31,8 +32,8 @@ public class CommentPublicController {
         return commentPublicService.getAllCommentsOfEvent(eventId, from, size);
     }
 
-
-    // Просмотр всех комментариев инициатора событий по всем его событиям
+    //+
+    // Просмотр всех комментариев инициатора событий по всем его событиям. Выводиться должны только опубликованные комментарии.
     @GetMapping("/comments/initiator/{initiatorId}")
     public List<CommentShortDto> getAllCommentsByInitiatorOfEvents(@PathVariable Long initiatorId,
                                                             /* Вариант сортировки: по дате комментария или по событиям
@@ -45,6 +46,7 @@ public class CommentPublicController {
         return commentPublicService.getAllCommentsByInitiatorOfEvents(initiatorId, sort, from, size);
     }
 
+    //+
     // Просмотр события по id
     @GetMapping("/comments/{commentId}")
     public CommentFullDto getCommentById(@PathVariable Long commentId) {

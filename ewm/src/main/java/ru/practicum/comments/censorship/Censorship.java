@@ -34,15 +34,16 @@ public class Censorship {
     // проверка текста на наличие стоп-слов
     public boolean isTextCorrect(String text) {
         for (String stopWord : stopWords) {
-//          if (text.contains(stopWord)) {return false;}
-            if (Pattern.compile(Pattern.quote(stopWord), Pattern.CASE_INSENSITIVE).matcher(text).find()) {
+            String searchWord = "(^|[_ ])" + stopWord + "([ _]|$)";
+//            if (Pattern.compile(Pattern.quote(stopWord), Pattern.CASE_INSENSITIVE).matcher(text).find()) {
+            if (Pattern.compile(String.valueOf(Pattern.compile(searchWord)), Pattern.CASE_INSENSITIVE).matcher(text).find()) {
                 return false;
             }
         }
         return true;
     }
 
-    public String[] showAllStopWords(){
+    public String[] showAllStopWords() {
         return Arrays.copyOf(stopWords, stopWords.length);
     }
 
@@ -64,7 +65,9 @@ public class Censorship {
         if (Boolean.FALSE.equals(Arrays.asList(stopWords).contains(wordToRemove))) {
             throw new ValidationException(String.format("Word %s not found", wordToRemove));
         }
-        stopWords = Arrays.stream(stopWords).filter(e -> e.equals(wordToRemove)).toArray(String[]::new);
+        stopWords = Arrays.stream(stopWords)
+                .filter(e -> Boolean.FALSE.equals(e.equals(wordToRemove)))
+                .toArray(String[]::new);
         writeByteToFile(stopWords);
         return Arrays.copyOf(stopWords, stopWords.length);
     }
@@ -88,13 +91,12 @@ public class Censorship {
     }
 
     private void writeByteToFile(String[] arrayOfBadWords) {
-        File csvOutputFile = new File("BAD_WORDS");
+        File csvOutputFile = new File(FILE_WITH_STOP_WORDS);
+        // Переводим массив слов в строку с учетом экранирования и специальных символов
+        String readyString = convertToCSV(arrayOfBadWords);
+        // перевод строки в байты, кодировки Base64
+        byte[] bytesEncoded = Base64.encodeBase64(readyString.getBytes());
         try (FileOutputStream fos = new FileOutputStream(csvOutputFile, false)) {
-            // Переводим массив слов в строку с учетом экранирования и специальных символов
-            String readyString = convertToCSV(arrayOfBadWords);
-            // перевод строки в байты, кодировки Base64
-            byte[] bytesEncoded = Base64.encodeBase64(readyString.getBytes());
-
             // записываем массив байтов в файл BAD_WORDS
             fos.write(bytesEncoded, 0, bytesEncoded.length);
         } catch (IOException e) {

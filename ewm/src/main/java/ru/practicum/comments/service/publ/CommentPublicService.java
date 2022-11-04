@@ -10,6 +10,7 @@ import ru.practicum.comments.dto.CommentFullDto;
 import ru.practicum.comments.dto.CommentMapper;
 import ru.practicum.comments.dto.CommentShortDto;
 import ru.practicum.comments.entity.Comment;
+import ru.practicum.comments.model.CommentStatus;
 import ru.practicum.comments.repository.CommentRepository;
 import ru.practicum.events.entity.Event;
 import ru.practicum.events.repository.EventRepository;
@@ -27,13 +28,14 @@ public class CommentPublicService {
     private final EventRepository eventRepository;
     private final CommentMapper commentMapper;
 
-    // Просмотр всех комментариев события
+    // Просмотр всех комментариев события. Выводит только опубликованные события
     @Transactional
     public List<CommentShortDto> getAllCommentsOfEvent(Long eventId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size, Sort.by("createdOn"));
-        List<Comment> comments = commentRepository.findAllByEventId(eventId, pageable);
+        List<Comment> comments = commentRepository.findAllByEventIdAndStatus(eventId, CommentStatus.PUBLISHED, pageable);
         return comments.stream()
-                .map(e -> commentMapper.toCommentShortDto(e, getShortText(e)))
+                .map(e -> commentMapper.toCommentShortDto(e, e.getCommentator().getId(), e.getEvent().getId(),
+                        getShortText(e)))
                 .collect(Collectors.toList());
     }
 
@@ -51,9 +53,11 @@ public class CommentPublicService {
         }
         List<Event> events = eventRepository.findAllByInitiatorId(initiatorId);
         List<Long> listEventsId = events.stream().map(Event::getId).collect(Collectors.toList());
-        List<Comment> comments = commentRepository.findAllByEventIdIn(listEventsId, pageable);
+        List<Comment> comments = commentRepository.findAllByEventIdInAndStatus(listEventsId, CommentStatus.PUBLISHED,
+                pageable);
         return comments.stream()
-                .map(e -> commentMapper.toCommentShortDto(e, getShortText(e)))
+                .map(e -> commentMapper.toCommentShortDto(e, e.getCommentator().getId(), e.getEvent().getId(),
+                        getShortText(e)))
                 .collect(Collectors.toList());
     }
 
@@ -66,7 +70,8 @@ public class CommentPublicService {
     }
 
     private String getShortText(Comment comment) {
-        return comment.getText().substring(0, 149);
+        int endIndex = Math.min(comment.getText().length(), 149);
+        return comment.getText().substring(0, endIndex);
     }
 
 }

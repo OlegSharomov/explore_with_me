@@ -36,6 +36,9 @@ public class CommentPrivateService {
     // Должна производиться проверка на корректность введенных данных.
     @Transactional(readOnly = false)
     public CommentFullDto createComment(Long userId, NewCommentDto newCommentDto) {
+        if(commentRepository.existsByCommentatorIdAndEventId(userId, newCommentDto.getEventId())){
+            throw new ValidationException("A comment for this event already exists. Change it.");
+        }
         boolean correct = censorship.isTextCorrect(newCommentDto.getText());
         User commentator = userRepository.findById(userId).orElseThrow(() -> new CustomNotFoundException("User not found"));
         Event event = eventRepository.findById(newCommentDto.getEventId())
@@ -72,7 +75,7 @@ public class CommentPrivateService {
         if (Boolean.FALSE.equals(event.getId().equals(commentUpdateDto.getEventId()))) {
             throw new ValidationException("Event ID don't match");
         }
-        commentMapper.updateComment(commentUpdateDto, comment);
+        commentMapper.updateComment(commentUpdateDto, comment, CommentStatus.PUBLISHED);
         Comment readyComment = commentRepository.save(comment);
         return commentMapper.toCommentFullDto(readyComment, readyComment.getCommentator().getId(), readyComment.getEvent().getId());
     }

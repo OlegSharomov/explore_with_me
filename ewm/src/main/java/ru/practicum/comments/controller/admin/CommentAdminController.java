@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +20,7 @@ import ru.practicum.comments.service.admin.CommentAdminService;
 public class CommentAdminController {
     private final CommentAdminService commentAdminService;
 
+    //+
     // Редактирование комментария.
     /* Редактирование данных любого события администратором. Валидация данных не требуется. */
     @PatchMapping("/admin/comments/{commentId}")
@@ -29,6 +30,7 @@ public class CommentAdminController {
         return commentAdminService.updateCommentByAdmin(commentId, commentAdminUpdateDto);
     }
 
+    //+
     // Удаление комментария
     @DeleteMapping("/admin/comments/{commentId}")
     public void removeCommentById(@PathVariable Long commentId) {
@@ -36,23 +38,24 @@ public class CommentAdminController {
         commentAdminService.removeCommentById(commentId);
     }
 
+    //+
     // Посмотреть все стоп-слова
     @GetMapping("/admin/comments/censorship")
     public String[] showAllStopWords() {
         return commentAdminService.showAllStopWords();
     }
 
+    //+
     // добавить стоп-слово
-    @PutMapping("/admin/comments/censorship")
+    @PostMapping("/admin/comments/censorship")
     public String[] addStopWord(@RequestParam String stopWord) {
         return commentAdminService.addStopWord(stopWord);
     }
 
+    //+
     // удалить стоп слово
     @DeleteMapping("/admin/comments/censorship")
     public String[] removeStopWord(@RequestParam String stopWord) {
         return commentAdminService.removeStopWord(stopWord);
     }
-
-
 }

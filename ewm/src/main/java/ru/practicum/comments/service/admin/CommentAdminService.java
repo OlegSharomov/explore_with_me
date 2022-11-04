@@ -26,6 +26,7 @@ public class CommentAdminService {
     private final CommentMapper commentMapper;
     private final Censorship censorship;
 
+    //+
     // Редактирование комментария.
     /* Редактирование данных любого события администратором. Валидация данных не требуется. */
     @Transactional(readOnly = false)
@@ -36,13 +37,13 @@ public class CommentAdminService {
                 .orElseThrow(() -> new CustomNotFoundException("User not found"));
         Event event = eventRepository.findById(commentAdminUpdateDto.getEventId())
                 .orElseThrow(() -> new CustomNotFoundException("Event not found"));
-        commentMapper.updateCommentFromAdmin(commentAdminUpdateDto, comment, commentator, event,
-                commentAdminUpdateDto.getCreatedOn());
+        commentMapper.updateCommentFromAdmin(commentAdminUpdateDto, comment, commentator, event);
         Comment readyComment = commentRepository.save(comment);
         return commentMapper.toCommentFullDto(readyComment, readyComment.getCommentator().getId(),
                 readyComment.getEvent().getId());
     }
 
+    //+
     // Удаление комментария
     @Transactional(readOnly = false)
     public void removeCommentById(Long commentId) {

@@ -37,7 +37,6 @@ public class UserController {
             description = "Возвращает list of UserDto. " +
                     "Возвращает информацию обо всех пользователях (учитываются параметры ограничения выборки), " +
                     "либо о конкретных (учитываются указанные идентификаторы)")
-    // . */
     public List<UserDto> getUsers(@RequestParam(required = false) Long[] ids,      // id пользователей
                                   @PositiveOrZero(message = "'from' must be positive or zero")
                                   @RequestParam(defaultValue = "0") Integer from,
