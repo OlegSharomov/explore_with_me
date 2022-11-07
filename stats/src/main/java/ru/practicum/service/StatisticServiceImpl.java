@@ -5,15 +5,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.entity.AdditionalFields;
 import ru.practicum.entity.Statistic;
-import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.EndpointHit;
-import ru.practicum.model.ViewStats;
+import ru.practicum.model.vievstatsshort.ViewStatsShort;
+import ru.practicum.model.vievstatsshort.ViewStatsShortInterface;
+import ru.practicum.model.viewstats.ViewStats;
+import ru.practicum.model.viewstats.ViewStatsInterface;
 import ru.practicum.repository.StatisticRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -47,39 +50,29 @@ public class StatisticServiceImpl implements StatisticService {
         if (uris.length == 0) {
             return Collections.emptyList();
         }
-        List<ViewStats> readyStatistic = new ArrayList<>();
+        List<String> listUris = Arrays.stream(uris).collect(Collectors.toList());
+        List<ViewStatsInterface> viewStatsInterfacesList;
         if (unique) {
-            for (String uri : uris) {
-                Statistic statistic = statisticRepository.findByUri(uri)
-                        .orElseThrow(() -> new NotFoundException("Statistic not found"));
-                String app = statistic.getAdditionalFields().getApp();
-                Long views = statisticRepository.getStatisticWithUniqueIp(uri, app, start, end);
-                ViewStats viewStats = ViewStats.builder()
-                        .app(app)
-                        .uri(uri)
-                        .hits(views)
-                        .build();
-                readyStatistic.add(viewStats);
-            }
+            viewStatsInterfacesList = statisticRepository.getStatisticWithUniqueIp(listUris, start, end);
         } else {
-            for (String uri : uris) {
-                Statistic statistic = statisticRepository.findByUri(uri)
-                        .orElseThrow(() -> new NotFoundException("Statistic not found"));
-                String app = statistic.getAdditionalFields().getApp();
-                Long views = statisticRepository.getStatisticWithoutUniqueIp(uri, app, start, end);
-                ViewStats viewStats = ViewStats.builder()
-                        .app(app)
-                        .uri(uri)
-                        .hits(views)
-                        .build();
-                readyStatistic.add(viewStats);
-            }
+            viewStatsInterfacesList = statisticRepository.getStatisticWithoutUniqueIp(listUris, start, end);
         }
-        return readyStatistic;
+        return viewStatsInterfacesList.stream()
+                .map(i -> new ViewStats(i.getApp(), i.getUri(), i.getHits()))
+                .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public Long getViews(String uri) {
         return statisticRepository.countByUri(uri).orElse(0L);
+    }
+
+    @Override
+    @Transactional
+    public List<ViewStatsShort> getViewsForCollect(String[] uris) {
+        List<String> listUris = Arrays.stream(uris).collect(Collectors.toList());
+        List<ViewStatsShortInterface> shortInterfaceList = statisticRepository.getStatisticForCollect(listUris);
+        return shortInterfaceList.stream().map(e -> new ViewStatsShort(e.getUri(), e.getHits())).collect(Collectors.toList());
     }
 }

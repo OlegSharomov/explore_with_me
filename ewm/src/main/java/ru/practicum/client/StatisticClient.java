@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.practicum.client.model.ViewStat;
+import ru.practicum.client.model.ViewStatShort;
 import ru.practicum.exception.StatisticSendingClientException;
 
 import java.io.IOException;
@@ -104,6 +106,31 @@ public class StatisticClient {
         HttpClient.newBuilder().build()
                 .sendAsync(request, HttpResponse.BodyHandlers.ofString());
         log.info("Send request POST uri = {} to save statistic with body: {}", uri, body);
+    }
+
+    public List<ViewStatShort> getStatisticForCollect(String[] uris) {
+        List<ViewStatShort> result;
+        String encodeUris = URLEncoder.encode(convertArrayToStringForUrl(uris), StandardCharsets.UTF_8);
+        URI uri = URI.create(statServerUrl + "/stats/collect?uris=" + encodeUris);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .GET()
+                .timeout(Duration.of(10, SECONDS))
+                .headers("Content-Type", "text/plain;charset=UTF-8")
+                .header("Accept", "application/json")
+                .build();
+        HttpResponse<String> response;
+        try {
+            response = HttpClient.newBuilder()
+                    .build()
+                    .send(request, HttpResponse.BodyHandlers.ofString());
+            result = objectMapper.readValue(response.body(), objectMapper.getTypeFactory()
+                    .constructCollectionType(List.class, ViewStatShort.class));
+        } catch (IOException | InterruptedException e) {
+            throw new StatisticSendingClientException("An error occurred when sending a request from a client");
+        }
+        log.info("Send request GET uri = {}. \n And get response: {}", uri, response);
+        return result;
     }
 
     private static String getFormDataAsString(Map<String, String> formData) {

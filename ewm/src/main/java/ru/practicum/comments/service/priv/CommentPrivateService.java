@@ -36,7 +36,7 @@ public class CommentPrivateService {
     // Должна производиться проверка на корректность введенных данных.
     @Transactional(readOnly = false)
     public CommentFullDto createComment(Long userId, NewCommentDto newCommentDto) {
-        if(commentRepository.existsByCommentatorIdAndEventId(userId, newCommentDto.getEventId())){
+        if (commentRepository.existsByCommentatorIdAndEventId(userId, newCommentDto.getEventId())) {
             throw new ValidationException("A comment for this event already exists. Change it.");
         }
         boolean correct = censorship.isTextCorrect(newCommentDto.getText());

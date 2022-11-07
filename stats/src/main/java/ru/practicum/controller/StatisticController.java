@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.model.EndpointHit;
-import ru.practicum.model.ViewStats;
+import ru.practicum.model.vievstatsshort.ViewStatsShort;
+import ru.practicum.model.viewstats.ViewStats;
 import ru.practicum.service.StatisticService;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -52,15 +54,24 @@ public class StatisticController {
             @Parameter(name = "Нужно ли учитывать только уникальные посещения (только с уникальным ip)")
             @RequestParam(defaultValue = "false") Boolean unique) {
         log.info("Received a request: GET /stats with parameters: start = {}, end = {}, uris = {}, unique = {}",
-                start, end, uris, unique);
+                start, end, Arrays.toString(uris), unique);
         return statisticService.getStats(start, end, uris, unique);
     }
 
     @GetMapping("/events/{eventId}")
     @Operation(summary = "Получение информации о количестве просмотров события")
     public Long getViews(@NotNull(message = "Controller get request to path '/events/{eventId}' where eventId==null")
-                            @PathVariable Long eventId) {
+                         @PathVariable Long eventId) {
         log.info("Received a request: GET /events with pathVariable: {}", eventId);
         return statisticService.getViews("/events/" + eventId);
+    }
+
+    @GetMapping("/stats/collect")
+    @Operation(summary = "Получение статистики по посещениям для сборки Events")
+    public List<ViewStatsShort> getViewStatsShortWithId(@Parameter(name = "Список uri для которых нужно выгрузить статистику")
+                                                        @RequestParam String[] uris) {
+        log.info("Received a request: GET /stats/collect with parameters: uris = {}", Arrays.toString(uris));
+        return statisticService.getViewsForCollect(uris);
+
     }
 }

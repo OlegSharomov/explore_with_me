@@ -13,7 +13,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.practicum.client.StatisticClient;
-import ru.practicum.client.ViewStat;
+import ru.practicum.client.model.ViewStat;
 import ru.practicum.exception.StatisticSendingClientException;
 
 import java.net.URLEncoder;

@@ -20,6 +20,7 @@ import ru.practicum.events.entity.Event;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.exception.CustomNotFoundException;
 import ru.practicum.exception.ValidationException;
+import ru.practicum.requests.repository.RequestRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,12 +39,15 @@ public class CompilationAdminServiceTest {
     private CompilationRepository compilationRepository;
     @Mock
     private EventRepository eventRepository;
+    @Mock
+    private RequestRepository requestRepository;
     @Spy
     private CompilationMapperImpl compilationMapper;
     @Spy
     private EventMapperImpl eventMapper;
     @Mock
     private StatisticClient statisticClient;
+
 
     NewCompilationDto newCompilationDto = NewCompilationDto.builder()
             .events(Collections.emptyList()).pinned(true).title("Weekend").build();
@@ -58,6 +63,8 @@ public class CompilationAdminServiceTest {
     //     createNewCompilation
     @Test
     public void shouldCreateCompilationAndReturnDto() {
+        when(requestRepository.getConfirmedRequestsOfEvents(eq(Collections.emptyList()), any(String.class)))
+                .thenReturn(Collections.emptyList());
         when(compilationRepository.save(preCompilation1)).thenReturn(savedCompilation1);
         CompilationDto result = compilationService.createNewCompilation(newCompilationDto);
         CompilationDto compilationToCheck = compilationDto1;

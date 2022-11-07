@@ -1,19 +1,24 @@
 package ru.practicum.comments.censorship;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Component;
 import ru.practicum.exception.ValidationException;
 
+import javax.xml.bind.DatatypeConverter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// Решил хранить СТОП-СЛОВА в файле BAD_WORDS в 16-ричном формате,
+// чтобы не были видны критичные слова при сдаче проекта. И поиграться заодно.
 @Component
 public class Censorship {
     public Censorship() {
@@ -48,7 +53,7 @@ public class Censorship {
         updatedStopWords[updatedStopWords.length - 1] = readyStopWord;
 
         stopWords = updatedStopWords;
-        writeByteToFile(stopWords);
+        writeStopWordsToFile(stopWords);
         return Arrays.copyOf(stopWords, stopWords.length);
     }
 
@@ -59,38 +64,43 @@ public class Censorship {
         stopWords = Arrays.stream(stopWords)
                 .filter(e -> Boolean.FALSE.equals(e.equals(wordToRemove)))
                 .toArray(String[]::new);
-        writeByteToFile(stopWords);
+        writeStopWordsToFile(stopWords);
         return Arrays.copyOf(stopWords, stopWords.length);
     }
 
     private String[] readStopWordsFromFile(String fileName) {
-        byte[] bytesEncoded;
+        String hexBinaryString;
         try {
-            FileInputStream fis = new FileInputStream(fileName);
-            // Читаем значение байтов в кодировке Base64
-            bytesEncoded = fis.readAllBytes();
+            // Считываем строку из файла в кодировке HexBinary
+            BufferedReader reader = new BufferedReader(new FileReader(fileName, StandardCharsets.UTF_8));
+            hexBinaryString = reader.readLine();
+            reader.close();
         } catch (FileNotFoundException e) {
             throw new ValidationException(String.format("File %s not found", FILE_WITH_STOP_WORDS));
         } catch (IOException e) {
             throw new ValidationException("Can't read from the file" + FILE_WITH_STOP_WORDS);
         }
-        // Переводим байты в кодировке Base64 в стандартное значение
-        byte[] valueDecoded = Base64.decodeBase64(bytesEncoded);
-        // Переводим массив байтов в массив строк и возвращаем значение
-        return new String(valueDecoded).split(",");
+        // Переводим строку из кодировки HexBinary в массив байтов стандартного значения
+        byte[] valueDecoded = DatatypeConverter.parseHexBinary(hexBinaryString);
+        // Переводим массив байтов в массив строк, разделенных запятой и возвращаем значение
+        return new String(valueDecoded, StandardCharsets.UTF_8).split(",");
     }
 
-    private void writeByteToFile(String[] arrayOfBadWords) {
+    private void writeStopWordsToFile(String[] arrayOfBadWords) {
         File csvOutputFile = new File(FILE_WITH_STOP_WORDS);
-        // Переводим массив слов в строку с учетом экранирования и специальных символов
+        // Переводим массив стоп-слов в строку с учетом экранирования и специальных символов
         String readyString = convertToCSV(arrayOfBadWords);
-        // перевод строки в байты, кодировки Base64
-        byte[] bytesEncoded = Base64.encodeBase64(readyString.getBytes());
-        try (FileOutputStream fos = new FileOutputStream(csvOutputFile, false)) {
-            // записываем массив байтов в файл BAD_WORDS
-            fos.write(bytesEncoded, 0, bytesEncoded.length);
+        // кодируем строку, кодировка HexBinary
+        String encodedString = DatatypeConverter.printHexBinary(readyString.getBytes(StandardCharsets.UTF_8));
+        try {
+            BufferedWriter br = new BufferedWriter(new FileWriter(csvOutputFile,
+                    StandardCharsets.UTF_8, false));
+            br.write(encodedString);
+            br.close();
+        } catch (FileNotFoundException e) {
+            throw new ValidationException(String.format("File %s not found", FILE_WITH_STOP_WORDS));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ValidationException("Can't read from the file" + FILE_WITH_STOP_WORDS);
         }
     }
 
