@@ -1,5 +1,7 @@
 package ru.practicum.comments.censorship;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.practicum.exception.ValidationException;
 
@@ -17,15 +19,17 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// Решил хранить СТОП-СЛОВА в файле BAD_WORDS в 16-ричном формате,
+// Решил хранить СТОП-СЛОВА в файле BAD_WORDS.csv в 16-ричном формате,
 // чтобы не были видны критичные слова при сдаче проекта. И поиграться заодно.
 @Component
 public class Censorship {
-    public Censorship() {
-        this.stopWords = readStopWordsFromFile(FILE_WITH_STOP_WORDS);
+    @Autowired
+    public Censorship(@Value("${censorship_path}") String pathOfFileWithStopWords) {
+        this.fileWithStopWords = pathOfFileWithStopWords;
+        this.stopWords = readStopWordsFromFile(fileWithStopWords);
     }
 
-    private static final String FILE_WITH_STOP_WORDS = "ewm/BAD_WORDS";
+    private final String fileWithStopWords;
     private String[] stopWords;
 
     // проверка текста на наличие стоп-слов
@@ -76,9 +80,9 @@ public class Censorship {
             hexBinaryString = reader.readLine();
             reader.close();
         } catch (FileNotFoundException e) {
-            throw new ValidationException(String.format("File %s not found", FILE_WITH_STOP_WORDS));
+            throw new ValidationException(String.format("File %s not found", fileWithStopWords));
         } catch (IOException e) {
-            throw new ValidationException("Can't read from the file" + FILE_WITH_STOP_WORDS);
+            throw new ValidationException("Can't read from the file" + fileWithStopWords);
         }
         // Переводим строку из кодировки HexBinary в массив байтов стандартного значения
         byte[] valueDecoded = DatatypeConverter.parseHexBinary(hexBinaryString);
@@ -87,7 +91,7 @@ public class Censorship {
     }
 
     private void writeStopWordsToFile(String[] arrayOfBadWords) {
-        File csvOutputFile = new File(FILE_WITH_STOP_WORDS);
+        File csvOutputFile = new File(fileWithStopWords);
         // Переводим массив стоп-слов в строку с учетом экранирования и специальных символов
         String readyString = convertToCSV(arrayOfBadWords);
         // кодируем строку, кодировка HexBinary
@@ -98,9 +102,9 @@ public class Censorship {
             br.write(encodedString);
             br.close();
         } catch (FileNotFoundException e) {
-            throw new ValidationException(String.format("File %s not found", FILE_WITH_STOP_WORDS));
+            throw new ValidationException(String.format("File %s not found", fileWithStopWords));
         } catch (IOException e) {
-            throw new ValidationException("Can't read from the file" + FILE_WITH_STOP_WORDS);
+            throw new ValidationException("Can't read from the file" + fileWithStopWords);
         }
     }
 
