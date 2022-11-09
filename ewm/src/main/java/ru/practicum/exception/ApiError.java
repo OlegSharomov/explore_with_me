@@ -1,12 +1,14 @@
 package ru.practicum.exception;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@ToString
+@Data
 public class ApiError {
     public ApiError(List<StackTraceElement> errors, HttpStatus status, Throwable reason, String message, LocalDateTime timestamp) {
         this.errors = errors;
@@ -23,10 +25,11 @@ public class ApiError {
         this.timestamp = timestamp;
     }
 
-    private List<StackTraceElement> errors;            // Список стектрейсов или описания ошибок
-    private final String message;                 // Сообщение об ошибке
-    private final Throwable reason;                  // Общее описание причины ошибки
-    private final HttpStatus status;                  // !!!ENUM!!!  Код статуса HTTP-ответа
+    private List<StackTraceElement> errors;             // Список стектрейсов или описания ошибок
+    private final String message;                       // Сообщение об ошибке
+    private final Throwable reason;                     // Общее описание причины ошибки
+    private final HttpStatus status;                    // !!!ENUM!!!  Код статуса HTTP-ответа
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime timestamp;        // Дата и время когда произошла ошибка (в формате "yyyy-MM-dd HH:mm:ss")
 }
     /* {

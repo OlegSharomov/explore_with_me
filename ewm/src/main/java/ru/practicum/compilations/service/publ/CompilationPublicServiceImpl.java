@@ -52,7 +52,6 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
     public CompilationDto getCompilationById(@PathVariable Long compId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new CustomNotFoundException("Compilation not found"));
-        System.out.println("\n Из БД вытащили объект Compilation: " + compilation);
         return getCompilationDto(compilation, statisticClient, eventMapper, compilationMapper, requestRepository);
     }
 }

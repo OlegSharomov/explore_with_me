@@ -51,7 +51,7 @@ public class CommentPublicController {
         return commentPublicService.getAllCommentsByInitiatorOfEvents(initiatorId, sort, from, size);
     }
 
-    @Operation(summary = "Просмотр события по id")
+    @Operation(summary = "Просмотр комментария по id")
     @GetMapping("/comments/{commentId}")
     public CommentFullDto getCommentById(@PathVariable Long commentId) {
         log.info("Received a request: GET /comments/{}", commentId);

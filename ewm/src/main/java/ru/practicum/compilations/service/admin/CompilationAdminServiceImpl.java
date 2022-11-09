@@ -62,7 +62,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         events.remove(event);
         compilation.setEvents(events);
         compilationRepository.save(compilation);
-        System.out.println("Сейчас сборка выглядит так: " + compilation);
 
     }
 
@@ -83,7 +82,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         eventsOfCompilation.add(event);
         compilation.setEvents(eventsOfCompilation);
         compilationRepository.save(compilation);
-        System.out.println("Сейчас сборка выглядит так: " + compilation);
     }
 
     // Открепить подборку на главной странице. Возвращает только статус ответа или ошибку.
