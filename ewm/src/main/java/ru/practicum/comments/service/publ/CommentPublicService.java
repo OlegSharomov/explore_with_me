@@ -10,12 +10,12 @@ import ru.practicum.comments.dto.CommentFullDto;
 import ru.practicum.comments.dto.CommentMapper;
 import ru.practicum.comments.dto.CommentShortDto;
 import ru.practicum.comments.entity.Comment;
+import ru.practicum.comments.model.CommentSort;
 import ru.practicum.comments.model.CommentStatus;
 import ru.practicum.comments.repository.CommentRepository;
 import ru.practicum.events.entity.Event;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.exception.CustomNotFoundException;
-import ru.practicum.exception.ValidationException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,15 +41,13 @@ public class CommentPublicService {
 
     // Просмотр всех комментариев инициатора событий по всем его событиям
     @Transactional
-    public List<CommentShortDto> getAllCommentsByInitiatorOfEvents(Long initiatorId, String sort,
+    public List<CommentShortDto> getAllCommentsByInitiatorOfEvents(Long initiatorId, CommentSort sort,
                                                                    Integer from, Integer size) {
         Pageable pageable;
-        if (sort != null && sort.equals("CREATED_ON")) {
+        if (sort.equals(CommentSort.CREATED_ON)) {
             pageable = PageRequest.of(from / size, size, Sort.by("createdOn"));
-        } else if (sort != null && sort.equals("EVENTS")) {
-            pageable = PageRequest.of(from / size, size, Sort.by("event"));
         } else {
-            throw new ValidationException("Sorting parameter is not correct");
+            pageable = PageRequest.of(from / size, size, Sort.by("event"));
         }
         List<Event> events = eventRepository.findAllByInitiatorId(initiatorId);
         List<Long> listEventsId = events.stream().map(Event::getId).collect(Collectors.toList());

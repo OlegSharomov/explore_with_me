@@ -2,7 +2,6 @@ package ru.practicum.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;

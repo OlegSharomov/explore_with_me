@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.comments.dto.CommentFullDto;
 import ru.practicum.comments.dto.CommentShortDto;
+import ru.practicum.comments.model.CommentSort;
 import ru.practicum.comments.service.publ.CommentPublicService;
 
 import javax.validation.constraints.Positive;
@@ -43,7 +44,7 @@ public class CommentPublicController {
                                                                    @Parameter(name = "Вариант сортировки: " +
                                                                            "по дате комментария или по событиям",
                                                                            example = "CREATED_ON, EVENTS")
-                                                                   @RequestParam(defaultValue = "CREATED_ON") String sort,
+                                                                   @RequestParam(defaultValue = "CREATED_ON") CommentSort sort,
                                                                    @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                                    @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Received a request: GET /comments/initiator/{} with parameters sort={}, from={}, size={}",
