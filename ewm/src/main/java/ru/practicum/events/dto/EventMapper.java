@@ -31,9 +31,17 @@ public interface EventMapper {
                                  Boolean availableForRequest);
 
     @Mapping(target = "id", source = "event.id")
+    @Mapping(target = "confirmedRequests", source = "confirmedRequests")
+    @Mapping(target = "views", source = "views")
+    @Mapping(target = "category.id", source = "category.id")
+    @Mapping(target = "category.name", source = "category.name")
+    @Mapping(target = "initiator.id", source = "initiator.id")
+    @Mapping(target = "initiator.name", source = "initiator.name")
     EventFullDto toEventFullDto(Event event, CategoryDto category, Long confirmedRequests,
                                 UserShortDto initiator, Long views);
 
+    @Mapping(target = "confirmedRequests", source = "confirmedRequests")
+    @Mapping(target = "views", source = "views")
     EventShortDto toEventShortDto(Event event, Long confirmedRequests, Long views);
 
     @Mapping(target = "id", source = "id")

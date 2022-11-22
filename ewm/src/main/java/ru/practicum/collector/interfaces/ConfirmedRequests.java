@@ -1,4 +1,4 @@
-package ru.practicum.requests.model;
+package ru.practicum.collector.interfaces;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

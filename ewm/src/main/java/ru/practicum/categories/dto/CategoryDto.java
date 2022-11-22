@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "DTO категории")
-public class CategoryDto {
+public class CategoryDto implements CategoryDtoInterface {
     @NotNull
     @Schema(description = "Идентификатор категории")
     private Long id;

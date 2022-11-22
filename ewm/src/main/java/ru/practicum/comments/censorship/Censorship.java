@@ -26,7 +26,11 @@ public class Censorship {
     @Autowired
     public Censorship(@Value("${censorship_path}") String pathOfFileWithStopWords) {
         this.fileWithStopWords = pathOfFileWithStopWords;
-        this.stopWords = readStopWordsFromFile(fileWithStopWords);
+        try {
+            this.stopWords = readStopWordsFromFile(fileWithStopWords);
+        } catch (NullPointerException e) {
+            this.stopWords = new String[]{};
+        }
     }
 
     private final String fileWithStopWords;

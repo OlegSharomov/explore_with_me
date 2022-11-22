@@ -742,7 +742,7 @@
 									"    pm.expect(jsonData.id).to.eql(2);\r",
 									"    pm.expect(jsonData.commentatorId).to.eql(1);\r",
 									"    pm.expect(jsonData.eventId).to.eql(2);\r",
-									"    pm.expect(jsonData.text).to.eql('Не весело никуя');\r",
+									"    pm.expect(jsonData.text).to.eql('Не весело, fuck');\r",
 									"    pm.expect(jsonData.status).to.eql('CANCELED');\r",
 									"});"
 								],
@@ -764,7 +764,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"eventId\": 2,\n  \"text\":\"Не весело никуя\"\n}",
+							"raw": "{\n  \"eventId\": 2,\n  \"text\":\"Не весело, fuck\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2202,7 +2202,7 @@
 									"});\r",
 									"pm.test(\"Test Comment Get only PUBLISHED Copy\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.length, 'stop-words count in total').greaterThan(600);\r",
+									"    pm.expect(jsonData.length, 'stop-words count in total').greaterThan(5);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -2296,7 +2296,7 @@
 									"});\r",
 									"pm.test(\"Test Comment Get only PUBLISHED Copy\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.length, 'stop-words count in total').greaterThan(600);\r",
+									"    pm.expect(jsonData.length, 'stop-words count in total').greaterThan(5);\r",
 									"    pm.expect(jsonData, 'users count in total').contains('ass');\r",
 									"\r",
 									"});"
@@ -3330,7 +3330,7 @@
 									"});\r",
 									"pm.test(\"Test Comment Get only PUBLISHED Copy\", function () {\r",
 									"    var jsonData = pm.response.json();\r",
-									"    pm.expect(jsonData.length, 'stop-words count in total').greaterThan(600);\r",
+									"    pm.expect(jsonData.length, 'stop-words count in total').greaterThan(5);\r",
 									"    pm.expect(jsonData).to.not.include(\"ass\");\r",
 									"});"
 								],

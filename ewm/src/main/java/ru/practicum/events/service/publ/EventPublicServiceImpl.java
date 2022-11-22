@@ -8,29 +8,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
-import ru.practicum.categories.dto.CategoryMapper;
 import ru.practicum.categories.entity.Category;
 import ru.practicum.categories.repository.CategoryRepository;
 import ru.practicum.client.StatisticClient;
-import ru.practicum.events.dto.EventMapper;
+import ru.practicum.client.model.EndpointHit;
+import ru.practicum.collector.CollectorDto;
 import ru.practicum.events.dto.publ.EventFullDto;
 import ru.practicum.events.dto.publ.EventShortDto;
 import ru.practicum.events.entity.Event;
 import ru.practicum.events.model.EventState;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.events.specification.EventFindSpecification;
-import ru.practicum.exception.CustomNotFoundException;
-import ru.practicum.exception.ValidationException;
-import ru.practicum.requests.repository.RequestRepository;
-import ru.practicum.users.dto.UserMapper;
-import ru.practicum.util.UtilCollectorsDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,11 +32,8 @@ import java.util.stream.Collectors;
 public class EventPublicServiceImpl implements EventPublicService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-    private final RequestRepository requestRepository;
     private final StatisticClient statisticClient;
-    private final EventMapper eventMapper;
-    private final CategoryMapper categoryMapper;
-    private final UserMapper userMapper;
+    private final CollectorDto collectorDto;
 
     // Получение событий с возможностью фильтрации.
     /* Это публичный эндпоинт, соответственно в выдаче должны быть только опубликованные события
@@ -66,7 +56,6 @@ public class EventPublicServiceImpl implements EventPublicService {
                                          Integer size,
                                          HttpServletRequest request
     ) {
-        statisticClientCallAndSaveRequest(request);
         Pageable pageable;
         if (sort != null && sort.equals("EVENT_DATE")) {
             pageable = PageRequest.of(from / size, size, Sort.by("eventDate"));
@@ -77,17 +66,16 @@ public class EventPublicServiceImpl implements EventPublicService {
         }
         List<Long> listOfCategoriesId = Arrays.stream(categories).boxed().collect(Collectors.toList());
         List<Category> listOfCategories = categoryRepository.findAllByIdIn(listOfCategoriesId);
-        Page<Event> events;
+        Page<Event> eventsPage;
         if (rangeStart == null || rangeEnd == null) {
-            events = eventRepository.findAll(EventFindSpecification.specificationForPublicSearchWithoutDate(text,
+            eventsPage = eventRepository.findAll(EventFindSpecification.specificationForPublicSearchWithoutDate(text,
                     listOfCategories, paid, onlyAvailable, EventState.PUBLISHED), pageable);
         } else {
-            events = eventRepository.findAll(EventFindSpecification.specificationForPublicSearchWithDate(text,
+            eventsPage = eventRepository.findAll(EventFindSpecification.specificationForPublicSearchWithDate(text,
                     listOfCategories, paid, rangeStart, rangeEnd, onlyAvailable, EventState.PUBLISHED), pageable);
         }
-        return events.stream()
-                .map(e -> UtilCollectorsDto.getEventShortDto(e, eventMapper, statisticClient, requestRepository))
-                .collect(Collectors.toList());
+        statisticClientCallAndSaveRequest(request);
+        return collectorDto.getListEventShortDto(eventsPage.toList());
     }
 
     // Получение подробной информации об опубликованном событии по его id.
@@ -97,22 +85,18 @@ public class EventPublicServiceImpl implements EventPublicService {
     @Override
     @Transactional
     public EventFullDto getEventById(@PathVariable Long id, HttpServletRequest request) {
+        EventFullDto eventDto = collectorDto.getEventFullDtoWithAllFields(id);
         statisticClientCallAndSaveRequest(request);
-        Event event = eventRepository.findById(id).orElseThrow(() -> new CustomNotFoundException("Event not found"));
-        if (Boolean.FALSE.equals(event.getState().equals(EventState.PUBLISHED))) {
-            throw new ValidationException("The requested event has not been published");
-        }
-        return UtilCollectorsDto.getEventFullDto(event, categoryMapper, userMapper,
-                statisticClient, eventMapper, requestRepository);
+        return eventDto;
     }
 
     private void statisticClientCallAndSaveRequest(HttpServletRequest request) {
-        Map<String, String> endpointHitMap = new HashMap<>();
-        endpointHitMap.put("app", "ewm-main-service");
-        endpointHitMap.put("uri", request.getRequestURI());
-        endpointHitMap.put("ip", request.getRemoteAddr());
-        endpointHitMap.put("timestamp", String.valueOf(LocalDateTime.now()));
-        statisticClient.saveCall(endpointHitMap);
+        EndpointHit endpointHit = EndpointHit.builder()
+                .app("ewm-main-service")
+                .uri(request.getRequestURI())
+                .ip(request.getRemoteAddr())
+                .timestamp(LocalDateTime.now())
+                .build();
+        statisticClient.saveCall(endpointHit);
     }
-
 }

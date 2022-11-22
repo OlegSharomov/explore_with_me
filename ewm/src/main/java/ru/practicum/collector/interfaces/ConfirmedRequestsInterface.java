@@ -1,4 +1,4 @@
-package ru.practicum.requests.model;
+package ru.practicum.collector.interfaces;
 
 public interface ConfirmedRequestsInterface {
     Long getEventId();

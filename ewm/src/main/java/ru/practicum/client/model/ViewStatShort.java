@@ -14,6 +14,6 @@ public class ViewStatShort {
     private Long hits;       // Количество просмотров
 
     public Long getIdFromUriEvent() {
-        return Long.parseLong(uri.substring(7));
+        return Long.parseLong(uri.substring(8));
     }
 }

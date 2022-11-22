@@ -1,5 +1,6 @@
 package ru.practicum.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,8 +47,10 @@ public class StatisticController {
             description = "Значение даты и времени должно быть закодировано (Например, используя java.net.URLEncoder.encode)")
     public List<ViewStats> getStatistic(
             @Parameter(name = "Дата и время начала диапазона за который нужно выгрузить статистику (в формате yyyy-MM-dd HH:mm:ss)")
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
             @RequestParam LocalDateTime start,
             @Parameter(name = "Дата и время конца диапазона за который нужно выгрузить статистику (в формате yyyy-MM-dd HH:mm:ss)")
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
             @RequestParam LocalDateTime end,
             @Parameter(name = "Список uri для которых нужно выгрузить статистику")
             @RequestParam(required = false) String[] uris,

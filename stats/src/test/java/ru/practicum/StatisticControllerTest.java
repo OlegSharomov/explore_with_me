@@ -79,7 +79,6 @@ public class StatisticControllerTest {
     public void shouldCallServiceGetViews() throws Exception {
         String uri = "/events/" + 1;
         mockMvc.perform(get(uri)
-//                        .content(uri)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

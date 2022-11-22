@@ -3,9 +3,11 @@ package ru.practicum.requests.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import ru.practicum.collector.interfaces.ConfirmedRequestsInterface;
+import ru.practicum.events.entity.Event;
 import ru.practicum.requests.entity.Request;
-import ru.practicum.requests.model.ConfirmedRequestsInterface;
 import ru.practicum.requests.model.RequestStatus;
+import ru.practicum.users.entity.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,11 +19,11 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     List<Request> findAllByEventId(Long eventId);
 
-    Optional<Long> countByEventIdAndStatus(Long eventId, RequestStatus requestStatus);
+    Optional<Long> countByEventAndStatus(Event event, RequestStatus requestStatus);
 
     List<Request> findAllByEventIdAndStatus(Long eventId, RequestStatus requestStatus);
 
-    Boolean existsByRequesterIdAndEventId(Long userId, Long eventId);
+    Boolean existsByRequesterAndEvent(User requester, Event event);
 
     @Query(value =
             "SELECT event_id AS eventId, " +

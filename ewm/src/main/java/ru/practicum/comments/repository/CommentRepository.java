@@ -1,18 +1,12 @@
 package ru.practicum.comments.repository;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.comments.entity.Comment;
-import ru.practicum.comments.model.CommentStatus;
-
-import java.util.List;
+import ru.practicum.events.entity.Event;
+import ru.practicum.users.entity.User;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findAllByCommentatorId(Long userId);
 
-    List<Comment> findAllByEventIdAndStatus(Long eventId, CommentStatus status, Pageable pageable);
+    boolean existsByCommentatorAndEvent(User commentator, Event event);
 
-    List<Comment> findAllByEventIdInAndStatus(List<Long> listEventId, CommentStatus status, Pageable pageable);
-
-    boolean existsByCommentatorIdAndEventId(Long commentatorId, Long eventId);
 }

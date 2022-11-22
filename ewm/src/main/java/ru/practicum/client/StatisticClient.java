@@ -1,13 +1,16 @@
 package ru.practicum.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.practicum.client.model.EndpointHit;
 import ru.practicum.client.model.ViewStat;
 import ru.practicum.client.model.ViewStatShort;
 import ru.practicum.exception.StatisticSendingClientException;
+import ru.practicum.exception.ValidationException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,9 +20,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -36,10 +41,23 @@ public class StatisticClient {
     private final ObjectMapper objectMapper;
     private final String statServerUrl;
 
-    public List<ViewStat> getStatistic(String start, String end, String[] uris, Boolean unique) {
+//    public static void main(String[] args) {
+//        StatisticClient statisticClient = new StatisticClient("http://localhost:9090", new ObjectMapper());
+//        LocalDateTime start = LocalDateTime.now().minusDays(5);
+//        LocalDateTime end = LocalDateTime.now();
+//        String[] uris = new String[]{"/events/12", "/events/30", "/event/949", "/events/1", "/events/5"};
+//        Boolean unique = false;
+//        List<ViewStat> result = statisticClient.getStatistic(start, end, uris, unique);
+//        for (ViewStat v : result) {
+//            System.out.println(v);
+//        }
+//    }
+
+    public List<ViewStat> getStatistic(LocalDateTime start, LocalDateTime end, String[] uris, Boolean unique) {
         List<ViewStat> result;
-        String encodeStart = URLEncoder.encode(start, StandardCharsets.UTF_8);
-        String encodeEnd = URLEncoder.encode(end, StandardCharsets.UTF_8);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String encodeStart = URLEncoder.encode(start.format(formatter), StandardCharsets.UTF_8);
+        String encodeEnd = URLEncoder.encode(end.format(formatter), StandardCharsets.UTF_8);
         String encodeUris = URLEncoder.encode(convertArrayToStringForUrl(uris), StandardCharsets.UTF_8);
         String encodeUnique = URLEncoder.encode(String.valueOf(unique), StandardCharsets.UTF_8);
         URI uri = URI.create(statServerUrl + "/stats?start=" + encodeStart + "&end=" + encodeEnd +
@@ -70,7 +88,7 @@ public class StatisticClient {
         return fields.stream().map(String::valueOf).collect(Collectors.joining(",", "", ""));
     }
 
-    public Long getViewsByUri(Long eventId) {
+    public Optional<Long> getViewsByUri(Long eventId) {
         Long result;
         URI uri = URI.create(statServerUrl + "/events/" + eventId);
         HttpRequest request = HttpRequest.newBuilder()
@@ -90,24 +108,39 @@ public class StatisticClient {
             throw new StatisticSendingClientException("An error occurred when sending a request from a client 'GetViewsByUri'");
         }
         log.info("Send request GET uri = {}. \n And get response: {}", uri, response);
-        return result;
+        return Optional.of(result);
     }
 
-    public void saveCall(Map<String, String> endpointHit) {
+    public void saveCall(EndpointHit endpointHit) {
         URI uri = URI.create(statServerUrl + "/hit");
-        String body = getFormDataAsString(endpointHit);
-        HttpRequest request = HttpRequest.newBuilder()
+        String body;
+        try {
+            body = objectMapper.writeValueAsString(endpointHit);
+        } catch (JsonProcessingException e) {
+            throw new ValidationException("Failed to serialize and save statistics by endpointHit = " + endpointHit);
+        }
+        HttpRequest request;
+        request = HttpRequest.newBuilder()
                 .uri(uri)
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .timeout(Duration.of(10, SECONDS))
-                .headers("Content-Type", "text/plain;charset=UTF-8")
+                .headers("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .build();
+
         HttpClient.newBuilder().build()
                 .sendAsync(request, HttpResponse.BodyHandlers.ofString());
         log.info("Send request POST uri = {} to save statistic with body: {}", uri, body);
     }
 
+    //    public static void main(String[] args) {
+//        StatisticClient statisticClient = new StatisticClient("http://localhost:9090", new ObjectMapper());
+//        String[] uris = new String[]{"/events/12", "/events/30", "/event/538", "/events/1"};
+//        List<ViewStatShort> result = statisticClient.getStatisticForCollect(uris);
+//        for(ViewStatShort v : result){
+//            System.out.println(v);
+//        }
+//    }
     public List<ViewStatShort> getStatisticForCollect(String[] uris) {
         List<ViewStatShort> result;
         String encodeUris = URLEncoder.encode(convertArrayToStringForUrl(uris), StandardCharsets.UTF_8);
@@ -131,18 +164,5 @@ public class StatisticClient {
         }
         log.info("Send request GET uri = {}. \n And get response: {}", uri, response);
         return result;
-    }
-
-    private static String getFormDataAsString(Map<String, String> formData) {
-        StringBuilder formBodyBuilder = new StringBuilder();
-        for (Map.Entry<String, String> singleEntry : formData.entrySet()) {
-            if (formBodyBuilder.length() > 0) {
-                formBodyBuilder.append("&");
-            }
-            formBodyBuilder.append(URLEncoder.encode(singleEntry.getKey(), StandardCharsets.UTF_8));
-            formBodyBuilder.append("=");
-            formBodyBuilder.append(URLEncoder.encode(singleEntry.getValue(), StandardCharsets.UTF_8));
-        }
-        return formBodyBuilder.toString();
     }
 }

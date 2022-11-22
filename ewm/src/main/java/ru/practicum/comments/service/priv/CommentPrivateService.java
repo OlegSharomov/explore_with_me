@@ -11,6 +11,7 @@ import ru.practicum.comments.dto.NewCommentDto;
 import ru.practicum.comments.entity.Comment;
 import ru.practicum.comments.model.CommentStatus;
 import ru.practicum.comments.repository.CommentRepository;
+import ru.practicum.comments.repository.CustomCommentRepository;
 import ru.practicum.events.entity.Event;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.exception.CustomNotFoundException;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentPrivateService {
     private final CommentRepository commentRepository;
+    private final CustomCommentRepository customCommentRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final CommentMapper commentMapper;
@@ -36,13 +38,13 @@ public class CommentPrivateService {
     // Должна производиться проверка на корректность введенных данных.
     @Transactional(readOnly = false)
     public CommentFullDto createComment(Long userId, NewCommentDto newCommentDto) {
-        if (commentRepository.existsByCommentatorIdAndEventId(userId, newCommentDto.getEventId())) {
-            throw new ValidationException("A comment for this event already exists. Change it.");
-        }
         boolean correct = censorship.isTextCorrect(newCommentDto.getText());
         User commentator = userRepository.findById(userId).orElseThrow(() -> new CustomNotFoundException("User not found"));
         Event event = eventRepository.findById(newCommentDto.getEventId())
                 .orElseThrow(() -> new CustomNotFoundException("Event not found"));
+        if (commentRepository.existsByCommentatorAndEvent(commentator, event)) {
+            throw new ValidationException("A comment for this event already exists. Change it.");
+        }
         LocalDateTime createdOn = LocalDateTime.now();
         Comment comment;
         if (correct) {
@@ -62,22 +64,17 @@ public class CommentPrivateService {
         if (Boolean.FALSE.equals(censorship.isTextCorrect(commentUpdateDto.getText()))) {
             throw new ValidationException("Text contains incorrect words. Try again with the correct content.");
         }
-        if (Boolean.FALSE.equals(userRepository.existsById(userId))) {
-            throw new CustomNotFoundException("User not found");
-        }
-        Comment comment = commentRepository.findById(commentUpdateDto.getId())
-                .orElseThrow(() -> new CustomNotFoundException("Comment not found"));
+        Comment comment = customCommentRepository.findCommentByIdWithoutRelatedFields(commentUpdateDto.getId());
         if (Boolean.FALSE.equals(comment.getCommentator().getId().equals(userId))) {
             throw new ValidationException("Commentator is not current user");
         }
-        Event event = eventRepository.findById(commentUpdateDto.getEventId())
-                .orElseThrow(() -> new CustomNotFoundException("Event not found"));
-        if (Boolean.FALSE.equals(event.getId().equals(commentUpdateDto.getEventId()))) {
+        if (Boolean.FALSE.equals(comment.getEvent().getId().equals(commentUpdateDto.getEventId()))) {
             throw new ValidationException("Event ID don't match");
         }
         commentMapper.updateComment(commentUpdateDto, comment, CommentStatus.PUBLISHED);
         Comment readyComment = commentRepository.save(comment);
-        return commentMapper.toCommentFullDto(readyComment, readyComment.getCommentator().getId(), readyComment.getEvent().getId());
+        return commentMapper.toCommentFullDto(readyComment, readyComment.getCommentator().getId(),
+                readyComment.getEvent().getId());
     }
 
     // Удаление комментария по id
@@ -94,7 +91,7 @@ public class CommentPrivateService {
     // Просмотр всех комментариев текущего пользователя
     @Transactional
     public List<CommentFullDto> getAllCommentsOfCurrentUser(Long userId) {
-        List<Comment> comments = commentRepository.findAllByCommentatorId(userId);
+        List<Comment> comments = customCommentRepository.findAllCommentsByCommentatorId(userId);
         return comments.stream()
                 .map(e -> commentMapper.toCommentFullDto(e, e.getCommentator().getId(), e.getEvent().getId()))
                 .collect(Collectors.toList());
