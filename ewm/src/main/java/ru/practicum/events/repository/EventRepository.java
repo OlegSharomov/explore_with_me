@@ -10,15 +10,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.practicum.collector.interfaces.EventFullDtoInterfaceWithAllFields;
 import ru.practicum.events.entity.Event;
-import ru.practicum.users.entity.User;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
-    List<Event> findByInitiator(User initiator, Pageable pageable);
-
     Long countByCategoryId(Long catId);
 
     @Override
