@@ -11,6 +11,7 @@ import ru.practicum.events.entity.Event;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,7 +40,8 @@ public class Compilation {
     private String title;       // Заголовок подборки
     @Column(name = "pinned")
     private Boolean pinned;     // Закреплена ли подборка на главной странице сайта
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH},
+            fetch = FetchType.LAZY)
     @JoinTable(
             name = "events_compilations",
             uniqueConstraints = {@UniqueConstraint(columnNames = {"compilation_id", "event_id"})},

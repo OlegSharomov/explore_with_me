@@ -8,11 +8,12 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.events.entity.Event;
 import ru.practicum.events.model.EventState;
-import ru.practicum.events.repository.EventRepository;
+import ru.practicum.events.repository.CustomEventRepository;
 import ru.practicum.requests.dto.ParticipationRequestDto;
 import ru.practicum.requests.dto.RequestMapperImpl;
 import ru.practicum.requests.entity.Request;
 import ru.practicum.requests.model.RequestStatus;
+import ru.practicum.requests.repository.CustomRequestRepository;
 import ru.practicum.requests.repository.RequestRepository;
 import ru.practicum.users.entity.User;
 import ru.practicum.users.repository.UserRepository;
@@ -31,7 +32,9 @@ public class RequestServiceTest {
     @Mock
     private RequestRepository requestRepository;
     @Mock
-    private EventRepository eventRepository;
+    private CustomRequestRepository customRequestRepository;
+    @Mock
+    private CustomEventRepository customEventRepository;
     @Mock
     private UserRepository userRepository;
     @Spy
@@ -43,7 +46,8 @@ public class RequestServiceTest {
         User requester = User.builder().id(1L).name("User1").email("user1@gmail.com").build();
         Event event1 = Event.builder().id(1L).title("Title1").build();
         Request request1 = Request.builder().id(1L).requester(requester).event(event1).build();
-        when(requestRepository.findAllByRequesterId(1L)).thenReturn(List.of(request1));
+        when(customRequestRepository.findAllRequestsWithoutRelatedFieldsByRequesterId(1L))
+                .thenReturn(List.of(request1));
         List<ParticipationRequestDto> result = requestService.getParticipationRequest(1L);
         ParticipationRequestDto requestDto = ParticipationRequestDto.builder()
                 .id(1L).requester(1L).event(1L).build();
@@ -59,9 +63,7 @@ public class RequestServiceTest {
         Event event1 = Event.builder().id(1L).title("Title1").initiator(initiatorOfEvent)
                 .state(EventState.PUBLISHED).requestModeration(false).availableForRequest(true).build();
         Request request1 = Request.builder().id(1L).requester(requester).event(event1).build();
-        when(requestRepository.existsByRequesterIdAndEventId(1L, 1L))
-                .thenReturn(false);
-        when(eventRepository.findById(1L)).thenReturn(Optional.of(event1));
+        when(customEventRepository.findEventByIdWithoutRelatedFields(1L)).thenReturn(event1);
         when(userRepository.findById(1L)).thenReturn(Optional.of(requester));
         when(requestRepository.save(any(Request.class))).thenReturn(request1);
         ParticipationRequestDto result = requestService.createParticipationRequest(1L, 1L);
@@ -78,7 +80,7 @@ public class RequestServiceTest {
         Event event1 = Event.builder().id(1L).title("Title1").initiator(initiatorOfEvent)
                 .state(EventState.PUBLISHED).requestModeration(false).availableForRequest(true).build();
         Request request1 = Request.builder().id(1L).requester(requester).event(event1).build();
-        when(requestRepository.findById(1L)).thenReturn(Optional.of(request1));
+        when(customRequestRepository.findRequestByIWithoutRelatedFields(1L)).thenReturn(request1);
         Request updatedRequest = Request.builder().id(1L).requester(requester).event(event1)
                 .status(RequestStatus.CANCELED).build();
         when(requestRepository.save(any(Request.class))).thenReturn(updatedRequest);
@@ -87,5 +89,4 @@ public class RequestServiceTest {
                 .id(1L).requester(1L).event(1L).status(RequestStatus.CANCELED).build();
         assertEquals(requestToCheck, result);
     }
-
 }

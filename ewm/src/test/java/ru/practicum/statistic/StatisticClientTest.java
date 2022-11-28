@@ -13,12 +13,13 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.practicum.client.StatisticClient;
-import ru.practicum.client.ViewStat;
+import ru.practicum.client.model.ViewStat;
 import ru.practicum.exception.StatisticSendingClientException;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,13 +55,14 @@ public class StatisticClientTest {
     // getStatistic
     @Test
     public void shouldGetStatisticByUri() throws JsonProcessingException {
-        String start = LocalDateTime.now().minusDays(5).toString();
-        String end = LocalDateTime.now().toString();
+        LocalDateTime start = LocalDateTime.now().minusDays(5);
+        LocalDateTime end = LocalDateTime.now();
         String[] uris = {"/event/367"};
         Boolean unique = false;
 
-        String encodeStart = URLEncoder.encode(start, StandardCharsets.UTF_8);
-        String encodeEnd = URLEncoder.encode(end, StandardCharsets.UTF_8);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String encodeStart = URLEncoder.encode(start.format(formatter), StandardCharsets.UTF_8);
+        String encodeEnd = URLEncoder.encode(end.format(formatter), StandardCharsets.UTF_8);
         String encodeUris = URLEncoder.encode(convertArrayToStringForUrl(uris), StandardCharsets.UTF_8);
         String encodeUnique = URLEncoder.encode(String.valueOf(unique), StandardCharsets.UTF_8);
 
@@ -90,7 +92,7 @@ public class StatisticClientTest {
         wireMockServer.stubFor(get(urlEqualTo("/events/1"))
                 .willReturn(aResponse().withBody("100")));
 
-        Long result = statisticClient.getViewsByUri(1L);
+        Long result = statisticClient.getViewsByUri(1L).orElse(0L);
         assertEquals(100, result);
         verify(getRequestedFor(urlEqualTo("/events/1")));
     }

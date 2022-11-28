@@ -1,16 +1,21 @@
-package ru.practicum.model;
+package ru.practicum.model.viewstats;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 
-@Value
+import javax.validation.constraints.NotNull;
+
+@Data
 @Builder
-public class ViewStats {
+@AllArgsConstructor
+@NotNull
+public class ViewStats implements ViewStatsInterface {
     @Schema(description = "Название сервиса", example = "ewm-main-service")
-    String app;
+    private String app;
     @Schema(description = "URI сервиса", example = "/event/367")
-    String uri;
+    private String uri;
     @Schema(description = "Количество просмотров")
-    Long hits;
+    private Long hits;
 }

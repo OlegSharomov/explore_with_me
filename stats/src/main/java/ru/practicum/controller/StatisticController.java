@@ -1,5 +1,6 @@
 package ru.practicum.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.model.EndpointHit;
-import ru.practicum.model.ViewStats;
+import ru.practicum.model.vievstatsshort.ViewStatsShort;
+import ru.practicum.model.viewstats.ViewStats;
 import ru.practicum.service.StatisticService;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -40,27 +43,38 @@ public class StatisticController {
     }
 
     @GetMapping("/stats")
-    @Operation(summary = "Получение статистики по посещениям", description = "Возвращает список ViewStats. " +
-            "Значение даты и времени должно быть закодировано (Например, используя java.net.URLEncoder.encode)")
+    @Operation(summary = "Получение статистики по посещениям",
+            description = "Значение даты и времени должно быть закодировано (Например, используя java.net.URLEncoder.encode)")
     public List<ViewStats> getStatistic(
             @Parameter(name = "Дата и время начала диапазона за который нужно выгрузить статистику (в формате yyyy-MM-dd HH:mm:ss)")
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
             @RequestParam LocalDateTime start,
             @Parameter(name = "Дата и время конца диапазона за который нужно выгрузить статистику (в формате yyyy-MM-dd HH:mm:ss)")
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
             @RequestParam LocalDateTime end,
             @Parameter(name = "Список uri для которых нужно выгрузить статистику")
             @RequestParam(required = false) String[] uris,
             @Parameter(name = "Нужно ли учитывать только уникальные посещения (только с уникальным ip)")
             @RequestParam(defaultValue = "false") Boolean unique) {
         log.info("Received a request: GET /stats with parameters: start = {}, end = {}, uris = {}, unique = {}",
-                start, end, uris, unique);
+                start, end, Arrays.toString(uris), unique);
         return statisticService.getStats(start, end, uris, unique);
     }
 
     @GetMapping("/events/{eventId}")
     @Operation(summary = "Получение информации о количестве просмотров события")
     public Long getViews(@NotNull(message = "Controller get request to path '/events/{eventId}' where eventId==null")
-                            @PathVariable Long eventId) {
+                         @PathVariable Long eventId) {
         log.info("Received a request: GET /events with pathVariable: {}", eventId);
         return statisticService.getViews("/events/" + eventId);
+    }
+
+    @GetMapping("/stats/collect")
+    @Operation(summary = "Получение статистики по посещениям для сборки Events")
+    public List<ViewStatsShort> getViewStatsShortWithId(@Parameter(name = "Список uri для которых нужно выгрузить статистику")
+                                                        @RequestParam String[] uris) {
+        log.info("Received a request: GET /stats/collect with parameters: uris = {}", Arrays.toString(uris));
+        return statisticService.getViewsForCollect(uris);
+
     }
 }

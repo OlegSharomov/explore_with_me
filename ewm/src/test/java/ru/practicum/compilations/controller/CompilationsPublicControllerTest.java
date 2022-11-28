@@ -41,7 +41,7 @@ public class CompilationsPublicControllerTest {
 
     // getCompilationById
     @Test
-    public void should() throws Exception {
+    public void shouldCallGetCompilationById() throws Exception {
         mockMvc.perform(get("/compilations/{compId}", 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)

@@ -8,22 +8,22 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.client.StatisticClient;
+import ru.practicum.collector.CollectorDto;
 import ru.practicum.compilations.dto.CompilationDto;
 import ru.practicum.compilations.dto.CompilationMapperImpl;
 import ru.practicum.compilations.dto.NewCompilationDto;
 import ru.practicum.compilations.entity.Compilation;
 import ru.practicum.compilations.repository.CompilationRepository;
+import ru.practicum.compilations.repository.CustomCompilationRepository;
 import ru.practicum.compilations.service.admin.CompilationAdminServiceImpl;
 import ru.practicum.events.dto.EventMapperImpl;
 import ru.practicum.events.entity.Event;
-import ru.practicum.events.repository.EventRepository;
+import ru.practicum.events.repository.CustomEventRepository;
 import ru.practicum.exception.CustomNotFoundException;
 import ru.practicum.exception.ValidationException;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,13 +36,15 @@ public class CompilationAdminServiceTest {
     @Mock
     private CompilationRepository compilationRepository;
     @Mock
-    private EventRepository eventRepository;
+    CustomCompilationRepository customCompilationRepository;
+    @Mock
+    private CustomEventRepository customEventRepository;
     @Spy
     private CompilationMapperImpl compilationMapper;
     @Spy
     private EventMapperImpl eventMapper;
     @Mock
-    private StatisticClient statisticClient;
+    private CollectorDto collectorDto;
 
     NewCompilationDto newCompilationDto = NewCompilationDto.builder()
             .events(Collections.emptyList()).pinned(true).title("Weekend").build();
@@ -59,6 +61,7 @@ public class CompilationAdminServiceTest {
     @Test
     public void shouldCreateCompilationAndReturnDto() {
         when(compilationRepository.save(preCompilation1)).thenReturn(savedCompilation1);
+        when(collectorDto.getCompilationDto(any(Compilation.class))).thenReturn(compilationDto1);
         CompilationDto result = compilationService.createNewCompilation(newCompilationDto);
         CompilationDto compilationToCheck = compilationDto1;
         assertEquals(compilationToCheck, result);
@@ -79,7 +82,8 @@ public class CompilationAdminServiceTest {
                 .events(List.of(event1, event2)).pinned(true).title("Weekend").build();
         Compilation compilationWithoutEvent = Compilation.builder()
                 .events(List.of(event1)).pinned(true).title("Weekend").build();
-        when(compilationRepository.findById(1L)).thenReturn(Optional.of(compilation0));
+        when(customCompilationRepository.findCompilationOnlyWithEventFieldById(1L))
+                .thenReturn(compilation0);
         when(compilationRepository.save(compilation0)).thenReturn(compilationWithoutEvent);
         compilationService.removeEventFromCompilation(1L, 1L);
         Mockito.verify(compilationRepository, Mockito.times(1))
@@ -88,7 +92,8 @@ public class CompilationAdminServiceTest {
 
     @Test
     public void shouldNotFindCompilationAndThrowException() {
-        when(compilationRepository.findById(99L)).thenReturn(Optional.empty());
+        when(customCompilationRepository.findCompilationOnlyWithEventFieldById(99L))
+                .thenThrow(new CustomNotFoundException("Compilation not found"));
         RuntimeException re = Assertions.assertThrows(CustomNotFoundException.class,
                 () -> compilationService.removeEventFromCompilation(99L, 1L));
         assertEquals("Compilation not found", re.getMessage());
@@ -98,7 +103,8 @@ public class CompilationAdminServiceTest {
     public void shouldNotFindEventInCompilationListAndThrowException() {
         Compilation compilation0 = Compilation.builder().id(1L)
                 .events(List.of(event1, event2)).pinned(true).title("Weekend").build();
-        when(compilationRepository.findById(1L)).thenReturn(Optional.of(compilation0));
+        when(customCompilationRepository.findCompilationOnlyWithEventFieldById(1L))
+                .thenReturn(compilation0);
         RuntimeException re = Assertions.assertThrows(CustomNotFoundException.class,
                 () -> compilationService.removeEventFromCompilation(1L, 99L));
         assertEquals("Event not found in the compilation list", re.getMessage());
@@ -111,8 +117,10 @@ public class CompilationAdminServiceTest {
                 .events(List.of(event1)).pinned(true).title("Weekend").build();
         Compilation compilationWithNewEvent = Compilation.builder()
                 .events(List.of(event1, event2)).pinned(true).title("Weekend").build();
-        when(compilationRepository.findById(1L)).thenReturn(Optional.of(compilation0));
-        when(eventRepository.findById(2L)).thenReturn(Optional.of(event2));
+        when(customCompilationRepository.findCompilationWIthAllFieldsById(1L))
+                .thenReturn(compilation0);
+        when(customEventRepository.findEventById(2L))
+                .thenReturn(event2);
         when(compilationRepository.save(compilation0)).thenReturn(compilationWithNewEvent);
         compilationService.addEventInCompilation(1L, 2L);
         Mockito.verify(compilationRepository, Mockito.times(1))
@@ -121,7 +129,8 @@ public class CompilationAdminServiceTest {
 
     @Test
     public void shouldThrowExceptionWhenCompilationNotFound() {
-        when(compilationRepository.findById(99L)).thenReturn(Optional.empty());
+        when(customCompilationRepository.findCompilationWIthAllFieldsById(99L))
+                .thenThrow(new CustomNotFoundException("Compilation not found"));
         RuntimeException re = Assertions.assertThrows(CustomNotFoundException.class,
                 () -> compilationService.addEventInCompilation(99L, 1L));
         assertEquals("Compilation not found", re.getMessage());
@@ -131,7 +140,9 @@ public class CompilationAdminServiceTest {
     public void shouldThrowExceptionWhenEventAlreadyExists() {
         Compilation compilation0 = Compilation.builder().id(1L)
                 .events(List.of(event1, event2)).pinned(true).title("Weekend").build();
-        when(compilationRepository.findById(1L)).thenReturn(Optional.of(compilation0));
+        when(customCompilationRepository.findCompilationWIthAllFieldsById(1L))
+                .thenReturn(compilation0);
+        when(customEventRepository.findEventById(2L)).thenReturn(event2);
         RuntimeException re = Assertions.assertThrows(ValidationException.class,
                 () -> compilationService.addEventInCompilation(1L, 2L));
         assertEquals("Event already exists in compilation", re.getMessage());
@@ -139,10 +150,8 @@ public class CompilationAdminServiceTest {
 
     @Test
     public void shouldThrowExceptionWhenEventNotFound() {
-        Compilation compilation0 = Compilation.builder().id(1L)
-                .events(List.of(event1)).pinned(true).title("Weekend").build();
-        when(compilationRepository.findById(1L)).thenReturn(Optional.of(compilation0));
-        when(eventRepository.findById(99L)).thenReturn(Optional.empty());
+        when(customEventRepository.findEventById(99L))
+                .thenThrow(new CustomNotFoundException("Event not found"));
         RuntimeException re = Assertions.assertThrows(CustomNotFoundException.class,
                 () -> compilationService.addEventInCompilation(1L, 99L));
         assertEquals("Event not found", re.getMessage());
@@ -153,7 +162,8 @@ public class CompilationAdminServiceTest {
     public void shouldUnpinCompilationAndCallRepository() {
         Compilation compilation0 = Compilation.builder().id(1L)
                 .events(List.of(event1, event2)).pinned(true).title("Weekend").build();
-        when(compilationRepository.findById(1L)).thenReturn(Optional.of(compilation0));
+        when(customCompilationRepository.findCompilationWithoutFieldsById(1L))
+                .thenReturn(compilation0);
         compilationService.unpinCompilation(1L);
         Mockito.verify(compilationRepository, Mockito.times(1))
                 .save(any(Compilation.class));
@@ -161,7 +171,8 @@ public class CompilationAdminServiceTest {
 
     @Test
     public void shouldThrowExceptionWhenWeTryUnpinCompilationAndCompilationNotFound() {
-        when(compilationRepository.findById(99L)).thenReturn(Optional.empty());
+        when(customCompilationRepository.findCompilationWithoutFieldsById(99L))
+                .thenThrow(new CustomNotFoundException("Compilation not found"));
         RuntimeException re = Assertions.assertThrows(CustomNotFoundException.class,
                 () -> compilationService.unpinCompilation(99L));
         assertEquals("Compilation not found", re.getMessage());
@@ -173,7 +184,8 @@ public class CompilationAdminServiceTest {
     public void shouldThrowExceptionWhenWeTryUnpinCompilationWhichAlreadyUnpin() {
         Compilation compilation0 = Compilation.builder().id(1L)
                 .events(List.of(event1, event2)).pinned(false).title("Weekend").build();
-        when(compilationRepository.findById(1L)).thenReturn(Optional.of(compilation0));
+        when(customCompilationRepository.findCompilationWithoutFieldsById(1L))
+                .thenReturn(compilation0);
         RuntimeException re = Assertions.assertThrows(ValidationException.class,
                 () -> compilationService.unpinCompilation(1L));
         assertEquals("Pinned already false", re.getMessage());
@@ -186,7 +198,8 @@ public class CompilationAdminServiceTest {
     public void shouldPinCompilationAndCallRepository() {
         Compilation compilation0 = Compilation.builder().id(1L)
                 .events(List.of(event1, event2)).pinned(false).title("Weekend").build();
-        when(compilationRepository.findById(1L)).thenReturn(Optional.of(compilation0));
+        when(customCompilationRepository.findCompilationWithoutFieldsById(1L))
+                .thenReturn(compilation0);
         compilationService.pinCompilation(1L);
         Mockito.verify(compilationRepository, Mockito.times(1))
                 .save(any(Compilation.class));
@@ -194,7 +207,8 @@ public class CompilationAdminServiceTest {
 
     @Test
     public void shouldThrowExceptionWhenWeTryPinCompilationAndCompilationNotFound() {
-        when(compilationRepository.findById(99L)).thenReturn(Optional.empty());
+        when(customCompilationRepository.findCompilationWithoutFieldsById(99L))
+                .thenThrow(new CustomNotFoundException("Compilation not found"));
         RuntimeException re = Assertions.assertThrows(CustomNotFoundException.class,
                 () -> compilationService.pinCompilation(99L));
         assertEquals("Compilation not found", re.getMessage());
@@ -206,12 +220,12 @@ public class CompilationAdminServiceTest {
     public void shouldThrowExceptionWhenWeTryPinCompilationWhichAlreadyUnpin() {
         Compilation compilation0 = Compilation.builder().id(1L)
                 .events(List.of(event1, event2)).pinned(true).title("Weekend").build();
-        when(compilationRepository.findById(1L)).thenReturn(Optional.of(compilation0));
+        when(customCompilationRepository.findCompilationWithoutFieldsById(1L))
+                .thenReturn(compilation0);
         RuntimeException re = Assertions.assertThrows(ValidationException.class,
                 () -> compilationService.pinCompilation(1L));
         assertEquals("Pinned already false", re.getMessage());
         Mockito.verify(compilationRepository, Mockito.times(0))
                 .save(any(Compilation.class));
     }
-
 }

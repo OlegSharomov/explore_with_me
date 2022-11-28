@@ -31,33 +31,33 @@ import java.util.List;
 public class EventPublicController {
     private final EventPublicService eventPublicService;
 
-    @Operation(summary = "Получение событий с возможностью фильтрации", description = "Возвращает список EventShortDto. " +
-            "Это публичный эндпоинт, соответственно в выдаче должны быть только опубликованные события." +
+    @Operation(summary = "Получение событий с возможностью фильтрации",
+            description = "Это публичный эндпоинт, соответственно в выдаче должны быть только опубликованные события." +
             "Текстовый поиск (по аннотации и подробному описанию) должен быть без учета регистра букв." +
             "Если в запросе не указан диапазон дат [rangeStart-rangeEnd], то нужно выгружать события, которые " +
             "произойдут позже текущей даты и времени. " +
             "Информация о каждом событии должна включать в себя количество просмотров и количество уже одобренных заявок на участие." +
             "Информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики")
     @GetMapping
-    public List<EventShortDto> getEvents(@Parameter(name = "текст для поиска в содержимом аннотации и подробном описании события")
+    public List<EventShortDto> getEvents(@Parameter(name = "Текст для поиска в содержимом аннотации и подробном описании события")
                                          @RequestParam(required = false) String text,
-                                         @Parameter(name = "список идентификаторов категорий в которых будет вестись поиск")
+                                         @Parameter(name = "Список идентификаторов категорий в которых будет вестись поиск")
                                          @RequestParam(required = false) long[] categories,
-                                         @Parameter(name = "поиск только платных/бесплатных событий")
+                                         @Parameter(name = "Поиск только платных/бесплатных событий")
                                          @RequestParam(required = false) Boolean paid,
-                                         @Parameter(name = "дата и время не раньше которых должно произойти событие")
+                                         @Parameter(name = "Дата и время не раньше которых должно произойти событие")
                                          @RequestParam(required = false) LocalDateTime rangeStart,
-                                         @Parameter(name = "дата и время не позже которых должно произойти событие")
+                                         @Parameter(name = "Дата и время не позже которых должно произойти событие")
                                          @RequestParam(required = false) LocalDateTime rangeEnd,
-                                         @Parameter(name = "только события у которых не исчерпан лимит запросов на участие")
+                                         @Parameter(name = "Только события у которых не исчерпан лимит запросов на участие")
                                          @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                          @Parameter(name = "Вариант сортировки: по дате события или по количеству " +
                                                  "просмотров: EVENT_DATE или VIEWS")
                                          @RequestParam(required = false) String sort,
-                                         @Parameter(name = "количество событий, которые нужно пропустить для формирования" +
+                                         @Parameter(name = "Количество событий, которые нужно пропустить для формирования" +
                                                  " текущего набора")
                                          @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                         @Parameter(name = "количество событий в наборе")
+                                         @Parameter(name = "Количество событий в наборе")
                                          @Positive @RequestParam(defaultValue = "10") Integer size,
                                          HttpServletRequest request) {
         log.info("Received a request: GET /events with parameters: text = {}, categories = {}, paid = {}, " +
@@ -70,7 +70,7 @@ public class EventPublicController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Получение подробной информации об опубликованном событии по его id",
-            description = "Возвращает EventFullDto. Событие должно быть опубликовано. " +
+            description = "Событие должно быть опубликовано. " +
                     "Информация о событии должна включать в себя количество просмотров и количество подтвержденных запросов. " +
                     "Информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, " +
                     "нужно сохранить в сервисе статистики")

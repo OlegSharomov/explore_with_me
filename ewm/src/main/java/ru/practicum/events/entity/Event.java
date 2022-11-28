@@ -48,7 +48,7 @@ public class Event {
     @Column(name = "annotation", length = 2000, nullable = false)
     @Size(min = 20)
     private String annotation;                                  // Краткое описание
-    @ManyToOne(targetEntity = Category.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Category.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     private Category category;                                  // Категория {"id": 1, "name": "Концерты"}
     @Column(name = "description", length = 7000, nullable = false)
@@ -72,7 +72,7 @@ public class Event {
     @Column(name = "title", length = 120, nullable = false)
     @Size(min = 3)
     private String title;                                       // Заголовок
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id", referencedColumnName = "id")
     private User initiator;                          // Пользователь (краткая информация) {"id": 3, "name": "Фёдоров Матвей"};
     @Column(name = "state", length = 20, nullable = false)
@@ -84,7 +84,7 @@ public class Event {
     private LocalDateTime publishedOn;              // Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss")
     @ToString.Exclude
     @ManyToMany(mappedBy = "events")
-    List<Compilation> compilations;                 // Подборки, в которых состоит
+    private List<Compilation> compilations;                 // Подборки, в которых состоит
     @Column(name = "available_for_request")
     private Boolean availableForRequest;
 

@@ -11,6 +11,7 @@ import ru.practicum.events.model.Location;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Data
@@ -40,12 +41,12 @@ public class NewEventDto {
     private Location location;
     @Schema(description = "Нужно ли оплачивать участие в событии. Значение по умолчанию = false")
     private Boolean paid = false;
-    @Positive
+    @PositiveOrZero
     @Schema(description = "Ограничение на количество участников. Значение 0 - означает отсутствие ограничения")
     private Long participantLimit = 0L;
     @Schema(description = "Нужна ли пре-модерация заявок на участие. Если true, то все заявки " +
             "будут ожидать подтверждения инициатором события. Если false - то будут подтверждаться автоматически")
-    private Boolean requestModeration = true; /* . */
+    private Boolean requestModeration = true;
     @NotNull
     @Length(min = 3, max = 120)
     @Schema(description = "Заголовок события")

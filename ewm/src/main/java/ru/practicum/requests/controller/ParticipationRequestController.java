@@ -29,8 +29,7 @@ public class ParticipationRequestController {
     private final RequestService requestService;
 
     @GetMapping
-    @Operation(summary = "Получение информации о заявках текущего пользователя на участие в чужих событиях",
-            description = "Возвращает список ParticipationRequestDto")
+    @Operation(summary = "Получение информации о заявках текущего пользователя на участие в чужих событиях")
     public List<ParticipationRequestDto> getParticipationRequest(@Positive @PathVariable Long userId) {
         log.info("Received a request: GET /users/{}/requests", userId);
         return requestService.getParticipationRequest(userId);
@@ -38,7 +37,7 @@ public class ParticipationRequestController {
 
     @PostMapping
     @Operation(summary = "Добавление запроса от текущего пользователя на участие в событии",
-            description = "Возвращает ParticipationRequestDto. Нельзя добавить повторный запрос. " +
+            description = "Нельзя добавить повторный запрос. " +
                     "Инициатор события не может добавить запрос на участие в своём событии. " +
                     "Нельзя участвовать в неопубликованном событии. " +
                     "Если у события достигнут лимит запросов на участие - необходимо вернуть ошибку. " +
@@ -51,7 +50,7 @@ public class ParticipationRequestController {
     }
 
     @PatchMapping("/{requestId}/cancel")
-    @Operation(summary = "Отмена своего запроса на участие в событии", description = "Возвращает ParticipationRequestDto")
+    @Operation(summary = "Отмена своего запроса на участие в событии")
     public ParticipationRequestDto cancelParticipationRequest(@Positive @PathVariable Long userId,
                                                               @PathVariable Long requestId) {
         log.info("Received a request: PATCH /users/{}/requests/{}/cancel", userId, requestId);

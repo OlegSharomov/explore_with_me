@@ -1,6 +1,5 @@
 package ru.practicum;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,15 +8,16 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.entity.AdditionalFields;
 import ru.practicum.entity.Statistic;
-import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.EndpointHit;
-import ru.practicum.model.ViewStats;
+import ru.practicum.model.viewstats.ViewStats;
 import ru.practicum.repository.StatisticRepository;
 import ru.practicum.service.StatisticServiceImpl;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -58,18 +58,10 @@ public class StatisticServiceTest {
         LocalDateTime end = LocalDateTime.now();
         String[] uris = {"/event/367"};
         Boolean unique = false;
-
-        AdditionalFields additionalFields = new AdditionalFields("ewm-main-service", "172.16.255.254");
-        Statistic statistic = Statistic.builder()
-                .id(1L)
-                .uri("/event/367")
-                .createdAt(LocalDateTime.now().minusDays(15))
-                .additionalFields(additionalFields)
-                .build();
-        when(statisticRepository.findByUri("/event/367")).thenReturn(Optional.of(statistic));
-
-        when(statisticRepository.getStatisticWithoutUniqueIp("/event/367", "ewm-main-service", start, end))
-                .thenReturn(99L);
+        List<String> listUris = Arrays.stream(uris).collect(Collectors.toList());
+        ViewStats viewStatsTemplate = ViewStats.builder().app("ewm-main-service").uri("/event/367").hits(99L).build();
+        when(statisticRepository.getStatisticWithoutUniqueIp(listUris, start, end))
+                .thenReturn(List.of(viewStatsTemplate));
 
         ViewStats viewStats = ViewStats.builder()
                 .app("ewm-main-service")
@@ -87,18 +79,11 @@ public class StatisticServiceTest {
         LocalDateTime end = LocalDateTime.now();
         String[] uris = {"/event/367"};
         Boolean unique = true;
+        List<String> listUris = Arrays.stream(uris).collect(Collectors.toList());
 
-        AdditionalFields additionalFields = new AdditionalFields("ewm-main-service", "172.16.255.254");
-        Statistic statistic = Statistic.builder()
-                .id(1L)
-                .uri("/event/367")
-                .createdAt(LocalDateTime.now().minusDays(15))
-                .additionalFields(additionalFields)
-                .build();
-        when(statisticRepository.findByUri("/event/367")).thenReturn(Optional.of(statistic));
-
-        when(statisticRepository.getStatisticWithUniqueIp("/event/367", "ewm-main-service", start, end))
-                .thenReturn(99L);
+        ViewStats viewStatsTemplate = ViewStats.builder().app("ewm-main-service").uri("/event/367").hits(99L).build();
+        when(statisticRepository.getStatisticWithUniqueIp(listUris, start, end))
+                .thenReturn(List.of(viewStatsTemplate));
 
         ViewStats viewStats = ViewStats.builder()
                 .app("ewm-main-service")
@@ -108,20 +93,6 @@ public class StatisticServiceTest {
         List<ViewStats> result = statisticService.getStats(start, end, uris, unique);
         List<ViewStats> statisticToCheck = List.of(viewStats);
         assertEquals(statisticToCheck, result);
-    }
-
-    @Test
-    public void shouldThrowExceptionWhenStatisticNotFound() {
-        LocalDateTime start = LocalDateTime.now().minusDays(5);
-        LocalDateTime end = LocalDateTime.now();
-        String[] uris = {"/event/367"};
-        Boolean unique = true;
-
-        when(statisticRepository.findByUri("/event/367")).thenReturn(Optional.empty());
-
-        RuntimeException re = Assertions.assertThrows(NotFoundException.class,
-                () -> statisticService.getStats(start, end, uris, unique));
-        assertEquals("Statistic not found", re.getMessage());
     }
 
     // getViews

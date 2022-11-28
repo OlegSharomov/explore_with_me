@@ -37,10 +37,10 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @ManyToOne(targetEntity = Event.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Event.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", referencedColumnName = "id", nullable = false)
     private Event event;
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id", referencedColumnName = "id", nullable = false)
     private User requester;
     @Column(name = "status", length = 20, nullable = false)

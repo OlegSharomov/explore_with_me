@@ -31,7 +31,7 @@ public class CategoryAdminController {
 
     @PatchMapping
     @Operation(summary = "Изменение категории",
-            description = "Возвращает CategoryDto. Имя категории должно быть уникальным.")
+            description = "Имя категории должно быть уникальным.")
     public CategoryDto changeCategory(@Valid @RequestBody @Parameter(description = "Входящее DTO категории")
                                       CategoryDto categoryDto) {
         log.info("Received a request: PATCH /admin/categories with body: " + categoryDto);
@@ -40,7 +40,7 @@ public class CategoryAdminController {
 
     @PostMapping
     @Operation(summary = "Добавление новой категории",
-            description = "Возвращает CategoryDto. Имя категории должно быть уникальным.")
+            description = "Имя категории должно быть уникальным.")
     public CategoryDto createCategory(@Valid @RequestBody @Parameter(description = "DTO для создания новой категории")
                                       NewCategoryDto newCategoryDto) {
         log.info("Received a request: POST /admin/categories with body: " + newCategoryDto);

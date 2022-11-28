@@ -12,18 +12,20 @@ import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.categories.dto.CategoryMapperImpl;
 import ru.practicum.categories.entity.Category;
 import ru.practicum.categories.service.admin.CategoryAdminServiceImpl;
-import ru.practicum.client.StatisticClient;
+import ru.practicum.collector.CollectorDto;
 import ru.practicum.events.dto.EventMapperImpl;
 import ru.practicum.events.dto.priv.NewEventDto;
 import ru.practicum.events.dto.priv.UpdateEventRequest;
 import ru.practicum.events.dto.publ.EventFullDto;
 import ru.practicum.events.dto.publ.EventShortDto;
 import ru.practicum.events.entity.Event;
+import ru.practicum.events.repository.CustomEventRepository;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.events.service.priv.EventPrivateServiceImpl;
 import ru.practicum.requests.dto.ParticipationRequestDto;
 import ru.practicum.requests.dto.RequestMapperImpl;
 import ru.practicum.requests.entity.Request;
+import ru.practicum.requests.repository.CustomRequestRepository;
 import ru.practicum.requests.repository.RequestRepository;
 import ru.practicum.users.dto.UserMapperImpl;
 import ru.practicum.users.dto.UserShortDto;
@@ -32,10 +34,11 @@ import ru.practicum.users.service.UserServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static ru.practicum.events.model.EventState.CANCELED;
 import static ru.practicum.events.model.EventState.PENDING;
@@ -49,13 +52,15 @@ public class EventPrivateServiceTest {
     @Mock
     private EventRepository eventRepository;
     @Mock
+    private CustomEventRepository customEventRepository;
+    @Mock
     private RequestRepository requestRepository;
+    @Mock
+    private CustomRequestRepository customRequestRepository;
     @Mock
     private UserServiceImpl userService;
     @Mock
     private CategoryAdminServiceImpl categoryAdminService;
-    @Mock
-    private StatisticClient statisticClient;
     @Spy
     private EventMapperImpl eventMapper;
     @Spy
@@ -64,6 +69,8 @@ public class EventPrivateServiceTest {
     private UserMapperImpl userMapper;
     @Spy
     private RequestMapperImpl requestMapper;
+    @Mock
+    private CollectorDto collectorDto;
 
     Integer from = 0;
     Integer size = 10;
@@ -83,8 +90,7 @@ public class EventPrivateServiceTest {
     // getEventsByUserId
     @Test
     public void shouldGetAllEventsByUserId() {
-        when(userService.getEntityUserById(1L)).thenReturn(initiator1);
-        when(eventRepository.findByInitiator(initiator1, pageable)).thenReturn(List.of(event1, event2));
+        when(collectorDto.getListEventShortDto(anyList())).thenReturn(List.of(eventDto1, eventDto2));
         List<EventShortDto> result = eventService.getEventsByUserId(1L, from, size);
         assertEquals(List.of(eventDto1, eventDto2), result);
     }
@@ -92,11 +98,18 @@ public class EventPrivateServiceTest {
     // changeEventByUser
     @Test
     public void shouldChangeEventByUser() {
-        UpdateEventRequest updateEventRequest = UpdateEventRequest.builder().eventId(1L).title("UpdateTitle1").build();
-        when(eventRepository.findById(1L)).thenReturn(Optional.of(event1));
+        Event event1 = Event.builder()
+                .id(1L).category(category1).title("Title1").initiator(initiator1).state(PENDING).eventDate(eventDate).build();
+        UpdateEventRequest updateEventRequest = UpdateEventRequest.builder()
+                .eventId(1L).category(1L).title("UpdateTitle1").build();
+        when(customEventRepository.findEventById(1L)).thenReturn(event1);
         Event readyEvent = Event.builder().id(1L).title("UpdateTitle1").initiator(initiator1).state(PENDING)
                 .eventDate(eventDate).build();
         when(eventRepository.save(any(Event.class))).thenReturn(readyEvent);
+        EventFullDto eventDto0 = EventFullDto.builder().id(1L).title("UpdateTitle1").initiator(initiatorDto1)
+                .confirmedRequests(0L).views(0L).state(PENDING).eventDate(eventDate).build();
+        when(collectorDto.getEventFullDto(any(Event.class), eq(true))).thenReturn(eventDto0);
+
         EventFullDto result = eventService.changeEventByUser(1L, updateEventRequest);
         EventFullDto eventToCheck = EventFullDto.builder().id(1L).title("UpdateTitle1").initiator(initiatorDto1)
                 .confirmedRequests(0L).views(0L).state(PENDING).eventDate(eventDate).build();
@@ -112,6 +125,9 @@ public class EventPrivateServiceTest {
         Event readyEvent = Event.builder().id(1L).title("Title1").initiator(initiator1).state(PENDING)
                 .category(category1).eventDate(eventDate).build();
         when(eventRepository.save(any(Event.class))).thenReturn(readyEvent);
+        EventFullDto eventFullDto0 = EventFullDto.builder().id(1L).title("Title1").initiator(initiatorDto1)
+                .category(categoryDto1).confirmedRequests(0L).views(0L).state(PENDING).eventDate(eventDate).build();
+        when(collectorDto.getEventFullDto(any(Event.class), eq(false))).thenReturn(eventFullDto0);
         EventFullDto result = eventService.createEvent(1L, newEventDto);
         EventFullDto eventToCheck = EventFullDto.builder().id(1L).title("Title1").initiator(initiatorDto1)
                 .category(categoryDto1).confirmedRequests(0L).views(0L).state(PENDING).eventDate(eventDate).build();
@@ -121,7 +137,9 @@ public class EventPrivateServiceTest {
     //  getEventById
     @Test
     public void shouldGetEventById() {
-        when(eventRepository.findById(1L)).thenReturn(Optional.of(event1));
+        EventFullDto eventFullDto0 = EventFullDto.builder().id(1L).title("Title1").initiator(initiatorDto1)
+                .confirmedRequests(0L).views(0L).state(PENDING).eventDate(eventDate).build();
+        when(collectorDto.getEventFullDtoWithAllFields(any(Long.class))).thenReturn(eventFullDto0);
         EventFullDto result = eventService.getEventById(1L, 1L);
         EventFullDto eventToCheck = EventFullDto.builder().id(1L).title("Title1").initiator(initiatorDto1)
                 .confirmedRequests(0L).views(0L).state(PENDING).eventDate(eventDate).build();
@@ -131,10 +149,13 @@ public class EventPrivateServiceTest {
     // cancellationEvent
     @Test
     public void shouldCanceledEvent() {
-        when(eventRepository.findById(1L)).thenReturn(Optional.of(event1));
+        when(customEventRepository.findEventById(1L)).thenReturn(event1);
         Event readyEvent = Event.builder().id(1L).title("Title1").initiator(initiator1).state(CANCELED)
                 .eventDate(eventDate).build();
         when(eventRepository.save(any(Event.class))).thenReturn(readyEvent);
+        EventFullDto eventFullDto0 = EventFullDto.builder().id(1L).title("Title1").initiator(initiatorDto1)
+                .confirmedRequests(0L).views(0L).state(CANCELED).eventDate(eventDate).build();
+        when(collectorDto.getEventFullDto(any(Event.class), eq(true))).thenReturn(eventFullDto0);
         EventFullDto result = eventService.cancellationEvent(1L, 1L);
         EventFullDto eventToCheck = EventFullDto.builder().id(1L).title("Title1").initiator(initiatorDto1)
                 .confirmedRequests(0L).views(0L).state(CANCELED).eventDate(eventDate).build();
@@ -160,7 +181,8 @@ public class EventPrivateServiceTest {
         Event event0 = Event.builder().id(1L).title("Title1").initiator(initiator1).state(PENDING)
                 .eventDate(eventDate).participantLimit(10L).requestModeration(true).build();
         Request request1 = Request.builder().id(1L).event(event0).requester(initiator1).build();
-        when(requestRepository.findById(1L)).thenReturn(Optional.of(request1));
+        when(customRequestRepository.findRequestByIdOnlyWithEvent(1L))
+                .thenReturn(request1);
         Request readyRequest = Request.builder().id(1L).event(event0).requester(initiator1).status(CONFIRMED).build();
         when(requestRepository.save(request1)).thenReturn(readyRequest);
         ParticipationRequestDto result = eventService.acceptParticipationRequest(1L, 1L, 1L);
@@ -175,7 +197,8 @@ public class EventPrivateServiceTest {
         Event event0 = Event.builder().id(1L).title("Title1").initiator(initiator1).state(PENDING)
                 .eventDate(eventDate).participantLimit(10L).requestModeration(true).build();
         Request request1 = Request.builder().id(1L).event(event0).requester(initiator1).status(CONFIRMED).build();
-        when(requestRepository.findById(1L)).thenReturn(Optional.of(request1));
+        when(customRequestRepository.findRequestByIdOnlyWithEvent(1L))
+                .thenReturn(request1);
 
         Request readyRequest = Request.builder().id(1L).event(event0).requester(initiator1).status(REJECTED).build();
         when(requestRepository.save(request1)).thenReturn(readyRequest);
@@ -185,6 +208,4 @@ public class EventPrivateServiceTest {
                 .id(1L).event(1L).requester(1L).status(REJECTED).build();
         assertEquals(requestToCheck, result);
     }
-
-    //
 }
