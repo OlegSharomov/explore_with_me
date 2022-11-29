@@ -3,7 +3,7 @@
 
 Серверная часть сервиса-афиши, где можно предложить какое-либо событие от выставки до похода в кино и набрать компанию для участия в нём, реализованная на основе микросервисной архитектуры.
 
-![Web Template](https://github.com/OlegSharomov/java-explore-with-me/blob/main/images/WebTemplate2.png)
+![Web Template](https://github.com/OlegSharomov/explore_with_me/blob/main/images/WebTemplate2.png)
 
 ### *Функциональность:*
 
@@ -21,7 +21,7 @@
 Сервис статистики хранит количество просмотров и позволяет делать различные выборки для анализа работы приложения.
 У каждого сервиса своя база данных Postgresql, взаимодействие сервисов организовано через HttpClient.
 
-![Database schema](https://github.com/OlegSharomov/java-explore-with-me/blob/main/images/DB.png)
+![Database schema](https://github.com/OlegSharomov/explore_with_me/blob/main/images/DB.png)
 
 ### *Стек:*
 
